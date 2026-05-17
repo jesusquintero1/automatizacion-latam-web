@@ -59,6 +59,7 @@ const GA_ID = import.meta.env.PUBLIC_GA_ID;
     <!-- RSS propio (ayuda a SEO y suscripciones) -->
     <link rel="alternate" type="application/rss+xml" title="Automatización LatAm" href="/rss.xml" />
 
+    {ADSENSE && <meta name="google-adsense-account" content={ADSENSE} />}
     {ADSENSE && (
       <script
         async

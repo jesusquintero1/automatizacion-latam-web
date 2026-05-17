@@ -63,6 +63,7 @@ jobs:
         run: npm run build
         env:
           SITE_URL: https://automatizacionslatam.com
+          PUBLIC_ADSENSE_CLIENT: ${{ secrets.PUBLIC_ADSENSE_CLIENT }}
 
       - name: Deploy a Cloudflare Workers
         uses: cloudflare/wrangler-action@v3
