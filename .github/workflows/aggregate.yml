@@ -70,3 +70,7 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: deploy
+          # Wrangler 4 soporta deploys con solo "assets" (sitios estaticos
+          # puros). La v3 que la action instala por defecto exige un main
+          # worker y falla con "Missing entry-point".
+          wranglerVersion: "4"
