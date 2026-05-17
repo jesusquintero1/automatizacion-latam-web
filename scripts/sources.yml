@@ -1,0 +1,74 @@
+# Fuentes RSS del agregador.
+# Para añadir una fuente: averigua la URL de su feed (busca <link rel="alternate"
+# type="application/rss+xml"> en el HTML) y agrégala con el formato siguiente.
+#
+# Campos:
+#   nombre   — Nombre legible que aparece como "Fuente: X" en el sitio.
+#   url      — URL del feed RSS o Atom.
+#   peso     — 1 a 5. Influye en cuántas noticias se toman por run (más peso = más noticias).
+#   activa   — true/false. Permite desactivar temporalmente sin borrar.
+
+fuentes:
+  # === FUENTES VERIFICADAS Y FUNCIONANDO (mayo 2026) ===
+  - nombre: "Schneider Electric Blog"
+    url: "https://blog.se.com/feed/"
+    peso: 4
+    activa: true
+
+  - nombre: "IIoT World"
+    url: "https://www.iiot-world.com/feed/"
+    peso: 4
+    activa: true
+
+  - nombre: "Industrial Cyber"
+    url: "https://industrialcyber.co/feed/"
+    peso: 5
+    activa: true
+
+  - nombre: "Plant Engineering"
+    url: "https://www.plantengineering.com/feed/"
+    peso: 4
+    activa: true
+
+  # === FUENTES POR VERIFICAR — la URL del feed devolvió HTML/captcha ===
+  # Para reactivarlas, busca la URL correcta del feed en el HTML del sitio
+  # (View Source y busca `application/rss+xml`) y prueba con:
+  #   py scripts/aggregator.py --dry-run --verbose
+
+  - nombre: "Automation.com"
+    url: "https://www.automation.com/en-us/rss/all-news.aspx"
+    peso: 5
+    activa: false  # URL bloqueada por Cloudflare/anti-bot — pendiente verificar feed real
+
+  - nombre: "Control Engineering"
+    url: "https://www.controleng.com/feed/"
+    peso: 5
+    activa: false  # Devuelve HTML, no RSS — pendiente
+
+  - nombre: "ISA Interchange"
+    url: "https://blog.isa.org/rss.xml"
+    peso: 4
+    activa: false  # 403/HTML — pendiente
+
+  - nombre: "The Robot Report"
+    url: "https://www.therobotreport.com/feed/"
+    peso: 4
+    activa: false  # Devuelve HTML — pendiente
+
+  - nombre: "Manufacturing.net"
+    url: "https://www.manufacturing.net/rss/all"
+    peso: 3
+    activa: false  # URL incorrecta — pendiente
+
+  - nombre: "Rockwell Automation Blog"
+    url: "https://www.rockwellautomation.com/en-us/company/news/blogs/jcr:content.feed"
+    peso: 2
+    activa: false  # URL incierta — pendiente verificar
+
+# Configuración global del agregador.
+config:
+  max_noticias_por_run: 8         # Tope total por ejecución (controla costo Claude)
+  max_por_fuente: 2               # Máx noticias tomadas de la misma fuente en un run
+  modelo: "claude-haiku-4-5"      # Haiku 4.5 para volumen alto y costo bajo
+  # User-agent de navegador real — muchos sitios bloquean UAs "raros".
+  user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"

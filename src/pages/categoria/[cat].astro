@@ -1,0 +1,72 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import AdSlot from '../../components/AdSlot.astro';
+
+const CATEGORIAS = [
+  'PLC y Control',
+  'Robótica',
+  'Industria 4.0',
+  'Ciberseguridad OT',
+  'Energía y Sostenibilidad',
+  'Mercado y Negocios',
+  'Casos de Estudio',
+  'General',
+] as const;
+
+const slugify = (s: string) =>
+  s.toLowerCase()
+   .replace(/[áéíóúñ]/g, (c) => ({á:'a',é:'e',í:'i',ó:'o',ú:'u',ñ:'n'}[c] ?? c))
+   .replace(/\s+/g, '-');
+
+export async function getStaticPaths() {
+  const cats = [
+    'PLC y Control', 'Robótica', 'Industria 4.0', 'Ciberseguridad OT',
+    'Energía y Sostenibilidad', 'Mercado y Negocios', 'Casos de Estudio', 'General',
+  ];
+  const slug = (s: string) =>
+    s.toLowerCase()
+     .replace(/[áéíóúñ]/g, (c) => ({á:'a',é:'e',í:'i',ó:'o',ú:'u',ñ:'n'}[c] ?? c))
+     .replace(/\s+/g, '-');
+  return cats.map((cat) => ({
+    params: { cat: slug(cat) },
+    props: { categoria: cat },
+  }));
+}
+
+interface Props { categoria: string; }
+const { categoria } = Astro.props;
+
+const noticias = (await getCollection('noticias'))
+  .filter((n) => n.data.categoria === categoria)
+  .sort((a, b) => new Date(b.data.fecha).valueOf() - new Date(a.data.fecha).valueOf());
+---
+<Base
+  title={`${categoria} — Automatización LatAm`}
+  description={`Las últimas noticias de ${categoria} para profesionales de automatización industrial en Latinoamérica.`}
+>
+  <section class="mx-auto max-w-[var(--container)] px-4 md:px-8 py-10">
+    <p class="text-brand-600 font-semibold uppercase tracking-wider text-sm mb-2">Categoría</p>
+    <h1 class="text-3xl md:text-5xl font-serif font-bold text-ink-900 mb-3">{categoria}</h1>
+    <p class="text-ink-500 text-lg max-w-2xl mb-10">
+      {noticias.length} {noticias.length === 1 ? 'noticia publicada' : 'noticias publicadas'} en esta categoría.
+    </p>
+
+    {noticias.length === 0 ? (
+      <p class="text-ink-500">Aún no hay noticias en {categoria}.</p>
+    ) : (
+      <>
+        <div class="grid md:grid-cols-2 gap-8">
+          {noticias.slice(0, 6).map((n) => <ArticleCard noticia={n} />)}
+        </div>
+        <AdSlot slot="4444444444" label="Publicidad" />
+        {noticias.length > 6 && (
+          <div class="grid md:grid-cols-2 gap-8 mt-10">
+            {noticias.slice(6).map((n) => <ArticleCard noticia={n} />)}
+          </div>
+        )}
+      </>
+    )}
+  </section>
+</Base>

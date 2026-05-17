@@ -1,0 +1,34 @@
+---
+const year = new Date().getFullYear();
+---
+<footer class="mt-16 bg-ink-900 text-ink-300">
+  <div class="mx-auto max-w-[var(--container)] px-4 md:px-8 py-10 grid md:grid-cols-3 gap-8">
+    <div>
+      <p class="text-white font-bold text-lg mb-2">Automatización LatAm</p>
+      <p class="text-sm leading-relaxed">
+        Noticias y análisis diario de automatización industrial, PLC, robótica e Industria 4.0
+        para profesionales en Latinoamérica.
+      </p>
+    </div>
+    <div>
+      <p class="text-white font-semibold mb-2">Categorías</p>
+      <ul class="text-sm space-y-1">
+        <li><a href="/categoria/plc-y-control" class="hover:text-white">PLC y Control</a></li>
+        <li><a href="/categoria/robotica" class="hover:text-white">Robótica</a></li>
+        <li><a href="/categoria/industria-4-0" class="hover:text-white">Industria 4.0</a></li>
+        <li><a href="/categoria/ciberseguridad-ot" class="hover:text-white">Ciberseguridad OT</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="text-white font-semibold mb-2">Sitio</p>
+      <ul class="text-sm space-y-1">
+        <li><a href="/rss.xml" class="hover:text-white">RSS</a></li>
+        <li><a href="/sobre" class="hover:text-white">Sobre nosotros</a></li>
+        <li><a href="/privacidad" class="hover:text-white">Privacidad y cookies</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="border-t border-ink-700 py-4 text-center text-xs text-ink-300">
+    © {year} Automatización LatAm. Los resúmenes son originales; las noticias originales pertenecen a cada fuente citada.
+  </div>
+</footer>

@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Reset suave y tipografía */
+:root {
+  --container: 1200px;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  text-rendering: optimizeLegibility;
+}
+
+.prose-article h2 {
+  @apply text-2xl md:text-3xl font-serif font-bold text-ink-900 mt-10 mb-4;
+}
+.prose-article h3 {
+  @apply text-xl font-semibold text-ink-900 mt-8 mb-3;
+}
+.prose-article p {
+  @apply text-lg leading-relaxed text-ink-700 mb-5;
+}
+.prose-article a {
+  @apply text-brand-600 hover:underline;
+}
+.prose-article ul {
+  @apply list-disc pl-6 mb-5 text-ink-700 space-y-2;
+}
+.prose-article blockquote {
+  @apply border-l-4 border-brand-300 pl-4 italic text-ink-500 my-6;
+}

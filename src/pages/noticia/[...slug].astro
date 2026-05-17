@@ -1,0 +1,92 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import AdSlot from '../../components/AdSlot.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+
+export async function getStaticPaths() {
+  const noticias = await getCollection('noticias');
+  return noticias.map((noticia) => ({
+    params: { slug: noticia.slug },
+    props: { noticia },
+  }));
+}
+
+interface Props { noticia: CollectionEntry<'noticias'>; }
+const { noticia } = Astro.props;
+const { Content } = await noticia.render();
+const { titulo, resumen, porQueImporta, categoria, fuente, fecha, tags, imagen } = noticia.data;
+const fechaStr = new Date(fecha).toLocaleDateString('es', {
+  day: 'numeric', month: 'long', year: 'numeric',
+});
+
+const relacionadas = (await getCollection('noticias'))
+  .filter((n) => n.slug !== noticia.slug && n.data.categoria === categoria)
+  .sort((a, b) => new Date(b.data.fecha).valueOf() - new Date(a.data.fecha).valueOf())
+  .slice(0, 3);
+---
+<Base title={`${titulo} — Automatización LatAm`} description={resumen} ogImage={imagen}>
+  <article class="mx-auto max-w-3xl px-4 md:px-8 py-10">
+    <a href={`/categoria/${categoria.toLowerCase().replace(/\s+/g, '-').replace(/[áéíóúñ]/g, (c) => ({á:'a',é:'e',í:'i',ó:'o',ú:'u',ñ:'n'} as Record<string,string>)[c])}/`}
+       class="text-brand-600 font-semibold uppercase tracking-wider text-xs">
+      ← {categoria}
+    </a>
+
+    <h1 class="text-3xl md:text-5xl font-serif font-bold text-ink-900 leading-tight mt-3 mb-4">
+      {titulo}
+    </h1>
+
+    <p class="text-ink-500 text-sm mb-6">
+      {fechaStr} · Fuente original: <a href={fuente.url} rel="nofollow noopener" target="_blank" class="text-brand-600 hover:underline">{fuente.nombre}</a>
+    </p>
+
+    {imagen && (
+      <div class="aspect-[16/9] rounded-xl overflow-hidden mb-8 bg-ink-300/20">
+        <img src={imagen} alt={titulo} class="w-full h-full object-cover" loading="eager" />
+      </div>
+    )}
+
+    <p class="text-xl text-ink-700 leading-relaxed border-l-4 border-brand-500 pl-4 mb-8 italic">
+      {resumen}
+    </p>
+
+    <AdSlot slot="2222222222" layout="in-article" label="Publicidad" />
+
+    <div class="prose-article">
+      <Content />
+    </div>
+
+    {porQueImporta && (
+      <aside class="bg-brand-50 border-l-4 border-brand-500 p-6 my-10 rounded-r-lg">
+        <h3 class="text-lg font-semibold text-brand-900 mb-2">Por qué importa</h3>
+        <p class="text-ink-700 leading-relaxed">{porQueImporta}</p>
+      </aside>
+    )}
+
+    <p class="text-sm text-ink-500 border-t border-ink-300/30 pt-6 mt-10">
+      Este resumen es un análisis original. Para leer la noticia completa visita la fuente original:
+      <a href={fuente.url} rel="nofollow noopener" target="_blank" class="text-brand-600 hover:underline font-semibold">
+        {fuente.nombre} →
+      </a>
+    </p>
+
+    {tags.length > 0 && (
+      <div class="flex flex-wrap gap-2 mt-6">
+        {tags.map((t) => (
+          <span class="text-xs bg-ink-300/20 text-ink-700 px-3 py-1 rounded-full">#{t}</span>
+        ))}
+      </div>
+    )}
+
+    <AdSlot slot="3333333333" label="Publicidad" />
+
+    {relacionadas.length > 0 && (
+      <section class="mt-12 border-t border-ink-300/30 pt-10">
+        <h2 class="text-2xl font-serif font-bold text-ink-900 mb-6">Sigue leyendo en {categoria}</h2>
+        <div class="space-y-6">
+          {relacionadas.map((n) => <ArticleCard noticia={n} />)}
+        </div>
+      </section>
+    )}
+  </article>
+</Base>

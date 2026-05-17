@@ -1,0 +1,29 @@
+# dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# build output
+dist/
+.astro/
+
+# environment variables
+.env
+.env.local
+.env.*.local
+
+# python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# editor
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# aggregator state (se guarda en repo para deduplicar entre runs)
+# scripts/state/processed.json   <-- este SÍ se commitea (es el dedupe state)
+scripts/state/last_run.log
