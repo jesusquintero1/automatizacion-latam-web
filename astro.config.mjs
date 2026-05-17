@@ -8,6 +8,7 @@ const SITE_URL = process.env.SITE_URL ?? 'https://automatizacionlatam.com';
 
 export default defineConfig({
   site: SITE_URL,
+  output: 'static',
   integrations: [tailwind(), sitemap()],
   build: {
     inlineStylesheets: 'auto',
