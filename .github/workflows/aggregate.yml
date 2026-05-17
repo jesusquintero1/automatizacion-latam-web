@@ -2,12 +2,12 @@ name: Agregador de noticias
 
 on:
   schedule:
-    # Cada 2 horas (UTC). Ajusta a tu gusto.
+    # Cada 2 horas (UTC).
     - cron: "0 */2 * * *"
-  workflow_dispatch:  # permite ejecutarlo manualmente desde la UI de GitHub
+  workflow_dispatch:
 
 permissions:
-  contents: write  # necesario para que el bot commitee los .md generados
+  contents: write
 
 concurrency:
   group: aggregator
@@ -20,7 +20,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          # Necesario para hacer commit con el GITHUB_TOKEN por defecto
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Python
@@ -30,8 +29,17 @@ jobs:
           cache: "pip"
           cache-dependency-path: scripts/requirements.txt
 
-      - name: Instalar dependencias
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Instalar dependencias Python
         run: pip install -r scripts/requirements.txt
+
+      - name: Instalar dependencias Node
+        run: npm ci
 
       - name: Correr agregador
         env:
@@ -47,6 +55,18 @@ jobs:
             echo "Sin cambios — nada que commitear."
           else
             COUNT=$(git diff --staged --name-only -- 'src/content/noticias/*.md' | wc -l)
-            git commit -m "auto: publicar $COUNT noticia(s) [skip ci]"
+            git commit -m "auto: publicar $COUNT noticia(s)"
             git push
           fi
+
+      - name: Build sitio estático
+        run: npm run build
+        env:
+          SITE_URL: https://automatizacion-latam-web.jesusdavidquinterofontalvo.workers.dev
+
+      - name: Deploy a Cloudflare Workers
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy
