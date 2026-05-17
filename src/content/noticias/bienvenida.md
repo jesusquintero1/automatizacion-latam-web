@@ -5,7 +5,7 @@ porQueImporta: "La información del sector llega dispersa y en inglés. Centrali
 categoria: "General"
 fuente:
   nombre: "Automatización LatAm"
-  url: "https://automatizacionlatam.com"
+  url: "https://automatizacionslatam.com"
 fecha: 2026-05-17
 tags:
   - bienvenida

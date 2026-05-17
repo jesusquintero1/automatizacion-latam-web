@@ -17,7 +17,7 @@ const {
   ogImage,
 } = Astro.props;
 
-const siteUrl = import.meta.env.SITE ?? Astro.site?.toString() ?? 'https://automatizacionlatam.com';
+const siteUrl = import.meta.env.SITE ?? Astro.site?.toString() ?? 'https://automatizacionslatam.com';
 const canonicalUrl = canonical ?? new URL(Astro.url.pathname, siteUrl).toString();
 
 const ADSENSE = import.meta.env.PUBLIC_ADSENSE_CLIENT;

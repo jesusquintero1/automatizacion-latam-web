@@ -49,7 +49,7 @@ jobs:
       - name: Commit y push de nuevas noticias
         run: |
           git config user.name "automatizacion-latam-bot"
-          git config user.email "bot@automatizacionlatam.com"
+          git config user.email "bot@automatizacionslatam.com"
           git add src/content/noticias/ scripts/state/processed.json
           if git diff --staged --quiet; then
             echo "Sin cambios — nada que commitear."
@@ -62,7 +62,7 @@ jobs:
       - name: Build sitio estático
         run: npm run build
         env:
-          SITE_URL: https://automatizacion-latam-web.jesusdavidquinterofontalvo.workers.dev
+          SITE_URL: https://automatizacionslatam.com
 
       - name: Deploy a Cloudflare Workers
         uses: cloudflare/wrangler-action@v3
