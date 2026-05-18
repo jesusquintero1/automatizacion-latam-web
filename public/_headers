@@ -1,0 +1,52 @@
+# Security + cache headers globales (Cloudflare Workers Static Assets)
+# Política conservadora compatible con Google AdSense + iframes de YouTube.
+
+/*
+  # Seguridad básica
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=(), interest-cohort=()
+  # No bloqueamos framing porque AdSense usa iframes — usamos same-origin como compromiso
+  X-Frame-Options: SAMEORIGIN
+  # HSTS: fuerza HTTPS en navegadores
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  # Sin sniff de MIME
+  X-XSS-Protection: 0
+
+# Assets estáticos: cache largo (immutable hashes generados por Astro)
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Imágenes: cache razonable
+/*.png
+  Cache-Control: public, max-age=2592000
+/*.jpg
+  Cache-Control: public, max-age=2592000
+/*.svg
+  Cache-Control: public, max-age=2592000
+/*.webp
+  Cache-Control: public, max-age=2592000
+
+# HTML: cache corto para que las noticias nuevas aparezcan rápido
+/
+  Cache-Control: public, max-age=600, must-revalidate
+/noticia/*
+  Cache-Control: public, max-age=3600, must-revalidate
+/categoria/*
+  Cache-Control: public, max-age=900, must-revalidate
+/tag/*
+  Cache-Control: public, max-age=1800, must-revalidate
+
+# Sitemap y RSS: cache moderado
+/sitemap*.xml
+  Cache-Control: public, max-age=3600
+/rss.xml
+  Cache-Control: public, max-age=1800
+
+# ads.txt y robots.txt: cache corto para que Google los re-revise
+/ads.txt
+  Cache-Control: public, max-age=300
+  Content-Type: text/plain; charset=utf-8
+/robots.txt
+  Cache-Control: public, max-age=600
+  Content-Type: text/plain; charset=utf-8

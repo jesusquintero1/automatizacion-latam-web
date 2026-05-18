@@ -19,10 +19,40 @@ const {
 } = Astro.props;
 
 const siteUrl = import.meta.env.SITE ?? Astro.site?.toString() ?? 'https://automatizacionslatam.com';
+const cleanSiteUrl = siteUrl.replace(/\/$/, '');
 const canonicalUrl = canonical ?? new URL(Astro.url.pathname, siteUrl).toString();
+const isHome = Astro.url.pathname === '/' || Astro.url.pathname === '';
 
 const ADSENSE = import.meta.env.PUBLIC_ADSENSE_CLIENT;
 const GA_ID = import.meta.env.PUBLIC_GA_ID;
+
+// JSON-LD Organization + WebSite (global). Refuerzan E-E-A-T para Google.
+const jsonLdOrganization = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Automatización LatAm',
+  url: cleanSiteUrl,
+  logo: `${cleanSiteUrl}/og-default.png`,
+  description: 'Noticias y análisis diario sobre automatización industrial, PLC, robótica, IA y ciberseguridad OT para profesionales en Latinoamérica.',
+  inLanguage: 'es',
+  sameAs: [
+    'https://www.linkedin.com/company/automatizacion-latam',
+    'https://twitter.com/automatizalatam',
+  ],
+};
+
+const jsonLdWebsite = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'Automatización LatAm',
+  url: cleanSiteUrl,
+  inLanguage: 'es',
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: `${cleanSiteUrl}/?q={search_term_string}`,
+    'query-input': 'required name=search_term_string',
+  },
+};
 ---
 
 <!doctype html>
@@ -86,6 +116,10 @@ const GA_ID = import.meta.env.PUBLIC_GA_ID;
     {!ogImage && <meta name="twitter:image" content={new URL('/og-default.png', siteUrl).toString()} />}
     <meta property="og:site_name" content="Automatización LatAm" />
     <meta property="og:locale" content="es_LA" />
+
+    <!-- JSON-LD: Organization + WebSite (global, en todas las páginas) -->
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLdOrganization)} />
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebsite)} />
 
     {GA_ID && (
       <>

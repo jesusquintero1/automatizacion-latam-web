@@ -95,6 +95,28 @@ fuentes:
     peso: 4
     activa: true  # Funding, M&A, lanzamientos IA
 
+  # === FUENTES INDUSTRIALES ADICIONALES (mayo 2026) ===
+
+  - nombre: "Manufacturing Tomorrow"
+    url: "https://www.manufacturingtomorrow.com/rss/news.xml"
+    peso: 4
+    activa: true  # Manufactura, IIoT, automatización — verificado
+
+  - nombre: "Design World Online"
+    url: "https://www.designworldonline.com/feed/"
+    peso: 4
+    activa: true  # Ingeniería de diseño, motion control — verificado
+
+  - nombre: "Electronics Weekly"
+    url: "https://www.electronicsweekly.com/feed/"
+    peso: 3
+    activa: true  # Componentes, semiconductores, automatización electrónica
+
+  - nombre: "Xataka - Automatización"
+    url: "https://www.xataka.com/tag/automatizacion/rss2.xml"
+    peso: 5
+    activa: true  # ESPAÑOL — tag específico automatización (prioridad SEO LatAm)
+
   # === FUENTES POR VERIFICAR — la URL del feed devolvió HTML/captcha ===
   # Para reactivarlas, busca la URL correcta del feed en el HTML del sitio
   # (View Source y busca `application/rss+xml`) y prueba con:

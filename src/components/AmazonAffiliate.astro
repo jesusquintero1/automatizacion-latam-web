@@ -1,0 +1,90 @@
+---
+// Bloque de producto afiliado (Amazon / Hotmart / etc).
+// Cumple con FTC, Amazon Associates Operating Agreement y política AdSense:
+//   - rel="sponsored nofollow noopener" obligatorio
+//   - Disclosure visible en el propio bloque
+//   - target="_blank" para no perder la sesión
+//
+// Uso desde markdown (con MDX) o desde otra .astro:
+//   <AmazonAffiliate
+//     asin="B0C9XK4P9V"
+//     titulo="Multímetro digital Fluke 117"
+//     descripcion="Herramienta esencial para técnicos electricistas industriales."
+//     precio="USD 299"
+//     marketplace="us"
+//   />
+
+interface Props {
+  asin: string;
+  titulo: string;
+  descripcion?: string;
+  precio?: string;
+  marketplace?: 'us' | 'mx' | 'es' | 'br';
+  imagen?: string;
+  tag?: string;     // ID de afiliado (override del default por env)
+}
+
+const {
+  asin,
+  titulo,
+  descripcion,
+  precio,
+  marketplace = 'us',
+  imagen,
+  tag,
+} = Astro.props;
+
+// Tag de afiliado: prioriza prop, luego env (PUBLIC_AMAZON_TAG_<MKT>), luego placeholder.
+const envTag =
+  marketplace === 'mx' ? import.meta.env.PUBLIC_AMAZON_TAG_MX :
+  marketplace === 'es' ? import.meta.env.PUBLIC_AMAZON_TAG_ES :
+  marketplace === 'br' ? import.meta.env.PUBLIC_AMAZON_TAG_BR :
+  import.meta.env.PUBLIC_AMAZON_TAG_US;
+
+const affTag = tag || envTag || 'automatizacionl-21';
+
+const tld = {
+  us: 'com',
+  mx: 'com.mx',
+  es: 'es',
+  br: 'com.br',
+}[marketplace];
+
+const url = `https://www.amazon.${tld}/dp/${asin}?tag=${affTag}`;
+---
+<aside class="my-8 border border-ink-300/40 rounded-lg overflow-hidden bg-white">
+  <p class="text-[10px] uppercase tracking-wider text-ink-500 px-4 pt-3 flex items-center gap-2">
+    <span class="inline-block w-2 h-2 rounded-full bg-amber-500"></span>
+    Enlace de afiliado · Como Asociado de Amazon, ganamos por compras que califiquen
+  </p>
+  <div class="p-4 md:p-5 flex gap-4 items-center">
+    {imagen && (
+      <img
+        src={imagen}
+        alt={titulo}
+        width="120"
+        height="120"
+        loading="lazy"
+        decoding="async"
+        referrerpolicy="no-referrer"
+        class="w-24 h-24 md:w-32 md:h-32 object-contain shrink-0"
+        onerror="this.style.display='none'"
+      />
+    )}
+    <div class="flex-1 min-w-0">
+      <h3 class="font-semibold text-ink-900 leading-snug mb-1">{titulo}</h3>
+      {descripcion && <p class="text-sm text-ink-700 mb-2 line-clamp-2">{descripcion}</p>}
+      <div class="flex items-center gap-3 flex-wrap mt-2">
+        {precio && <span class="text-sm font-semibold text-brand-600">{precio}</span>}
+        <a
+          href={url}
+          target="_blank"
+          rel="sponsored nofollow noopener"
+          class="inline-flex items-center gap-2 px-4 py-2 bg-[#FF9900] text-ink-900 rounded-md text-sm font-semibold hover:brightness-95 transition"
+        >
+          Ver en Amazon →
+        </a>
+      </div>
+    </div>
+  </div>
+</aside>

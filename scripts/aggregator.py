@@ -34,6 +34,8 @@ import os
 import re
 import sys
 import time
+import urllib.request
+import urllib.error
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
@@ -400,6 +402,38 @@ def _yaml_escape(s: str) -> str:
     return '"' + s.replace("\\", "\\\\").replace('"', '\\"') + '"'
 
 
+def notify_indexnow(urls: list[str], site_host: str, key: str) -> None:
+    """Avisa a Bing/Yandex/Naver/etc que hay URLs nuevas (IndexNow protocol).
+
+    No falla el run si IndexNow responde error — es best-effort.
+    """
+    if not urls or not key or not site_host:
+        return
+    payload = {
+        "host": site_host,
+        "key": key,
+        "keyLocation": f"https://{site_host}/{key}.txt",
+        "urlList": urls,
+    }
+    try:
+        req = urllib.request.Request(
+            "https://api.indexnow.org/indexnow",
+            data=json.dumps(payload).encode("utf-8"),
+            headers={"Content-Type": "application/json; charset=utf-8"},
+            method="POST",
+        )
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            log.info("IndexNow: %d URLs notificadas (status %d)", len(urls), resp.status)
+    except urllib.error.HTTPError as e:
+        # 202 Accepted es éxito; otros códigos los loguea pero no abortan.
+        if e.code == 200 or e.code == 202:
+            log.info("IndexNow: %d URLs notificadas (status %d)", len(urls), e.code)
+        else:
+            log.warning("IndexNow respondió %d: %s", e.code, e.reason)
+    except Exception as e:
+        log.warning("IndexNow falló (no crítico): %s", e)
+
+
 def write_article(item: FeedItem, article: RewrittenArticle, dry_run: bool) -> Path:
     fecha_str = item.fecha.strftime("%Y-%m-%d")
     slug_base = slugify(article.titulo, max_length=70)
@@ -494,6 +528,7 @@ def main() -> int:
 
     client: Anthropic | None = None if args.dry_run else Anthropic()
     escritas = 0
+    nuevas_paths: list[Path] = []
     for item in candidatos:
         log.info("→ %s (%s)", item.titulo_original[:80], item.fuente_nombre)
         if args.dry_run:
@@ -505,7 +540,8 @@ def main() -> int:
         if article is None:
             log.warning("  saltado")
             continue
-        write_article(item, article, args.dry_run)
+        path = write_article(item, article, args.dry_run)
+        nuevas_paths.append(path)
         procesados[item.item_id] = {
             "url": item.url,
             "fuente": item.fuente_nombre,
@@ -516,6 +552,20 @@ def main() -> int:
     state["procesados"] = procesados
     if not args.dry_run:
         save_state(state)
+
+    # IndexNow: avisar a Bing/Yandex/Naver de las URLs nuevas (best-effort).
+    if not args.dry_run and nuevas_paths:
+        site_url = os.environ.get("SITE_URL", "").rstrip("/")
+        indexnow_key = os.environ.get("INDEXNOW_KEY", "").strip()
+        if site_url and indexnow_key:
+            host = site_url.replace("https://", "").replace("http://", "").split("/")[0]
+            urls = [
+                f"{site_url}/noticia/{p.stem}/"
+                for p in nuevas_paths
+            ]
+            notify_indexnow(urls, host, indexnow_key)
+        else:
+            log.info("IndexNow: SITE_URL o INDEXNOW_KEY no configurados, saltando.")
 
     log.info("Listo. %d noticias publicadas.", escritas)
     return 0

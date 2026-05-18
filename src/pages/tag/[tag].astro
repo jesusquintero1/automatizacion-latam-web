@@ -1,0 +1,62 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import AdSlot from '../../components/AdSlot.astro';
+
+export async function getStaticPaths() {
+  const noticias = await getCollection('noticias');
+  const tagsMap = new Map<string, CollectionEntry<'noticias'>[]>();
+
+  for (const n of noticias) {
+    for (const t of n.data.tags ?? []) {
+      const slug = t
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[̀-ͯ]/g, '')
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+      if (!slug) continue;
+      if (!tagsMap.has(slug)) tagsMap.set(slug, []);
+      tagsMap.get(slug)!.push(n);
+    }
+  }
+
+  return Array.from(tagsMap.entries()).map(([slug, items]) => ({
+    params: { tag: slug },
+    props: { tagLabel: items[0].data.tags.find((t) => t.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') === slug) || slug, items },
+  }));
+}
+
+interface Props { tagLabel: string; items: CollectionEntry<'noticias'>[]; }
+const { tagLabel, items } = Astro.props;
+const ordenadas = items.sort((a, b) => new Date(b.data.fecha).valueOf() - new Date(a.data.fecha).valueOf());
+const labelPretty = tagLabel.replace(/-/g, ' ');
+---
+<Base
+  title={`${labelPretty} — Noticias y análisis | Automatización LatAm`}
+  description={`Todas las noticias relacionadas con ${labelPretty} en automatización industrial, IA, robótica y manufactura. ${ordenadas.length} artículo${ordenadas.length === 1 ? '' : 's'}.`}
+>
+  <section class="mx-auto max-w-[var(--container)] px-4 md:px-8 py-10">
+    <p class="text-brand-600 font-semibold uppercase tracking-wider text-sm mb-2">Etiqueta</p>
+    <h1 class="text-3xl md:text-5xl font-serif font-bold text-ink-900 mb-3 capitalize">
+      #{labelPretty}
+    </h1>
+    <p class="text-ink-500 text-lg max-w-2xl mb-10">
+      {ordenadas.length} {ordenadas.length === 1 ? 'noticia relacionada' : 'noticias relacionadas'} con esta etiqueta.
+    </p>
+
+    <div class="grid md:grid-cols-2 gap-8">
+      {ordenadas.slice(0, 6).map((n) => <ArticleCard noticia={n} />)}
+    </div>
+
+    {ordenadas.length > 6 && (
+      <>
+        <AdSlot slot="6666666666" label="Publicidad" />
+        <div class="grid md:grid-cols-2 gap-8 mt-10">
+          {ordenadas.slice(6).map((n) => <ArticleCard noticia={n} />)}
+        </div>
+      </>
+    )}
+  </section>
+</Base>
