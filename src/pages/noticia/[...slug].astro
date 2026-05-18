@@ -27,7 +27,7 @@ const relacionadas = (await getCollection('noticias'))
 ---
 <Base title={`${titulo} — Automatización LatAm`} description={resumen} ogImage={imagen}>
   <article class="mx-auto max-w-3xl px-4 md:px-8 py-10">
-    <a href={`/categoria/${categoria.toLowerCase().replace(/\s+/g, '-').replace(/[áéíóúñ]/g, (c) => ({á:'a',é:'e',í:'i',ó:'o',ú:'u',ñ:'n'} as Record<string,string>)[c])}/`}
+    <a href={`/categoria/${categoria.toLowerCase().replace(/[áéíóúñ]/g, (c) => ({á:'a',é:'e',í:'i',ó:'o',ú:'u',ñ:'n'} as Record<string,string>)[c] ?? c).replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')}/`}
        class="text-brand-600 font-semibold uppercase tracking-wider text-xs">
       ← {categoria}
     </a>
