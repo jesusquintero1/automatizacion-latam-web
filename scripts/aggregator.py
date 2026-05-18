@@ -66,6 +66,7 @@ CATEGORIAS_VALIDAS = [
     "PLC y Control",
     "Robótica",
     "Industria 4.0",
+    "Inteligencia Artificial",
     "Ciberseguridad OT",
     "Energía y Sostenibilidad",
     "Mercado y Negocios",
@@ -86,16 +87,22 @@ Reglas críticas (no negociables):
 - Adapta el tono a un ingeniero o técnico hispanohablante.
 - Si el texto fuente menciona empresas, modelos de equipos o estándares, conserva los nombres \
   propios (Schneider, Siemens, IEC 61131, OPC UA, etc).
-- Categoriza usando EXACTAMENTE una de estas 8 etiquetas. Lee TODAS las definiciones antes de \
+- Categoriza usando EXACTAMENTE una de estas 9 etiquetas. Lee TODAS las definiciones antes de \
   decidir; "Industria 4.0" NO es cajón de sastre — solo úsala cuando ninguna otra encaje:
   * "PLC y Control" — PLCs, HMI, SCADA, DCS, lazos de control, lenguajes IEC 61131 (LADDER, ST, \
     FBD), instrumentación de campo, variadores, motion control, sensores industriales, \
     automatización definida por software.
   * "Robótica" — brazos robóticos, cobots, robots colaborativos, AGV, AMR, robots móviles, \
     visión de máquina aplicada a robótica, end-effectors, programación de robots.
-  * "Industria 4.0" — solo cuando el tema es la convergencia IT/OT en abstracto: IIoT, gemelos \
-    digitales, MES, fábrica conectada, IA industrial GENÉRICA, edge computing industrial sin \
-    foco en un equipo específico.
+  * "Inteligencia Artificial" — modelos generativos y plataformas IA de propósito general \
+    (GPT, Claude, Gemini, Llama, Mistral, DeepSeek), agentes de IA, modelos de imagen/video \
+    (DALL·E, Midjourney, Veo, Sora, Runway), LLMs, fine-tuning, frameworks (LangChain, \
+    Hugging Face), papers de investigación, anuncios de OpenAI/Anthropic/Google DeepMind/Meta AI, \
+    regulación de IA, ética y seguridad de IA, GPUs para IA (NVIDIA H100, AMD MI300). \
+    Usar SIEMPRE que la noticia sea sobre IA GENERAL, no específicamente industrial.
+  * "Industria 4.0" — convergencia IT/OT en abstracto: IIoT, gemelos digitales, MES, fábrica \
+    conectada, edge computing industrial sin foco en un equipo específico. NO uses esta para \
+    IA generativa o LLMs — esos van en "Inteligencia Artificial".
   * "Ciberseguridad OT" — ataques a infraestructura industrial, vulnerabilidades en PLC/HMI/RTU, \
     ransomware OT, segmentación de redes OT/IT, post-cuántica, NIST OT, CISA, normas IEC 62443.
   * "Energía y Sostenibilidad" — gestión energética, microgrids, renovables, descarbonización, \
@@ -106,6 +113,8 @@ Reglas críticas (no negociables):
     medibles, retrofits, modernizaciones documentadas.
   * "General" — solo si verdaderamente no encaja en ninguna de las anteriores.
   Reglas de desempate:
+  - Si menciona un LLM, modelo de imagen/video, OpenAI, Anthropic, Gemini, Veo, Sora, DALL·E, \
+    ChatGPT, Copilot → "Inteligencia Artificial" (NO "Industria 4.0").
   - Si el artículo describe un PLC, HMI, SCADA, variador o lazo de control específico → \
     "PLC y Control" (NO "Industria 4.0").
   - Si el artículo es sobre un robot, AGV o cobot específico → "Robótica" (NO "Industria 4.0").

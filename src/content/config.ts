@@ -10,6 +10,7 @@ const noticias = defineCollection({
       'PLC y Control',
       'Robótica',
       'Industria 4.0',
+      'Inteligencia Artificial',
       'Ciberseguridad OT',
       'Energía y Sostenibilidad',
       'Mercado y Negocios',
