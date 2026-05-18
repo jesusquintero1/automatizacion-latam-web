@@ -1,7 +1,41 @@
 ---
 const year = new Date().getFullYear();
+const NEWSLETTER_ENDPOINT = import.meta.env.PUBLIC_NEWSLETTER_ENDPOINT || '';
 ---
 <footer class="mt-16 bg-ink-900 text-ink-300">
+  <section class="border-b border-ink-700">
+    <div class="mx-auto max-w-[var(--container)] px-4 md:px-8 py-10 grid md:grid-cols-2 gap-6 items-center">
+      <div>
+        <p class="text-white font-serif font-bold text-2xl mb-2">Recibe el resumen diario</p>
+        <p class="text-sm text-ink-300/90 leading-relaxed">
+          Las noticias más importantes de automatización industrial e IA, en tu correo cada mañana.
+          Sin spam: solo un email al día con lo esencial.
+        </p>
+      </div>
+      <form
+        action={NEWSLETTER_ENDPOINT || 'https://formspree.io/f/xayrjpkw'}
+        method="POST"
+        class="flex flex-col sm:flex-row gap-2"
+      >
+        <input
+          type="email"
+          name="email"
+          required
+          placeholder="tu@correo.com"
+          class="flex-1 px-4 py-3 rounded-md bg-white text-ink-900 placeholder:text-ink-500 focus:outline-none focus:ring-2 focus:ring-brand-500"
+          aria-label="Correo electrónico"
+        />
+        <input type="hidden" name="_subject" value="Nueva suscripción Automatización LatAm" />
+        <button
+          type="submit"
+          class="px-6 py-3 rounded-md bg-brand-500 text-white font-semibold hover:bg-brand-600 transition whitespace-nowrap"
+        >
+          Suscribirme
+        </button>
+      </form>
+    </div>
+  </section>
+
   <div class="mx-auto max-w-[var(--container)] px-4 md:px-8 py-10 grid md:grid-cols-3 gap-8">
     <div>
       <p class="text-white font-bold text-lg mb-2">Automatización LatAm</p>

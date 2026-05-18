@@ -20,14 +20,73 @@ const fechaStr = new Date(fecha).toLocaleDateString('es', {
   day: 'numeric', month: 'long', year: 'numeric',
 });
 
+const slugify = (s: string) =>
+  s.toLowerCase()
+   .replace(/[áéíóúñ]/g, (c) => ({á:'a',é:'e',í:'i',ó:'o',ú:'u',ñ:'n'} as Record<string,string>)[c] ?? c)
+   .replace(/[^a-z0-9]+/g, '-')
+   .replace(/^-+|-+$/g, '');
+const catSlug = slugify(categoria);
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://automatizacionslatam.com';
+const articleUrl = `${siteUrl}${Astro.url.pathname}`;
+
 const relacionadas = (await getCollection('noticias'))
   .filter((n) => n.slug !== noticia.slug && n.data.categoria === categoria)
   .sort((a, b) => new Date(b.data.fecha).valueOf() - new Date(a.data.fecha).valueOf())
   .slice(0, 3);
+
+const jsonLdArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'NewsArticle',
+  headline: titulo,
+  description: resumen,
+  datePublished: new Date(fecha).toISOString(),
+  dateModified: new Date(fecha).toISOString(),
+  inLanguage: 'es',
+  articleSection: categoria,
+  keywords: tags.join(', '),
+  url: articleUrl,
+  ...(imagen ? { image: imagen } : { image: `${siteUrl}/og-default.png` }),
+  author: {
+    '@type': 'Organization',
+    name: 'Automatización LatAm',
+    url: siteUrl,
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: 'Automatización LatAm',
+    url: siteUrl,
+    logo: {
+      '@type': 'ImageObject',
+      url: `${siteUrl}/og-default.png`,
+    },
+  },
+  isBasedOn: fuente.url,
+};
+
+const jsonLdBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Inicio', item: siteUrl },
+    { '@type': 'ListItem', position: 2, name: categoria, item: `${siteUrl}/categoria/${catSlug}/` },
+    { '@type': 'ListItem', position: 3, name: titulo, item: articleUrl },
+  ],
+};
 ---
 <Base title={`${titulo} — Automatización LatAm`} description={resumen} ogImage={imagen}>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdBreadcrumb)} />
+
   <article class="mx-auto max-w-3xl px-4 md:px-8 py-10">
-    <a href={`/categoria/${categoria.toLowerCase().replace(/[áéíóúñ]/g, (c) => ({á:'a',é:'e',í:'i',ó:'o',ú:'u',ñ:'n'} as Record<string,string>)[c] ?? c).replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')}/`}
+    <nav aria-label="Breadcrumb" class="text-xs text-ink-500 mb-3">
+      <a href="/" class="hover:text-brand-600">Inicio</a>
+      <span class="mx-1">›</span>
+      <a href={`/categoria/${catSlug}/`} class="hover:text-brand-600">{categoria}</a>
+      <span class="mx-1">›</span>
+      <span class="text-ink-700">{titulo.length > 50 ? titulo.slice(0, 50) + '…' : titulo}</span>
+    </nav>
+
+    <a href={`/categoria/${catSlug}/`}
        class="text-brand-600 font-semibold uppercase tracking-wider text-xs">
       ← {categoria}
     </a>
@@ -77,6 +136,39 @@ const relacionadas = (await getCollection('noticias'))
         ))}
       </div>
     )}
+
+    <div class="mt-8 pt-6 border-t border-ink-300/30">
+      <p class="text-sm text-ink-500 mb-3 font-semibold uppercase tracking-wider">Compartir</p>
+      <div class="flex flex-wrap gap-2">
+        <a
+          href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(articleUrl)}`}
+          target="_blank" rel="noopener"
+          class="inline-flex items-center gap-2 px-4 py-2 bg-[#0A66C2] text-white rounded-md text-sm font-medium hover:opacity-90 transition"
+          aria-label="Compartir en LinkedIn"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.36V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.35-1.85 3.58 0 4.24 2.36 4.24 5.43v6.31zM5.34 7.43a2.06 2.06 0 110-4.12 2.06 2.06 0 010 4.12zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/></svg>
+          LinkedIn
+        </a>
+        <a
+          href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(titulo)}&url=${encodeURIComponent(articleUrl)}`}
+          target="_blank" rel="noopener"
+          class="inline-flex items-center gap-2 px-4 py-2 bg-ink-900 text-white rounded-md text-sm font-medium hover:opacity-90 transition"
+          aria-label="Compartir en X (Twitter)"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          X
+        </a>
+        <a
+          href={`https://wa.me/?text=${encodeURIComponent(titulo + ' ' + articleUrl)}`}
+          target="_blank" rel="noopener"
+          class="inline-flex items-center gap-2 px-4 py-2 bg-[#25D366] text-white rounded-md text-sm font-medium hover:opacity-90 transition"
+          aria-label="Compartir en WhatsApp"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M.057 24l1.687-6.163a11.867 11.867 0 01-1.587-5.946C.16 5.335 5.495 0 12.05 0c3.181 0 6.167 1.24 8.413 3.488a11.823 11.823 0 013.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 01-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 001.51 5.26l-.999 3.648 3.978-.607zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.207-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.711.306 1.265.489 1.697.625.713.227 1.362.195 1.875.118.572-.085 1.758-.719 2.006-1.413.248-.694.248-1.29.173-1.414z"/></svg>
+          WhatsApp
+        </a>
+      </div>
+    </div>
 
     <AdSlot slot="3333333333" label="Publicidad" />
 

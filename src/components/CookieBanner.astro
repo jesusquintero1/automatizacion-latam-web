@@ -1,0 +1,45 @@
+---
+// Banner de consentimiento GDPR/AdSense.
+// Pausa AdSense hasta que el usuario decide. Si rechaza, sirve anuncios
+// no personalizados (NPA) — sigue monetizando, sin tracking individual.
+---
+<div id="cookie-banner" class="hidden fixed bottom-0 left-0 right-0 z-50 bg-ink-900 text-white shadow-2xl border-t-2 border-brand-500">
+  <div class="mx-auto max-w-[var(--container)] px-4 md:px-8 py-4 md:py-5 flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-6">
+    <p class="text-sm flex-1 leading-relaxed">
+      Usamos cookies para mostrar anuncios relevantes (Google AdSense) y analizar tráfico.
+      Puedes aceptarlas para una experiencia personalizada o rechazarlas y seguirás viendo
+      anuncios pero sin perfilado. Lee nuestra
+      <a href="/privacidad" class="underline hover:text-brand-300">política de privacidad</a>.
+    </p>
+    <div class="flex gap-2 shrink-0">
+      <button id="cookie-reject" type="button" class="px-4 py-2 rounded-md border border-white/30 text-sm hover:bg-white/10 transition">
+        Rechazar
+      </button>
+      <button id="cookie-accept" type="button" class="px-4 py-2 rounded-md bg-brand-500 text-white text-sm font-semibold hover:bg-brand-600 transition">
+        Aceptar
+      </button>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  (function () {
+    var consent = localStorage.getItem('cookie-consent');
+    var banner = document.getElementById('cookie-banner');
+    if (!consent && banner) {
+      banner.classList.remove('hidden');
+    }
+    function applyConsent(value) {
+      localStorage.setItem('cookie-consent', value);
+      if (value === 'rejected') {
+        (window.adsbygoogle = window.adsbygoogle || []).push({ requestNonPersonalizedAds: 1 });
+      }
+      (window.adsbygoogle = window.adsbygoogle || []).pauseAdRequests = 0;
+      if (banner) banner.classList.add('hidden');
+    }
+    var accept = document.getElementById('cookie-accept');
+    var reject = document.getElementById('cookie-reject');
+    if (accept) accept.addEventListener('click', function () { applyConsent('accepted'); });
+    if (reject) reject.addEventListener('click', function () { applyConsent('rejected'); });
+  })();
+</script>

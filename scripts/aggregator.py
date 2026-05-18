@@ -127,8 +127,10 @@ Formato de salida — SIEMPRE responde con un objeto JSON válido con esta estru
   "resumen": "Resumen original de 2-3 frases (max 280 caracteres). Da el qué y el porqué.",
   "categoria": "Una de las 8 categorías permitidas",
   "porQueImporta": "1-2 frases sobre el impacto para la industria en LatAm.",
-  "cuerpo": "Artículo en markdown de 300-500 palabras. Usa ## para secciones. Incluye 2-3 \
-secciones: contexto, qué se anunció, implicaciones. NO uses tablas ni HTML.",
+  "cuerpo": "Artículo en markdown de 450-650 palabras (no menos de 450). Usa ## para 3-4 \
+secciones: contexto, qué se anunció, cómo funciona/detalles técnicos, implicaciones para LatAm. \
+Profundiza: aporta cifras concretas, nombres de tecnologías y ejemplos cuando estén disponibles. \
+NO uses tablas ni HTML — solo markdown puro.",
   "tags": ["3-5", "palabras", "clave", "lowercase", "sin-tildes"]
 }
 
