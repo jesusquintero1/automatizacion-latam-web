@@ -25,6 +25,9 @@ const isHome = Astro.url.pathname === '/' || Astro.url.pathname === '';
 
 const ADSENSE = import.meta.env.PUBLIC_ADSENSE_CLIENT;
 const GA_ID = import.meta.env.PUBLIC_GA_ID;
+const GOOGLE_VERIFY = import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION;
+const BING_VERIFY = import.meta.env.PUBLIC_BING_VERIFICATION;
+const YANDEX_VERIFY = import.meta.env.PUBLIC_YANDEX_VERIFICATION;
 
 // JSON-LD Organization + WebSite (global). Refuerzan E-E-A-T para Google.
 const jsonLdOrganization = {
@@ -88,6 +91,11 @@ const jsonLdWebsite = {
 
     <!-- RSS propio (ayuda a SEO y suscripciones) -->
     <link rel="alternate" type="application/rss+xml" title="Automatización LatAm" href="/rss.xml" />
+
+    <!-- Verificación de propiedad en Search Engines (se inyectan si los env vars están) -->
+    {GOOGLE_VERIFY && <meta name="google-site-verification" content={GOOGLE_VERIFY} />}
+    {BING_VERIFY && <meta name="msvalidate.01" content={BING_VERIFY} />}
+    {YANDEX_VERIFY && <meta name="yandex-verification" content={YANDEX_VERIFY} />}
 
     {ADSENSE && <meta name="google-adsense-account" content={ADSENSE} />}
     {ADSENSE && (
