@@ -30,6 +30,22 @@ fuentes:
     peso: 4
     activa: true
 
+  # --- Fuentes en español (preferentes para SEO LatAm) ---
+  - nombre: "Tecnoplc"
+    url: "https://tecnoplc.com/feed/"
+    peso: 5
+    activa: true  # Blog tecnico de PLC en español (España) — verificado mayo 2026
+
+  - nombre: "Logicbus"
+    url: "https://www.logicbus.com.mx/blog/feed/"
+    peso: 5
+    activa: true  # Automatización y robótica en español (México) — verificado mayo 2026
+
+  - nombre: "Industrial Ethernet Book"
+    url: "http://industrialethernet.net/feed/"
+    peso: 3
+    activa: false  # Feed devolvió 0 items en dry-run (mayo 2026) — pendiente verificar URL correcta
+
   # === FUENTES POR VERIFICAR — la URL del feed devolvió HTML/captcha ===
   # Para reactivarlas, busca la URL correcta del feed en el HTML del sitio
   # (View Source y busca `application/rss+xml`) y prueba con:
