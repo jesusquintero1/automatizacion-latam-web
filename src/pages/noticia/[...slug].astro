@@ -15,7 +15,7 @@ export async function getStaticPaths() {
 interface Props { noticia: CollectionEntry<'noticias'>; }
 const { noticia } = Astro.props;
 const { Content } = await noticia.render();
-const { titulo, resumen, porQueImporta, categoria, fuente, fecha, tags, imagen } = noticia.data;
+const { titulo, resumen, porQueImporta, categoria, fuente, fecha, tags, imagen, imagen_atribucion } = noticia.data;
 const fechaStr = new Date(fecha).toLocaleDateString('es', {
   day: 'numeric', month: 'long', year: 'numeric',
 });
@@ -112,7 +112,7 @@ const jsonLdBreadcrumb = {
     </p>
 
     {imagen && (
-      <div class="aspect-[16/9] rounded-xl overflow-hidden mb-8 bg-ink-300/20">
+      <div class="aspect-[16/9] rounded-xl overflow-hidden mb-2 bg-ink-300/20">
         <img
           src={imagen}
           alt={`${titulo} — ${categoria}`}
@@ -121,9 +121,12 @@ const jsonLdBreadcrumb = {
           loading="eager"
           decoding="async"
           referrerpolicy="no-referrer"
-          onerror="this.parentElement.style.display='none'"
+          onerror="this.parentElement.style.display='none'; var c=this.parentElement.nextElementSibling; if(c && c.classList.contains('img-attrib')) c.style.display='none';"
         />
       </div>
+    )}
+    {imagen && imagen_atribucion && (
+      <p class="img-attrib text-[11px] text-ink-500 mb-6 italic">{imagen_atribucion}</p>
     )}
 
     <p class="text-xl text-ink-700 leading-relaxed border-l-4 border-brand-500 pl-4 mb-8 italic">

@@ -36,6 +36,7 @@ import sys
 import time
 import urllib.request
 import urllib.error
+import urllib.parse
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
@@ -163,6 +164,8 @@ class FeedItem:
     fecha: dt.datetime
     fuente_nombre: str
     imagen: str = ""
+    imagen_atribucion: str = ""    # Texto a mostrar bajo la imagen (Foto: ...)
+    imagen_fuente: str = ""        # "Openverse" | "Wikimedia" | "" si viene del feed RSS
     item_id: str = field(default="")
 
     def __post_init__(self) -> None:
@@ -209,6 +212,205 @@ def _clean_html(html: str) -> str:
         return ""
     soup = BeautifulSoup(html, "html.parser")
     return re.sub(r"\s+", " ", soup.get_text(" ", strip=True))
+
+
+# Stopwords mínimas EN+ES para limpiar la query de búsqueda de imágenes.
+_STOPWORDS = frozenset({
+    "the", "a", "an", "and", "or", "of", "to", "in", "on", "for", "with",
+    "is", "are", "was", "were", "be", "been", "by", "at", "from", "as",
+    "el", "la", "los", "las", "un", "una", "unos", "unas", "y", "o",
+    "de", "del", "en", "con", "por", "para", "que", "se", "su", "sus",
+    "al", "lo", "es", "son", "fue", "fueron", "ser", "estar", "ha", "han",
+})
+
+
+def _build_image_query(titulo: str) -> str:
+    """Genera una query corta de búsqueda a partir del título original.
+
+    Quita stopwords y puntuación, toma las primeras 4-5 palabras
+    significativas. Funciona razonablemente bien en inglés y español.
+    """
+    palabras = re.findall(r"[A-Za-zÁÉÍÓÚÑñáéíóú0-9]+", titulo)
+    significativas = [p for p in palabras if p.lower() not in _STOPWORDS and len(p) >= 3]
+    return " ".join(significativas[:5])
+
+
+def _search_image_openverse(query: str, user_agent: str) -> tuple[str, dict[str, str]]:
+    """Busca una imagen libre en Openverse (Flickr/Wikimedia/etc agregado).
+
+    Licencias aceptadas: cc0, by (uso comercial OK). Rechaza nd y nc.
+    Retorna (url, meta) o ("", {}) si no encontró.
+    """
+    try:
+        url_api = (
+            "https://api.openverse.engineering/v1/images/?"
+            f"q={urllib.parse.quote(query)}"
+            "&license_type=commercial"
+            "&size=medium,large"
+            "&page_size=10"
+        )
+        req = urllib.request.Request(
+            url_api,
+            headers={
+                "User-Agent": user_agent,
+                "Accept": "application/json",
+            },
+        )
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+        for result in data.get("results", []):
+            img_url = (result.get("url") or "").strip()
+            if not img_url or not img_url.startswith("http"):
+                continue
+            license_code = (result.get("license") or "").lower()
+            if license_code not in ("cc0", "by", "by-sa", "pdm"):
+                continue
+            autor = (result.get("creator") or "Desconocido").strip()
+            licencia_label = {
+                "cc0": "CC0 (dominio público)",
+                "pdm": "Dominio público",
+                "by": f"CC BY {result.get('license_version', '')}".strip(),
+                "by-sa": f"CC BY-SA {result.get('license_version', '')}".strip(),
+            }.get(license_code, license_code.upper())
+            atribucion = f"Foto: {autor} · Openverse · {licencia_label}"
+            return img_url, {
+                "atribucion": atribucion,
+                "fuente": "Openverse",
+            }
+    except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError, json.JSONDecodeError) as e:
+        log.debug("  Openverse falló (no crítico): %s", e)
+    except Exception as e:
+        log.debug("  Openverse error inesperado (no crítico): %s", e)
+    return "", {}
+
+
+def _search_image_wikimedia(query: str, user_agent: str) -> tuple[str, dict[str, str]]:
+    """Busca una imagen libre en Wikimedia Commons.
+
+    Todas las imágenes en Commons son libres por política. Atribución
+    requerida por cortesía. Retorna (url, meta) o ("", {}).
+    """
+    try:
+        url_api = (
+            "https://commons.wikimedia.org/w/api.php?"
+            "action=query&format=json"
+            f"&generator=search&gsrsearch={urllib.parse.quote(query)}"
+            "&gsrnamespace=6&gsrlimit=5"
+            "&prop=imageinfo&iiprop=url|extmetadata&iiurlwidth=1200"
+        )
+        req = urllib.request.Request(
+            url_api,
+            headers={
+                "User-Agent": "AutomatizacionLatAm/1.0 (https://automatizacionslatam.com; bot@automatizacionslatam.com) " + user_agent,
+                "Accept": "application/json",
+            },
+        )
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+        pages = (data.get("query") or {}).get("pages") or {}
+        for _, page in pages.items():
+            infos = page.get("imageinfo") or []
+            if not infos:
+                continue
+            info = infos[0]
+            img_url = info.get("thumburl") or info.get("url") or ""
+            # La URL puede tener ?query=string al final; verificar path sin querystring.
+            url_path = img_url.split("?", 1)[0].lower()
+            if not url_path.endswith((".jpg", ".jpeg", ".png", ".webp")):
+                continue
+            extm = info.get("extmetadata") or {}
+            autor_raw = (extm.get("Artist") or {}).get("value") or "Wikimedia Commons"
+            autor = _clean_html(autor_raw)[:80] if autor_raw else "Wikimedia Commons"
+            licencia = (extm.get("LicenseShortName") or {}).get("value") or "Libre"
+            atribucion = f"Foto: {autor} · Wikimedia Commons · {licencia}"
+            return img_url, {
+                "atribucion": atribucion,
+                "fuente": "Wikimedia",
+            }
+    except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError, json.JSONDecodeError) as e:
+        log.debug("  Wikimedia falló (no crítico): %s", e)
+    except Exception as e:
+        log.debug("  Wikimedia error inesperado (no crítico): %s", e)
+    return "", {}
+
+
+_IMAGE_QUERY_SYSTEM = """You generate short English keywords (2-3 words max) for free stock-photo APIs (Openverse, Wikimedia). Given an article title in any language, output ONLY 2-3 keywords — no quotes, no punctuation, no explanation. Prefer single visual concrete nouns: "robot", "factory", "server", "laboratory", "hacker", "circuit board". Avoid abstract terms ("innovation", "transformation"). For specific tech (CVE-2025-1234, GPT-5, Vera Rubin) generalize to a visual concept ("hacker computer", "data center", "AI chip"). Stay under 3 words. Output keywords only."""
+
+
+def _refine_query_with_claude(client: "Anthropic | None", titulo: str, modelo: str) -> str:
+    """Usa Claude (best-effort) para convertir el título en keywords visuales.
+
+    Si Claude falla, devuelve "" para que el caller use la heurística.
+    El system prompt está congelado para que el prompt-cache de Anthropic
+    aplique entre llamadas (90% más barato del 2do hit en adelante).
+    """
+    if client is None:
+        return ""
+    try:
+        response = client.messages.create(
+            model=modelo,
+            max_tokens=40,
+            system=[
+                {
+                    "type": "text",
+                    "text": _IMAGE_QUERY_SYSTEM,
+                    "cache_control": {"type": "ephemeral"},
+                },
+            ],
+            messages=[{"role": "user", "content": f"Title: {titulo}"}],
+        )
+        text = "".join(b.text for b in response.content if b.type == "text").strip()
+        # Limpiar: una sola línea, sin comillas
+        text = text.replace('"', '').replace("'", "").split("\n")[0].strip()
+        if 3 <= len(text) <= 100:
+            return text
+    except Exception as e:
+        log.debug("  refine_query_with_claude falló (no crítico): %s", e)
+    return ""
+
+
+def _find_image_for(item: "FeedItem", user_agent: str, client: "Anthropic | None" = None, modelo: str = "claude-haiku-4-5") -> None:
+    """Pobla item.imagen / imagen_atribucion / imagen_fuente si falta imagen.
+
+    Cascada de queries: Claude refinada → primeras 2 palabras → primera palabra.
+    Cascada de fuentes: Openverse → Wikimedia Commons.
+    Best-effort: nunca aborta el flujo si las APIs fallan.
+    """
+    if item.imagen:
+        return  # ya tiene imagen del feed
+    # Query mejorada con Claude (si disponible), o heurística como fallback.
+    primary = _refine_query_with_claude(client, item.titulo_original, modelo) or _build_image_query(item.titulo_original)
+    if not primary:
+        return
+    # Generar cascada de queries: full → 2 palabras → 1 palabra.
+    palabras = primary.split()
+    candidatas = [primary]
+    if len(palabras) > 2:
+        candidatas.append(" ".join(palabras[:2]))
+    if len(palabras) > 1:
+        candidatas.append(palabras[0])
+    # Dedupe preservando orden
+    seen: set[str] = set()
+    queries = [q for q in candidatas if not (q in seen or seen.add(q))]
+
+    for q in queries:
+        log.debug("  Probando query: %s", q)
+        img, meta = _search_image_openverse(q, user_agent)
+        if img:
+            item.imagen = img
+            item.imagen_atribucion = meta.get("atribucion", "")
+            item.imagen_fuente = meta.get("fuente", "")
+            log.info("  ✓ Imagen Openverse (q=%s): %s", q, item.imagen_atribucion)
+            return
+    # Fallback: probar Wikimedia con la primera query
+    img, meta = _search_image_wikimedia(queries[0], user_agent)
+    if img:
+        item.imagen = img
+        item.imagen_atribucion = meta.get("atribucion", "")
+        item.imagen_fuente = meta.get("fuente", "")
+        log.info("  ✓ Imagen Wikimedia: %s", item.imagen_atribucion)
+        return
+    log.debug("  Sin imagen para esta noticia (no se encontró en ninguna API).")
 
 
 def _extract_image(entry: Any) -> str:
@@ -448,13 +650,15 @@ def write_article(item: FeedItem, article: RewrittenArticle, dry_run: bool) -> P
 
     tags_yaml = "\n".join(f"  - {t}" for t in article.tags) if article.tags else "  []"
     imagen_yaml = f"imagen: {_yaml_escape(item.imagen)}\n" if item.imagen else ""
+    imagen_atribucion_yaml = f"imagen_atribucion: {_yaml_escape(item.imagen_atribucion)}\n" if item.imagen_atribucion else ""
+    imagen_fuente_yaml = f"imagen_fuente: {_yaml_escape(item.imagen_fuente)}\n" if item.imagen_fuente else ""
 
     frontmatter = f"""---
 titulo: {_yaml_escape(article.titulo)}
 resumen: {_yaml_escape(article.resumen)}
 porQueImporta: {_yaml_escape(article.por_que_importa)}
 categoria: {_yaml_escape(article.categoria)}
-{imagen_yaml}fuente:
+{imagen_yaml}{imagen_atribucion_yaml}{imagen_fuente_yaml}fuente:
   nombre: {_yaml_escape(item.fuente_nombre)}
   url: {_yaml_escape(item.url)}
 fecha: {item.fecha.strftime("%Y-%m-%dT%H:%M:%SZ")}
@@ -536,6 +740,12 @@ def main() -> int:
             escritas += 1
             continue
         assert client is not None
+        # Si la fuente no proveyó imagen, buscar en APIs libres (Openverse, Wikimedia).
+        # Falla silenciosamente si las APIs no responden — el artículo se publica igual.
+        try:
+            _find_image_for(item, user_agent, client=client, modelo=modelo)
+        except Exception as e:
+            log.warning("  Búsqueda de imagen falló (no crítico): %s", e)
         article = rewrite_with_claude(client, item, modelo)
         if article is None:
             log.warning("  saltado")

@@ -24,6 +24,8 @@ const noticias = defineCollection({
     fecha: z.coerce.date(),
     tags: z.array(z.string()).default([]),
     imagen: z.string().optional(),
+    imagen_atribucion: z.string().optional(),
+    imagen_fuente: z.string().optional(),
   }),
 });
 
