@@ -15,7 +15,16 @@ const fechaStr = new Date(fecha).toLocaleDateString('es', { day: 'numeric', mont
     <a href={href} class="block">
       {imagen && (
         <div class="aspect-[16/9] overflow-hidden rounded-xl mb-4 bg-ink-300/20">
-          <img src={imagen} alt={titulo} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+          <img
+            src={imagen}
+            alt={`${titulo} — ${categoria}`}
+            width="800" height="450"
+            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            loading="lazy"
+            decoding="async"
+            referrerpolicy="no-referrer"
+            onerror="this.parentElement.style.display='none'"
+          />
         </div>
       )}
       <div class="flex items-center gap-2 text-xs text-brand-600 font-semibold uppercase tracking-wide mb-2">

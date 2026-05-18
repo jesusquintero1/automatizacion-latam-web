@@ -160,6 +160,7 @@ class FeedItem:
     url: str
     fecha: dt.datetime
     fuente_nombre: str
+    imagen: str = ""
     item_id: str = field(default="")
 
     def __post_init__(self) -> None:
@@ -208,6 +209,38 @@ def _clean_html(html: str) -> str:
     return re.sub(r"\s+", " ", soup.get_text(" ", strip=True))
 
 
+def _extract_image(entry: Any) -> str:
+    """Busca la imagen representativa de un item RSS en varios lugares."""
+    # 1) media:content / media:thumbnail (Yahoo Media RSS)
+    for media in (entry.get("media_content") or []) + (entry.get("media_thumbnail") or []):
+        url = (media or {}).get("url", "")
+        if url and url.startswith("http"):
+            return url
+    # 2) enclosure (RSS clásico)
+    for enc in entry.get("enclosures") or []:
+        url = (enc or {}).get("url") or (enc or {}).get("href") or ""
+        if url.startswith("http") and any(ext in url.lower() for ext in (".jpg", ".jpeg", ".png", ".webp", ".gif")):
+            return url
+    # 3) imagen explícita en el feed (algunos la exponen)
+    if entry.get("image", {}).get("href"):
+        return entry["image"]["href"]
+    # 4) primera <img src=...> del summary/content
+    html_blob = (
+        entry.get("summary")
+        or entry.get("description")
+        or (entry.get("content") or [{}])[0].get("value", "")
+        or ""
+    )
+    if html_blob:
+        soup = BeautifulSoup(html_blob, "html.parser")
+        img = soup.find("img", src=True)
+        if img:
+            src = img.get("src", "").strip()
+            if src.startswith("http"):
+                return src
+    return ""
+
+
 def fetch_feed(fuente: dict[str, Any], user_agent: str) -> list[FeedItem]:
     log.info("Leyendo feed: %s", fuente["nombre"])
     parsed = feedparser.parse(fuente["url"], agent=user_agent)
@@ -242,6 +275,7 @@ def fetch_feed(fuente: dict[str, Any], user_agent: str) -> list[FeedItem]:
             url=url,
             fecha=fecha,
             fuente_nombre=fuente["nombre"],
+            imagen=_extract_image(entry),
         ))
     log.info("  %d items leídos", len(items))
     return items
@@ -379,13 +413,14 @@ def write_article(item: FeedItem, article: RewrittenArticle, dry_run: bool) -> P
         counter += 1
 
     tags_yaml = "\n".join(f"  - {t}" for t in article.tags) if article.tags else "  []"
+    imagen_yaml = f"imagen: {_yaml_escape(item.imagen)}\n" if item.imagen else ""
 
     frontmatter = f"""---
 titulo: {_yaml_escape(article.titulo)}
 resumen: {_yaml_escape(article.resumen)}
 porQueImporta: {_yaml_escape(article.por_que_importa)}
 categoria: {_yaml_escape(article.categoria)}
-fuente:
+{imagen_yaml}fuente:
   nombre: {_yaml_escape(item.fuente_nombre)}
   url: {_yaml_escape(item.url)}
 fecha: {item.fecha.strftime("%Y-%m-%dT%H:%M:%SZ")}

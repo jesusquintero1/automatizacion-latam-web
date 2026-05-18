@@ -29,10 +29,22 @@ const catSlug = slugify(categoria);
 const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://automatizacionslatam.com';
 const articleUrl = `${siteUrl}${Astro.url.pathname}`;
 
-const relacionadas = (await getCollection('noticias'))
-  .filter((n) => n.slug !== noticia.slug && n.data.categoria === categoria)
-  .sort((a, b) => new Date(b.data.fecha).valueOf() - new Date(a.data.fecha).valueOf())
-  .slice(0, 3);
+const todasNoticias = await getCollection('noticias');
+const tagsSet = new Set(tags);
+const relacionadas = todasNoticias
+  .filter((n) => n.slug !== noticia.slug)
+  .map((n) => {
+    const sharedTags = n.data.tags.filter((t) => tagsSet.has(t)).length;
+    const sameCategoria = n.data.categoria === categoria ? 1 : 0;
+    // Score: 3 puntos por tag compartido + 1 por misma categoría + boost por novedad.
+    const ageDays = (Date.now() - new Date(n.data.fecha).valueOf()) / 86_400_000;
+    const freshness = Math.max(0, 1 - ageDays / 30);
+    return { entry: n, score: sharedTags * 3 + sameCategoria + freshness };
+  })
+  .filter(({ score }) => score > 0)
+  .sort((a, b) => b.score - a.score || new Date(b.entry.data.fecha).valueOf() - new Date(a.entry.data.fecha).valueOf())
+  .slice(0, 3)
+  .map(({ entry }) => entry);
 
 const jsonLdArticle = {
   '@context': 'https://schema.org',
@@ -101,7 +113,16 @@ const jsonLdBreadcrumb = {
 
     {imagen && (
       <div class="aspect-[16/9] rounded-xl overflow-hidden mb-8 bg-ink-300/20">
-        <img src={imagen} alt={titulo} class="w-full h-full object-cover" loading="eager" />
+        <img
+          src={imagen}
+          alt={`${titulo} — ${categoria}`}
+          width="1200" height="675"
+          class="w-full h-full object-cover"
+          loading="eager"
+          decoding="async"
+          referrerpolicy="no-referrer"
+          onerror="this.parentElement.style.display='none'"
+        />
       </div>
     )}
 

@@ -1,0 +1,145 @@
+---
+import type { GetStaticPaths, Page } from 'astro';
+import type { CollectionEntry } from 'astro:content';
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import ArticleCard from '../components/ArticleCard.astro';
+import AdSlot from '../components/AdSlot.astro';
+
+export const getStaticPaths: GetStaticPaths = async ({ paginate }) => {
+  const noticias = (await getCollection('noticias'))
+    .sort((a, b) => new Date(b.data.fecha).valueOf() - new Date(a.data.fecha).valueOf());
+  return paginate(noticias, { pageSize: 12 });
+};
+
+interface Props { page: Page<CollectionEntry<'noticias'>>; }
+const { page } = Astro.props;
+const isFirst = page.currentPage === 1;
+
+// Layout enriquecido solo en página 1: destacada + secundarias + resto en grid.
+const data = page.data;
+const destacada = isFirst ? data[0] : undefined;
+const secundarias = isFirst ? data.slice(1, 6) : [];
+const restoListado = isFirst ? data.slice(6) : data;
+
+const CATEGORIAS_DESTACADAS = [
+  { nombre: 'Inteligencia Artificial', slug: 'inteligencia-artificial' },
+  { nombre: 'PLC y Control', slug: 'plc-y-control' },
+  { nombre: 'Robótica', slug: 'robotica' },
+  { nombre: 'Industria 4.0', slug: 'industria-4-0' },
+  { nombre: 'Ciberseguridad OT', slug: 'ciberseguridad-ot' },
+  { nombre: 'Energía y Sostenibilidad', slug: 'energia-y-sostenibilidad' },
+];
+
+const titlePagina = isFirst
+  ? 'Automatización LatAm — Noticias diarias de PLC, robótica e Industria 4.0'
+  : `Página ${page.currentPage} — Automatización LatAm`;
+---
+<Base title={titlePagina}>
+  {isFirst && (
+    <section class="bg-gradient-to-br from-brand-50 to-white border-b border-ink-300/20">
+      <div class="mx-auto max-w-[var(--container)] px-4 md:px-8 py-10 md:py-14">
+        <p class="text-brand-600 font-semibold uppercase tracking-wider text-sm mb-2">Lo más reciente</p>
+        <h1 class="text-3xl md:text-5xl font-serif font-bold text-ink-900 leading-tight max-w-3xl">
+          Automatización industrial para Latinoamérica, resumida y en tu idioma.
+        </h1>
+        <p class="text-ink-500 text-lg mt-3 max-w-2xl">
+          Cada día seleccionamos y resumimos las noticias más relevantes de PLC, robótica,
+          Industria 4.0, IA y ciberseguridad OT — de las fuentes que importan, en español.
+        </p>
+      </div>
+    </section>
+  )}
+
+  <section class="mx-auto max-w-[var(--container)] px-4 md:px-8 py-10">
+    {!isFirst && (
+      <h1 class="text-2xl md:text-3xl font-serif font-bold text-ink-900 mb-6">
+        Archivo de noticias — página {page.currentPage}
+      </h1>
+    )}
+
+    {data.length === 0 ? (
+      <div class="text-center py-20 text-ink-500">
+        <p class="text-2xl mb-2">El agregador aún no ha publicado noticias.</p>
+      </div>
+    ) : (
+      <>
+        {isFirst && destacada && (
+          <div class="grid md:grid-cols-3 gap-8 mb-8">
+            <ArticleCard noticia={destacada} variant="featured" />
+            <aside class="space-y-6">
+              <h2 class="text-sm font-semibold uppercase tracking-wider text-ink-500 border-b border-ink-300/30 pb-2">
+                También hoy
+              </h2>
+              {secundarias.map((n) => <ArticleCard noticia={n} />)}
+            </aside>
+          </div>
+        )}
+
+        {isFirst && <AdSlot slot="1111111111" layout="fluid" label="Publicidad" />}
+
+        {restoListado.length > 0 && (
+          <>
+            {isFirst && (
+              <h2 class="text-2xl font-serif font-bold text-ink-900 mb-6 mt-10">Más noticias</h2>
+            )}
+            <div class="grid md:grid-cols-2 gap-8">
+              {restoListado.map((n) => <ArticleCard noticia={n} />)}
+            </div>
+          </>
+        )}
+
+        <AdSlot slot="5555555555" label="Publicidad" />
+
+        <nav class="mt-12 flex items-center justify-between border-t border-ink-300/30 pt-6" aria-label="Paginación">
+          <div>
+            {page.url.prev && (
+              <a
+                href={page.url.prev}
+                rel="prev"
+                class="inline-flex items-center gap-2 px-4 py-2 rounded-md border border-ink-300/40 text-ink-700 hover:bg-ink-100 transition"
+              >
+                ← Más recientes
+              </a>
+            )}
+          </div>
+          <p class="text-sm text-ink-500">
+            Página {page.currentPage} de {page.lastPage}
+          </p>
+          <div>
+            {page.url.next && (
+              <a
+                href={page.url.next}
+                rel="next"
+                class="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-brand-500 text-white font-semibold hover:bg-brand-600 transition"
+              >
+                Más antiguas →
+              </a>
+            )}
+          </div>
+        </nav>
+
+        {isFirst && (
+          <section class="mt-12 bg-ink-100/40 rounded-2xl p-6 md:p-10">
+            <h2 class="text-2xl font-serif font-bold text-ink-900 mb-4">Explora por tema</h2>
+            <p class="text-ink-500 mb-6 max-w-2xl">
+              Las últimas novedades organizadas por área técnica para que encuentres rápidamente
+              lo que más te interesa.
+            </p>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+              {CATEGORIAS_DESTACADAS.map(({ nombre, slug }) => (
+                <a
+                  href={`/categoria/${slug}/`}
+                  class="block bg-white border border-ink-300/30 rounded-lg px-4 py-3 hover:border-brand-500 hover:shadow-md transition group"
+                >
+                  <span class="font-semibold text-ink-900 group-hover:text-brand-600">{nombre}</span>
+                  <span class="block text-xs text-ink-500 mt-0.5">Ver noticias →</span>
+                </a>
+              ))}
+            </div>
+          </section>
+        )}
+      </>
+    )}
+  </section>
+</Base>
