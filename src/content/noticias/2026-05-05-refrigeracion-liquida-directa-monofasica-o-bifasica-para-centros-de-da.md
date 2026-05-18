@@ -2,7 +2,7 @@
 titulo: "Refrigeración líquida directa: ¿Monofásica o bifásica para centros de datos con IA?"
 resumen: "Los operadores de centros de datos enfrentan la decisión entre sistemas de refrigeración líquida monofásicos y bifásicos para gestionar la carga térmica de la IA. Ambas tecnologías ofrecen ventajas distintas que condicionan eficiencia energética, costo de inversión y escalabilidad."
 porQueImporta: "En Latinoamérica, donde la demanda de capacidad de IA crece aceleradamente, elegir la estrategia térmica correcta impacta directamente en la viabilidad económica y sostenibilidad de los nuevos centros de datos. La eficiencia en refrigeración determina costos operacionales y competitividad regional."
-categoria: "Industria 4.0"
+categoria: "Energía y Sostenibilidad"
 fuente:
   nombre: "Schneider Electric Blog"
   url: "https://blog.se.com/datacenter/2026/05/05/two-phase-vs-single-phase-in-direct-liquid-cooling/?utm_source=rss&utm_medium=feed&utm_campaign=rss_campaign"

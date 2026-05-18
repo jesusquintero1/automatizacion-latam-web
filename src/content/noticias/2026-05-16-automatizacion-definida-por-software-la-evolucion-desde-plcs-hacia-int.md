@@ -2,7 +2,7 @@
 titulo: "Automatización definida por software: la evolución desde PLCs hacia inteligencia artificial"
 resumen: "La automatización basada en software traslada la lógica de control desde PLCs dedicados hacia computadoras industriales y servidores estándar, manteniendo los equipos físicos en planta. Este cambio permite integrar herramientas de Siemens, proveedores externos y fabricantes OEM mediante APIs abierta"
 porQueImporta: "En Latinoamérica, esta tendencia reduce costos de inversión inicial en hardware especializado y facilita la modernización de plantas existentes con soluciones más flexibles y escalables. La apertura a ecosistemas multivendor democratiza el acceso a tecnologías avanzadas para medianas empresas de la región."
-categoria: "Industria 4.0"
+categoria: "PLC y Control"
 fuente:
   nombre: "IIoT World"
   url: "https://www.iiot-world.com/smart-manufacturing/software-defined-automation-siemens-virtual-plc-ai/"
