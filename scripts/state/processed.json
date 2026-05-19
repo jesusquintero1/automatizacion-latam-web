@@ -634,7 +634,22 @@
       "url": "http://www.ManufacturingTomorrow.com/news/2026/05/19/arbor-technology-showcases-edge-ai-and-industrial-computing-solutions-at-computex-2026/27603",
       "fuente": "Manufacturing Tomorrow",
       "fecha_proceso": "2026-05-19T18:13:23.240197+00:00"
+    },
+    "0789c3cb074d0733": {
+      "url": "https://techcrunch.com/2026/05/19/how-to-use-googles-new-ai-agents-to-go-beyond-your-standard-searches/",
+      "fuente": "TechCrunch AI",
+      "fecha_proceso": "2026-05-19T21:28:16.186515+00:00"
+    },
+    "cb1323ba54f85cd7": {
+      "url": "https://huggingface.co/blog/allenai/olmoearth-v1-1",
+      "fuente": "Hugging Face Blog",
+      "fecha_proceso": "2026-05-19T21:28:37.808828+00:00"
+    },
+    "a4ee03caf2fba56d": {
+      "url": "http://www.ManufacturingTomorrow.com/news/2026/05/19/ceramic-motor-driven-linear-actuator-combines-sub-nanometer-precision-with-high-force-/27601",
+      "fuente": "Manufacturing Tomorrow",
+      "fecha_proceso": "2026-05-19T21:29:06.498609+00:00"
     }
   },
-  "ultima_corrida": "2026-05-19T18:13:31.501588+00:00"
+  "ultima_corrida": "2026-05-19T21:29:06.498659+00:00"
 }
