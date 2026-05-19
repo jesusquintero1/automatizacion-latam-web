@@ -53,7 +53,7 @@ fuentes:
   - nombre: "Hipertextual"
     url: "https://hipertextual.com/feed"
     peso: 5
-    activa: true  # Tecnología/IA en español (ES) — prioridad SEO LatAm
+    activa: false  # Desactivada (19-may-2026): feed generalista trae cine/series/cultura. Cubrimos español con Xataka, Tecnoplc, Logicbus.
 
   - nombre: "OpenAI Blog"
     url: "https://openai.com/news/rss.xml"

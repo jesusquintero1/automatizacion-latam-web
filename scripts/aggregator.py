@@ -83,7 +83,45 @@ SYSTEM_PROMPT = """Eres editor especializado en automatización industrial y tra
 noticias del sector para el público latinoamericano. Tu trabajo es producir contenido ORIGINAL \
 a partir del titular y el resumen en inglés de una fuente, sin copiar texto literal.
 
-Reglas críticas (no negociables):
+REGLA #0 — Filtro de alcance (la más importante, evalúala PRIMERO):
+Si el titular o resumen NO trata sobre alguno de estos temas, debes responder EXACTAMENTE con \
+este JSON (sin texto extra, sin explicaciones, sin disculpas, sin recomendaciones):
+  {"skip": true, "razon": "off-topic"}
+
+Temas en alcance (lista cerrada):
+- Automatización industrial, PLC, HMI, SCADA, DCS, instrumentación, motion control, variadores.
+- Robótica industrial, cobots, AGV, AMR, visión de máquina industrial.
+- Industria 4.0, IIoT, gemelos digitales, MES, edge computing industrial.
+- Inteligencia artificial generativa, LLMs, agentes IA, modelos de imagen/video (GPT, Claude, \
+  Gemini, Veo, Sora, DALL·E), IA aplicada a manufactura, regulación y ética de IA, GPUs IA.
+- Ciberseguridad OT, ataques a infraestructura industrial, vulnerabilidades PLC/HMI, normas \
+  IEC 62443, post-cuántica, NIST OT, CISA.
+- Energía industrial, gestión energética, microgrids, renovables a escala industrial, \
+  descarbonización de plantas, refrigeración de data centers.
+- Mercado y negocios del sector (fusiones, lanzamientos comerciales, certificaciones CMMC/ISO).
+- Casos de estudio reales en plantas/fábricas con métricas medibles.
+- Salud pública / regulación / política SOLO cuando esté relacionada con automatización o \
+  ciberseguridad industrial.
+
+Temas FUERA de alcance (responde SIEMPRE con skip:true):
+- Cine, series, televisión, anime, manga, streaming.
+- Música, conciertos, álbumes, artistas musicales.
+- Cultura pop, celebridades, famosos, farándula, realeza.
+- Deportes, fútbol, atletismo, eSports.
+- Gaming/videojuegos de consumo (no industrial).
+- Moda, belleza, lifestyle.
+- Gastronomía, recetas, restaurantes.
+- Viajes, turismo, hoteles.
+- Horóscopos, espiritualidad, astrología.
+- Política general, elecciones, partidos políticos.
+- Smartphones de consumo, gadgets domésticos (excepto los relacionados con IA o industria).
+- Salud personal individual (consejos médicos a usuarios).
+
+CRÍTICO: si la nota es off-topic, NO escribas un artículo de rechazo, NO expliques las reglas, \
+NO sugieras alternativas, NO uses los campos titulo/resumen/cuerpo para explicarte. Solo el \
+JSON {"skip": true, "razon": "..."}.
+
+Reglas críticas (no negociables — aplican solo si la nota está EN alcance):
 - NUNCA traduzcas palabra-por-palabra. Reescribe siempre con tus propias palabras en español neutro.
 - NUNCA copies frases completas del texto fuente. Si una cita textual es esencial, ponla entre \
   comillas y deja claro que es cita literal.
@@ -413,6 +451,32 @@ def _find_image_for(item: "FeedItem", user_agent: str, client: "Anthropic | None
     log.debug("  Sin imagen para esta noticia (no se encontró en ninguna API).")
 
 
+# --- Filtro pre-Claude: descartar URLs claramente off-topic --------------
+# Si una fuente publica eventualmente noticias de cine, deportes, celebridades,
+# etc., el path de la URL suele tener un slug categórico. Lo aprovechamos para
+# nunca enviar esos items a Claude (ahorra tokens y elimina riesgo de
+# contenido off-topic publicado).
+_OFF_TOPIC_URL_PATTERNS = (
+    "/cine", "/peliculas", "/pelicula", "/television", "/tv-",
+    "/series/", "/serie-", "/anime", "/manga",
+    "/musica", "/cancion", "/album",
+    "/cultura", "/entretenimiento", "/famosos", "/celebridades",
+    "/gaming", "/videojuegos", "/videojuego",
+    "/deportes", "/futbol", "/basket",
+    "/moda", "/belleza", "/estilo-de-vida",
+    "/gastronomia", "/recetas", "/cocina",
+    "/viajes", "/turismo",
+    "/horoscopo", "/zodiaco",
+    "/realeza", "/farandula",
+)
+
+
+def _is_url_off_topic(url: str) -> bool:
+    """True si la URL contiene un slug categórico claramente off-topic."""
+    u = url.lower()
+    return any(p in u for p in _OFF_TOPIC_URL_PATTERNS)
+
+
 def _extract_image(entry: Any) -> str:
     """Busca la imagen representativa de un item RSS en varios lugares."""
     # 1) media:content / media:thumbnail (Yahoo Media RSS)
@@ -459,6 +523,10 @@ def fetch_feed(fuente: dict[str, Any], user_agent: str) -> list[FeedItem]:
             continue
         title = entry.get("title", "").strip()
         if not title:
+            continue
+        # CAPA 1: descartar items off-topic por path de la URL antes de pasarlos a Claude.
+        if _is_url_off_topic(url):
+            log.info("  ⊘ Off-topic descartado por URL: %s", url[:80])
             continue
 
         summary = _clean_html(
@@ -534,6 +602,11 @@ def rewrite_with_claude(
                 log.warning("  Claude devolvió JSON inválido, descartando item.")
                 return None
 
+            # CAPA 2: si Claude usó el formato oficial de skip, descartar.
+            if isinstance(data, dict) and data.get("skip") is True:
+                log.info("  ⊘ Claude marcó skip:true — %s", data.get("razon", "off-topic"))
+                return None
+
             return _validate_article(data)
 
         except RateLimitError:
@@ -568,12 +641,68 @@ def _parse_json_robust(text: str) -> dict[str, Any] | None:
         return None
 
 
+# Patrones que delatan una "respuesta de rechazo" que Claude pudo haber colado
+# usando los campos titulo/resumen/cuerpo en vez del JSON {"skip":true}.
+# Si alguno de estos aparece en titulo o en el inicio del cuerpo, descartamos.
+_REJECTION_TITLE_PATTERNS = (
+    "error:", "error ", "aviso:", "aclaración", "aclaracion",
+    "fuera de alcance", "fuera del alcance", "no aplicable", "no relevante",
+    "no corresponde", "no procede", "disculpa", "lo siento",
+    "no puedo procesar", "no es posible procesar",
+    "recomendación:", "recomendacion:",
+)
+
+_REJECTION_BODY_PATTERNS = (
+    "## aclaración", "## aclaracion", "## error",
+    "fuera de alcance editorial", "fuera del alcance editorial",
+    "fuera del scope", "no corresponde al área de cobertura",
+    "no corresponde al area de cobertura",
+    "comparta artículos", "comparta articulos", "comparta urls",
+    "para procesar adecuadamente",
+    "mi función es producir", "mi funcion es producir",
+)
+
+_REJECTION_TAG_PATTERNS = (
+    "error-alcance", "fuera-de-alcance", "fuera-del-alcance",
+    "redireccion-editorial", "contenido-no-industrial",
+    "no-aplicable", "no-relevante", "off-topic",
+)
+
+
+def _looks_like_rejection(data: dict[str, Any]) -> str:
+    """Devuelve string descriptivo si la respuesta parece un rechazo
+    formateado como artículo. Cadena vacía si pasa el filtro.
+    """
+    titulo = str(data.get("titulo", "")).lower().strip()
+    cuerpo = str(data.get("cuerpo", "")).lower().strip()
+    tags = [str(t).lower().strip() for t in (data.get("tags") or [])]
+
+    for p in _REJECTION_TITLE_PATTERNS:
+        if titulo.startswith(p) or f" {p}" in titulo[:60]:
+            return f"título sospechoso (contiene '{p}')"
+    # Solo miramos los primeros 400 chars del cuerpo
+    cuerpo_inicio = cuerpo[:400]
+    for p in _REJECTION_BODY_PATTERNS:
+        if p in cuerpo_inicio:
+            return f"cuerpo arranca con '{p}'"
+    for p in _REJECTION_TAG_PATTERNS:
+        if p in tags:
+            return f"tag sospechoso '{p}'"
+    return ""
+
+
 def _validate_article(data: dict[str, Any]) -> RewrittenArticle | None:
     required = ["titulo", "resumen", "categoria", "porQueImporta", "cuerpo", "tags"]
     for k in required:
         if k not in data:
             log.warning("  Campo faltante en JSON: %s", k)
             return None
+
+    # CAPA 3: detectar respuestas de rechazo formateadas como artículo real.
+    motivo_rechazo = _looks_like_rejection(data)
+    if motivo_rechazo:
+        log.info("  ⊘ Respuesta parece rechazo — %s", motivo_rechazo)
+        return None
 
     cat = data["categoria"].strip()
     if cat not in CATEGORIAS_VALIDAS:
@@ -585,12 +714,18 @@ def _validate_article(data: dict[str, Any]) -> RewrittenArticle | None:
         tags = []
     tags = [str(t).lower().strip() for t in tags if t][:5]
 
+    # CAPA 4: rechazar artículos demasiado cortos (potencial respuesta de error/excusa).
+    cuerpo = str(data["cuerpo"]).strip()
+    if len(cuerpo) < 800:
+        log.info("  ⊘ Cuerpo demasiado corto (%d chars, mínimo 800) — descartando", len(cuerpo))
+        return None
+
     return RewrittenArticle(
         titulo=str(data["titulo"]).strip()[:140],
         resumen=str(data["resumen"]).strip()[:300],
         categoria=cat,
         por_que_importa=str(data["porQueImporta"]).strip()[:500],
-        cuerpo=str(data["cuerpo"]).strip(),
+        cuerpo=cuerpo,
         tags=tags,
     )
 
