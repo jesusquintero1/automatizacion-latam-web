@@ -569,7 +569,42 @@
       "url": "https://www.technologyreview.com/2026/05/15/1137326/chinese-short-dramas-ai/",
       "fuente": "MIT Technology Review",
       "fecha_proceso": "2026-05-19T10:03:00.064757+00:00"
+    },
+    "32a6b4f5a2a47579": {
+      "url": "https://industrialcyber.co/ai/uk-links-ai-accelerated-cyber-threats-to-operational-weaknesses-not-repository-openness-urges-remediation/",
+      "fuente": "Industrial Cyber",
+      "fecha_proceso": "2026-05-19T15:43:21.251882+00:00"
+    },
+    "1c337e8900e9867f": {
+      "url": "https://www.designworldonline.com/mitsubishi-electric-automation-brings-robotic-machine-tending-to-imts-2026/",
+      "fuente": "Design World Online",
+      "fecha_proceso": "2026-05-19T15:43:32.687210+00:00"
+    },
+    "f6453887a8bb74df": {
+      "url": "http://www.ManufacturingTomorrow.com/news/2026/05/19/digi-international-launches-digi-connect-ez-ts-serial-device-servers-enabling-secure-transition-to-modern-ip-networks/27606",
+      "fuente": "Manufacturing Tomorrow",
+      "fecha_proceso": "2026-05-19T15:43:48.200398+00:00"
+    },
+    "33014a7821f16d1b": {
+      "url": "http://www.ManufacturingTomorrow.com/news/2026/05/19/actemium-avanceon-introduces-ot-readiness-recovery-services-to-help-manufacturers-improve-recovery-readiness-and-operational-resilience-/27604",
+      "fuente": "Manufacturing Tomorrow",
+      "fecha_proceso": "2026-05-19T15:44:08.955499+00:00"
+    },
+    "6bf1d7d5db110d0d": {
+      "url": "https://industrialcyber.co/ransomware/belarus-aligned-frostyneighbor-continues-targeting-ukrainian-government-military-sectors-with-updated-attack-techniques/",
+      "fuente": "Industrial Cyber",
+      "fecha_proceso": "2026-05-19T15:44:28.564316+00:00"
+    },
+    "ea05ae4df2116815": {
+      "url": "https://www.marktechpost.com/2026/05/16/nous-research-proposes-lighthouse-attention-a-training-only-selection-based-hierarchical-attention-that-delivers-1-4-1-7x-pretraining-speedup-at-long-context/",
+      "fuente": "MarkTechPost",
+      "fecha_proceso": "2026-05-19T15:44:41.767071+00:00"
+    },
+    "be6458488eaa0e35": {
+      "url": "https://www.marktechpost.com/2026/05/16/meet-litellm-agent-platform-a-kubernetes-based-self-hosted-infrastructure-layer-for-isolated-agent-sandboxes-and-persistent-session-management-in-production/",
+      "fuente": "MarkTechPost",
+      "fecha_proceso": "2026-05-19T15:44:51.178010+00:00"
     }
   },
-  "ultima_corrida": "2026-05-19T10:03:00.064813+00:00"
+  "ultima_corrida": "2026-05-19T15:44:51.178058+00:00"
 }
