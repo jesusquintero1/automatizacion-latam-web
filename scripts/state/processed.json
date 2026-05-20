@@ -729,7 +729,27 @@
       "url": "https://blog.se.com/industry/2026/05/19/why-digital-continuity-is-now-a-boardroom-issue-for-pharma/?utm_source=rss&utm_medium=feed&utm_campaign=rss_campaign",
       "fuente": "Schneider Electric Blog",
       "fecha_proceso": "2026-05-20T09:52:51.978351+00:00"
+    },
+    "01a58d6cdc78c2cd": {
+      "url": "https://industrialcyber.co/reports/verizon-dbir-finds-vulnerability-exploitation-overtakes-stolen-credentials-as-top-breach-entry-point-for-critical-infrastructure/",
+      "fuente": "Industrial Cyber",
+      "fecha_proceso": "2026-05-20T12:32:04.308639+00:00"
+    },
+    "a96c33c8a1d85112": {
+      "url": "https://industrialcyber.co/industrial-cyber-attacks/crowdsec-flags-rising-exploitation-of-four-faith-industrial-routers-as-botnet-activity-grows-across-critical-sectors/",
+      "fuente": "Industrial Cyber",
+      "fecha_proceso": "2026-05-20T12:32:17.946333+00:00"
+    },
+    "cadee71583601475": {
+      "url": "https://www.electronicsweekly.com/news/products/ai-is-transforming-2nm-packaging-advances-through-global-collaboration-2026-05/",
+      "fuente": "Electronics Weekly",
+      "fecha_proceso": "2026-05-20T12:32:30.108133+00:00"
+    },
+    "abc4d40cb8d2ba2a": {
+      "url": "https://www.marktechpost.com/2026/05/20/nvidia-ai-releases-nemotron-labs-diffusion-a-tri-mode-language-model-with-6x-tokens-per-forward-over-qwen3-8b/",
+      "fuente": "MarkTechPost",
+      "fecha_proceso": "2026-05-20T12:32:43.402399+00:00"
     }
   },
-  "ultima_corrida": "2026-05-20T09:52:54.496622+00:00"
+  "ultima_corrida": "2026-05-20T12:32:57.383302+00:00"
 }
