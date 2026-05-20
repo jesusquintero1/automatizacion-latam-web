@@ -71,6 +71,17 @@ jobs:
           PUBLIC_BING_VERIFICATION: ${{ secrets.PUBLIC_BING_VERIFICATION }}
           PUBLIC_YANDEX_VERIFICATION: ${{ secrets.PUBLIC_YANDEX_VERIFICATION }}
 
+      - name: Validar que PUBLIC_ADSENSE_CLIENT este presente en dist/index.html antes de deploy
+        # Falla ruidosamente si el build no produjo AdSense en el HTML. Evita
+        # que un secret mal configurado en CI sobreescriba produccion sin AdSense.
+        run: |
+          if ! grep -q "ca-pub-" dist/index.html; then
+            echo "::error::dist/index.html NO contiene ca-pub-. El build se hizo sin PUBLIC_ADSENSE_CLIENT. Abortando deploy para no romper monetizacion."
+            echo "Verifica que el secret PUBLIC_ADSENSE_CLIENT este definido y tenga el valor 'ca-pub-XXXXXXXXXXXXXXXX'."
+            exit 1
+          fi
+          echo "::notice::AdSense (ca-pub-) confirmado en dist/index.html — listo para deploy."
+
       - name: Deploy a Cloudflare Workers
         uses: cloudflare/wrangler-action@v3
         with:
@@ -81,3 +92,23 @@ jobs:
           # puros). La v3 que la action instala por defecto exige un main
           # worker y falla con "Missing entry-point".
           wranglerVersion: "4"
+
+      - name: Healthcheck post-deploy — verificar AdSense en produccion
+        # Espera unos segundos a que Cloudflare propague y consulta la home
+        # con User-Agent del bot de AdSense. Si no encuentra ca-pub-, falla
+        # el workflow para que se note inmediatamente en el dashboard.
+        run: |
+          echo "Esperando 15s para que Cloudflare propague el deploy..."
+          sleep 15
+          for attempt in 1 2 3; do
+            echo "Intento $attempt..."
+            HTML=$(curl -s -A "AdsBot-Google (+http://www.google.com/adsbot.html)" "https://automatizacionslatam.com/?healthcheck=$(date +%s)")
+            if echo "$HTML" | grep -q "ca-pub-"; then
+              echo "::notice::Healthcheck OK — produccion sirve AdSense correctamente."
+              exit 0
+            fi
+            echo "::warning::Intento $attempt: AdSense NO esta en produccion. Reintentando en 20s..."
+            sleep 20
+          done
+          echo "::error::Healthcheck FALLO. Produccion no sirve AdSense despues del deploy. Esto rompe la monetizacion. Revisar logs y re-deployar manualmente con env vars correctas."
+          exit 1
