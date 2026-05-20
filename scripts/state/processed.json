@@ -809,7 +809,22 @@
       "url": "http://www.ManufacturingTomorrow.com/news/2026/05/20/emerson-to-demonstrate-motion-control-technologies-feeding-and-handling-systems-at-sps-italia-2026-hall-6-booth-j006/27620",
       "fuente": "Manufacturing Tomorrow",
       "fecha_proceso": "2026-05-20T23:21:49.100798+00:00"
+    },
+    "e1e25bd6eee4298f": {
+      "url": "https://techcrunch.com/2026/05/20/nvidia-posts-another-record-quarter-reveals-43-billion-of-holdings-in-startups/",
+      "fuente": "TechCrunch AI",
+      "fecha_proceso": "2026-05-20T23:34:35.408100+00:00"
+    },
+    "5b0027102873219d": {
+      "url": "https://www.marktechpost.com/2026/05/20/meet-turbovec-a-rust-vector-index-with-python-bindings-and-built-on-googles-turboquant-algorithm/",
+      "fuente": "MarkTechPost",
+      "fecha_proceso": "2026-05-20T23:34:45.852571+00:00"
+    },
+    "18fda40bf51c65a0": {
+      "url": "http://www.ManufacturingTomorrow.com/news/2026/05/20/barclays-research-expects-humanoid-robots-to-fundamentally-reshape-the-real-economy/27612",
+      "fuente": "Manufacturing Tomorrow",
+      "fecha_proceso": "2026-05-20T23:35:10.813949+00:00"
     }
   },
-  "ultima_corrida": "2026-05-20T23:22:01.240545+00:00"
+  "ultima_corrida": "2026-05-20T23:35:13.920294+00:00"
 }
