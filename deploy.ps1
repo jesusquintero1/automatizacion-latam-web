@@ -58,15 +58,15 @@ if ($LASTEXITCODE -ne 0) {
 
 Write-Host ""
 Write-Host "==> Validando que dist/index.html contiene ca-pub-..." -ForegroundColor Cyan
-$home = Get-Content 'dist/index.html' -Raw
-if (-not ($home -match 'ca-pub-')) {
+$indexHtml = Get-Content 'dist/index.html' -Raw
+if (-not ($indexHtml -match 'ca-pub-')) {
     Write-Host "ERROR: dist/index.html NO contiene ca-pub-. Algo fallo durante el build." -ForegroundColor Red
     Write-Host "       Revisa Base.astro y el valor de PUBLIC_ADSENSE_CLIENT." -ForegroundColor Red
     exit 1
 }
 Write-Host "  OK dist/index.html contiene AdSense." -ForegroundColor Green
 
-if (-not ($home -match 'pagead2\.googlesyndication\.com')) {
+if (-not ($indexHtml -match 'pagead2\.googlesyndication\.com')) {
     Write-Host "ERROR: dist/index.html NO contiene el script async de AdSense." -ForegroundColor Red
     exit 1
 }
