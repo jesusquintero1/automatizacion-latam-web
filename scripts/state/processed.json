@@ -934,7 +934,27 @@
       "url": "https://openai.com/index/adventhealth",
       "fuente": "OpenAI Blog",
       "fecha_proceso": "2026-05-21T20:05:11.572456+00:00"
+    },
+    "0b8cbe3044a76c10": {
+      "url": "https://www.marktechpost.com/2026/05/21/qwen-introduces-qwen3-7-max-a-reasoning-agent-model-with-a-1m-token-context-window/",
+      "fuente": "MarkTechPost",
+      "fecha_proceso": "2026-05-21T23:10:28.751575+00:00"
+    },
+    "995de8c39198301f": {
+      "url": "https://www.marktechpost.com/2026/05/21/cohere-releases-command-a-a-218b-sparse-moe-model-for-agentic-workflows-that-runs-on-as-few-as-two-h100-gpus/",
+      "fuente": "MarkTechPost",
+      "fecha_proceso": "2026-05-21T23:10:38.868919+00:00"
+    },
+    "fbd9a4ba85dc8bbd": {
+      "url": "https://www.technologyreview.com/2026/05/21/1137756/roundtables-can-ai-learn-to-understand-the-world/",
+      "fuente": "MIT Technology Review",
+      "fecha_proceso": "2026-05-21T23:10:52.694699+00:00"
+    },
+    "82bff44025c3eead": {
+      "url": "http://www.ManufacturingTomorrow.com/news/2026/05/21/compact-cxp-12-line-scan-cameras-seamlessly-deliver-3d-data-and-color-information-in-a-single-acquisition/27629",
+      "fuente": "Manufacturing Tomorrow",
+      "fecha_proceso": "2026-05-21T23:11:13.727879+00:00"
     }
   },
-  "ultima_corrida": "2026-05-21T20:05:18.127157+00:00"
+  "ultima_corrida": "2026-05-21T23:11:24.906536+00:00"
 }
