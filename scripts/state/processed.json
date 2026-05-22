@@ -1044,7 +1044,12 @@
       "url": "https://openai.com/index/gartner-2026-agentic-coding-leader",
       "fuente": "OpenAI Blog",
       "fecha_proceso": "2026-05-22T16:33:14.334910+00:00"
+    },
+    "185c7e9786934be3": {
+      "url": "https://www.marktechpost.com/2026/05/22/build-recurrent-depth-transformers-with-openmythos-for-mla-gqa-sparse-moe-and-loop-scaled-reasoning/",
+      "fuente": "MarkTechPost",
+      "fecha_proceso": "2026-05-22T20:00:40.817931+00:00"
     }
   },
-  "ultima_corrida": "2026-05-22T16:33:24.162899+00:00"
+  "ultima_corrida": "2026-05-22T20:00:50.592529+00:00"
 }
