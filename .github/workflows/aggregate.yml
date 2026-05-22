@@ -94,21 +94,41 @@ jobs:
           wranglerVersion: "4"
 
       - name: Healthcheck post-deploy — verificar AdSense en produccion
-        # Espera unos segundos a que Cloudflare propague y consulta la home
-        # con User-Agent del bot de AdSense. Si no encuentra ca-pub-, falla
-        # el workflow para que se note inmediatamente en el dashboard.
+        # Verifica que el deploy sirve AdSense correctamente. Consulta el
+        # *Worker URL directo* (no el custom domain) para bypass del CDN cache
+        # de Cloudflare, que puede devolver una version vieja durante hasta
+        # 10 minutos (max-age=600 en public/_headers para HTML).
+        #
+        # Tambien verifica el custom domain como informativo (no falla si
+        # el cache aun sirve la vieja — eso se purga solo).
         run: |
-          echo "Esperando 15s para que Cloudflare propague el deploy..."
-          sleep 15
-          for attempt in 1 2 3; do
-            echo "Intento $attempt..."
-            HTML=$(curl -s -A "AdsBot-Google (+http://www.google.com/adsbot.html)" "https://automatizacionslatam.com/?healthcheck=$(date +%s)")
-            if echo "$HTML" | grep -q "ca-pub-"; then
-              echo "::notice::Healthcheck OK — produccion sirve AdSense correctamente."
+          WORKER_URL="https://automatizacion-latam-web.jesusdavidquinterofontalvo.workers.dev"
+          PUBLIC_URL="https://automatizacionslatam.com"
+          UA="AdsBot-Google (+http://www.google.com/adsbot.html)"
+
+          echo "Esperando 10s para que el Worker propague el deploy..."
+          sleep 10
+
+          for attempt in 1 2 3 4 5; do
+            echo "Intento $attempt sobre Worker URL directo..."
+            HTML=$(curl -s -A "$UA" "$WORKER_URL/?hc=$(date +%s)$RANDOM")
+            SIZE=$(echo -n "$HTML" | wc -c)
+            HAS_ADS=$(echo "$HTML" | grep -c "ca-pub-" || true)
+            echo "  Worker: ${SIZE} bytes, ca-pub matches: ${HAS_ADS}"
+            if [ "$HAS_ADS" -gt 0 ]; then
+              echo "::notice::Healthcheck OK — el Worker sirve AdSense correctamente (intento $attempt)."
+              # Adicional: check informativo sobre el dominio publico
+              PUB=$(curl -s -A "$UA" "$PUBLIC_URL/?hc=$(date +%s)$RANDOM" | grep -c "ca-pub-" || true)
+              if [ "$PUB" -gt 0 ]; then
+                echo "::notice::Custom domain tambien sirve AdSense (CF cache propagado)."
+              else
+                echo "::warning::Custom domain todavia sirve cache anterior. Se propaga solo en <10 min."
+              fi
               exit 0
             fi
-            echo "::warning::Intento $attempt: AdSense NO esta en produccion. Reintentando en 20s..."
-            sleep 20
+            echo "::warning::Intento $attempt: el Worker no muestra ca-pub-. Reintentando en 15s..."
+            sleep 15
           done
-          echo "::error::Healthcheck FALLO. Produccion no sirve AdSense despues del deploy. Esto rompe la monetizacion. Revisar logs y re-deployar manualmente con env vars correctas."
+          echo "::error::Healthcheck FALLO. El Worker NO sirve AdSense despues del deploy. Esto rompe la monetizacion."
+          echo "::error::Revisar logs del paso 'Build sitio estatico' (que PUBLIC_ADSENSE_CLIENT este poblado) y del paso 'Deploy a Cloudflare Workers'."
           exit 1
