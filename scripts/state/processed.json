@@ -1124,7 +1124,12 @@
       "url": "https://www.marktechpost.com/2026/05/24/microsoft-research-releases-webwright-a-terminal-native-web-agent-framework-that-scores-60-1-on-odysseys-up-from-base-gpt-5-4s-33-5/",
       "fuente": "MarkTechPost",
       "fecha_proceso": "2026-05-24T11:22:51.714744+00:00"
+    },
+    "1c93d6c1c7251e5f": {
+      "url": "https://openai.com/index/model-disproves-discrete-geometry-conjecture",
+      "fuente": "OpenAI Blog",
+      "fecha_proceso": "2026-05-24T13:52:31.239583+00:00"
     }
   },
-  "ultima_corrida": "2026-05-24T11:23:13.311638+00:00"
+  "ultima_corrida": "2026-05-24T13:52:31.239634+00:00"
 }
