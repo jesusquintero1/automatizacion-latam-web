@@ -1109,7 +1109,12 @@
       "url": "https://www.marktechpost.com/2026/05/23/tencent-open-sources-tencentdb-agent-memory-a-4-tier-local-memory-pipeline-for-ai-agents/",
       "fuente": "MarkTechPost",
       "fecha_proceso": "2026-05-23T21:03:06.844034+00:00"
+    },
+    "1ec2b3af7afb88fc": {
+      "url": "https://www.marktechpost.com/2026/05/24/nvidia-ai-releases-gated-deltanet-2-a-linear-attention-layer-that-decouples-erase-and-write-in-the-delta-rule/",
+      "fuente": "MarkTechPost",
+      "fecha_proceso": "2026-05-24T08:41:41.142194+00:00"
     }
   },
-  "ultima_corrida": "2026-05-24T04:20:20.232280+00:00"
+  "ultima_corrida": "2026-05-24T08:42:05.041087+00:00"
 }
