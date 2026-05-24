@@ -1114,7 +1114,17 @@
       "url": "https://www.marktechpost.com/2026/05/24/nvidia-ai-releases-gated-deltanet-2-a-linear-attention-layer-that-decouples-erase-and-write-in-the-delta-rule/",
       "fuente": "MarkTechPost",
       "fecha_proceso": "2026-05-24T08:41:41.142194+00:00"
+    },
+    "ef321dec4cdc3102": {
+      "url": "https://industrialcyber.co/features/zero-trust-in-ot-moves-beyond-identity-as-industrial-operators-prioritize-visibility-segmentation-operational-resilience/",
+      "fuente": "Industrial Cyber",
+      "fecha_proceso": "2026-05-24T11:22:41.217586+00:00"
+    },
+    "f04a4432f89156f9": {
+      "url": "https://www.marktechpost.com/2026/05/24/microsoft-research-releases-webwright-a-terminal-native-web-agent-framework-that-scores-60-1-on-odysseys-up-from-base-gpt-5-4s-33-5/",
+      "fuente": "MarkTechPost",
+      "fecha_proceso": "2026-05-24T11:22:51.714744+00:00"
     }
   },
-  "ultima_corrida": "2026-05-24T08:42:05.041087+00:00"
+  "ultima_corrida": "2026-05-24T11:23:13.311638+00:00"
 }
