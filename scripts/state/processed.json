@@ -1134,7 +1134,22 @@
       "url": "https://openai.com/index/ramp",
       "fuente": "OpenAI Blog",
       "fecha_proceso": "2026-05-24T15:13:41.367526+00:00"
+    },
+    "ff01238451a7a0f6": {
+      "url": "https://www.marktechpost.com/2026/05/24/build-a-complete-langfuse-observability-and-evaluation-pipeline-for-tracing-prompt-management-scoring-and-experiments/",
+      "fuente": "MarkTechPost",
+      "fecha_proceso": "2026-05-24T23:04:28.422375+00:00"
+    },
+    "9da42523b72004ec": {
+      "url": "https://www.marktechpost.com/2026/05/24/stepfun-releases-stepaudio-2-5-realtime-an-end-to-end-voice-model-with-roleplay-specific-rlhf-and-paralinguistic-comprehension/",
+      "fuente": "MarkTechPost",
+      "fecha_proceso": "2026-05-24T23:04:40.532135+00:00"
+    },
+    "bd8c1793d5537a71": {
+      "url": "https://techcrunch.com/2026/05/24/everyone-is-navigating-ai-security-in-real-time-even-google/",
+      "fuente": "TechCrunch AI",
+      "fecha_proceso": "2026-05-24T23:04:53.004583+00:00"
     }
   },
-  "ultima_corrida": "2026-05-24T21:05:27.167853+00:00"
+  "ultima_corrida": "2026-05-24T23:05:16.482011+00:00"
 }
