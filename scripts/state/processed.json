@@ -1189,7 +1189,12 @@
       "url": "https://openai.com/index/grupo-folha-grupo-uol-partnership",
       "fuente": "OpenAI Blog",
       "fecha_proceso": "2026-05-25T21:19:02.422296+00:00"
+    },
+    "c085a756a4aa124e": {
+      "url": "https://www.marktechpost.com/2026/05/25/together-ai-open-sources-oscar-an-attention-aware-2-bit-kv-cache-quantization-system-for-long-context-llm-serving/",
+      "fuente": "MarkTechPost",
+      "fecha_proceso": "2026-05-25T23:15:13.022110+00:00"
     }
   },
-  "ultima_corrida": "2026-05-25T21:19:11.876273+00:00"
+  "ultima_corrida": "2026-05-25T23:15:38.719119+00:00"
 }
