@@ -1274,7 +1274,27 @@
       "url": "https://www.plantengineering.com/considering-a-bess-know-design-and-risk-mitigation/",
       "fuente": "Plant Engineering",
       "fecha_proceso": "2026-05-27T04:40:11.565410+00:00"
+    },
+    "bc9ea92356a15a10": {
+      "url": "https://industrialcyber.co/ai/cert-in-warns-ai-assisted-adversaries-amplifying-lateral-movement-exploitation-data-exfiltration-across-critical-systems/",
+      "fuente": "Industrial Cyber",
+      "fecha_proceso": "2026-05-27T10:12:02.509593+00:00"
+    },
+    "c0105829558d40f2": {
+      "url": "https://www.marktechpost.com/2026/05/27/meet-eagle-3-1-the-speculative-decoding-algorithm-that-fixes-attention-drift-in-llm-inference/",
+      "fuente": "MarkTechPost",
+      "fecha_proceso": "2026-05-27T10:12:13.318594+00:00"
+    },
+    "e3e3a326af99f7e8": {
+      "url": "https://industrialcyber.co/ransomware/fbi-links-first-vpn-service-to-ransomware-gangs-botnets-criminal-dark-web-activity-calls-for-layered-defensive-controls/",
+      "fuente": "Industrial Cyber",
+      "fecha_proceso": "2026-05-27T10:12:26.898333+00:00"
+    },
+    "8fb387d0f6861b5a": {
+      "url": "https://www.marktechpost.com/2026/05/26/memo-a-modular-framework-for-training-a-dedicated-memory-model-on-new-knowledge-without-modifying-llm-parameters/",
+      "fuente": "MarkTechPost",
+      "fecha_proceso": "2026-05-27T10:12:40.361952+00:00"
     }
   },
-  "ultima_corrida": "2026-05-27T04:40:34.249766+00:00"
+  "ultima_corrida": "2026-05-27T10:12:52.089292+00:00"
 }
