@@ -1294,7 +1294,47 @@
       "url": "https://www.marktechpost.com/2026/05/26/memo-a-modular-framework-for-training-a-dedicated-memory-model-on-new-knowledge-without-modifying-llm-parameters/",
       "fuente": "MarkTechPost",
       "fecha_proceso": "2026-05-27T10:12:40.361952+00:00"
+    },
+    "c7d89f6e73a6fe5b": {
+      "url": "https://techcrunch.com/2026/05/27/ai-coding-startup-cognition-raises-1b-at-25b-pre-money-valuation/",
+      "fuente": "TechCrunch AI",
+      "fecha_proceso": "2026-05-27T16:04:23.040011+00:00"
+    },
+    "631ce1bb5ecebbe2": {
+      "url": "https://www.electronicsweekly.com/news/products/displays-2/seco-brings-modular-vision-10-1-mx95-hmi-platform-to-market-2026-05/",
+      "fuente": "Electronics Weekly",
+      "fecha_proceso": "2026-05-27T16:04:34.780707+00:00"
+    },
+    "f5456a4db820b0cc": {
+      "url": "http://www.ManufacturingTomorrow.com/news/2026/05/27/siemens-taps-jabil-to-expand-electrical-equipment-manufacturing-in-virginia/27654",
+      "fuente": "Manufacturing Tomorrow",
+      "fecha_proceso": "2026-05-27T16:04:44.564613+00:00"
+    },
+    "69d83989a49587a4": {
+      "url": "http://www.ManufacturingTomorrow.com/news/2026/05/27/syntax-expands-smart-manufacturing-portfolio-with-shiftbook/27653",
+      "fuente": "Manufacturing Tomorrow",
+      "fecha_proceso": "2026-05-27T16:04:56.292943+00:00"
+    },
+    "3183936c550bc189": {
+      "url": "https://industrialcyber.co/news/cisa-sets-june-town-hall-meetings-on-circia-cyber-incident-reporting-rule-for-critical-infrastructure-stakeholders/",
+      "fuente": "Industrial Cyber",
+      "fecha_proceso": "2026-05-27T16:05:12.507483+00:00"
+    },
+    "c4a3acb74cfa4a8b": {
+      "url": "https://industrialcyber.co/nist/nist-fy2025-report-highlights-cybersecurity-and-privacy-initiatives-spanning-ai-5g-iot-critical-infrastructure-resilience/",
+      "fuente": "Industrial Cyber",
+      "fecha_proceso": "2026-05-27T16:05:25.174186+00:00"
+    },
+    "8c6178f74d64fe2e": {
+      "url": "https://www.iiot-world.com/energy/scaling-ai-energy-edge-deployment/",
+      "fuente": "IIoT World",
+      "fecha_proceso": "2026-05-27T16:05:41.910391+00:00"
+    },
+    "c7affab7451ec44b": {
+      "url": "https://openai.com/index/building-self-improving-tax-agents-with-codex",
+      "fuente": "OpenAI Blog",
+      "fecha_proceso": "2026-05-27T16:05:55.365338+00:00"
     }
   },
-  "ultima_corrida": "2026-05-27T10:12:52.089292+00:00"
+  "ultima_corrida": "2026-05-27T16:05:57.790075+00:00"
 }
