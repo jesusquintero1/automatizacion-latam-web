@@ -1364,7 +1364,22 @@
       "url": "https://openai.com/index/warp",
       "fuente": "OpenAI Blog",
       "fecha_proceso": "2026-05-27T20:29:01.011232+00:00"
+    },
+    "4cb894a57eaad586": {
+      "url": "https://www.designworldonline.com/ethical-engineering-ai-and-its-use-in-military-and-intelligence-applications/",
+      "fuente": "Design World Online",
+      "fecha_proceso": "2026-05-27T23:23:20.975695+00:00"
+    },
+    "adb4535b4f92ae5f": {
+      "url": "https://www.marktechpost.com/2026/05/27/nvidia-releases-polar-a-token-faithful-rollout-framework-for-grpo-training-across-codex-claude-code-and-qwen-code/",
+      "fuente": "MarkTechPost",
+      "fecha_proceso": "2026-05-27T23:23:38.724398+00:00"
+    },
+    "53e1da4b0cbcd14f": {
+      "url": "https://openai.com/index/cisco",
+      "fuente": "OpenAI Blog",
+      "fecha_proceso": "2026-05-27T23:24:03.046652+00:00"
     }
   },
-  "ultima_corrida": "2026-05-27T20:29:03.459719+00:00"
+  "ultima_corrida": "2026-05-27T23:24:05.055630+00:00"
 }
