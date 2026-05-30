@@ -38,15 +38,74 @@ const { categoria } = Astro.props;
 const noticias = (await getCollection('noticias'))
   .filter((n) => n.data.categoria === categoria)
   .sort((a, b) => new Date(b.data.fecha).valueOf() - new Date(a.data.fecha).valueOf());
+
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://automatizacionslatam.com';
+const pageUrl = `${siteUrl}${Astro.url.pathname}`;
+
+// Descripciones contextuales por categoria — mejoran SEO y E-E-A-T frente a
+// una descripcion generica repetida.
+const DESCRIPCIONES_CATEGORIA: Record<string, string> = {
+  'PLC y Control': 'Noticias sobre PLC, HMI, SCADA, DCS, instrumentación, variadores y lazos de control industrial. Cobertura diaria en español para ingenieros de automatización en Latinoamérica.',
+  'Robótica': 'Robots industriales, cobots, AGV, AMR y visión de máquina. Análisis de lanzamientos, fabricantes y aplicaciones reales en la región.',
+  'Industria 4.0': 'Convergencia IT/OT, IIoT, gemelos digitales, MES y edge computing. La fábrica conectada explicada en español para profesionales LatAm.',
+  'Inteligencia Artificial': 'Modelos generativos, agentes de IA, LLMs (Claude, GPT, Gemini), papers y regulación. IA aplicada y de propósito general, contada para el sector industrial.',
+  'Ciberseguridad OT': 'Ataques a infraestructura industrial, vulnerabilidades en PLC y HMI, IEC 62443, post-cuántica y guías de NIST/CISA aplicadas a OT.',
+  'Energía y Sostenibilidad': 'Gestión energética, microgrids, renovables a escala industrial, descarbonización de plantas y refrigeración de data centers.',
+  'Mercado y Negocios': 'Fusiones, adquisiciones, lanzamientos comerciales, certificaciones y movimientos estratégicos del sector de automatización industrial.',
+  'Casos de Estudio': 'Implementaciones reales en plantas y fábricas con métricas medibles. Retrofits y modernizaciones documentadas paso a paso.',
+  'General': 'Otras noticias relevantes para el ecosistema de automatización industrial latinoamericano.',
+};
+
+const descripcion = DESCRIPCIONES_CATEGORIA[categoria]
+  ?? `Las últimas noticias de ${categoria} para profesionales de automatización industrial en Latinoamérica.`;
+
+const jsonLdCollection = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  '@id': pageUrl,
+  name: `${categoria} — Noticias`,
+  description: descripcion,
+  url: pageUrl,
+  inLanguage: 'es',
+  isPartOf: { '@type': 'WebSite', name: 'Automatización LatAm', url: siteUrl },
+  mainEntity: {
+    '@type': 'ItemList',
+    numberOfItems: noticias.length,
+    itemListElement: noticias.slice(0, 20).map((n, idx) => ({
+      '@type': 'ListItem',
+      position: idx + 1,
+      url: `${siteUrl}/noticia/${n.slug}/`,
+      name: n.data.titulo,
+    })),
+  },
+};
+const jsonLdBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Inicio', item: `${siteUrl}/` },
+    { '@type': 'ListItem', position: 2, name: categoria, item: pageUrl },
+  ],
+};
 ---
 <Base
-  title={`${categoria} — Automatización LatAm`}
-  description={`Las últimas noticias de ${categoria} para profesionales de automatización industrial en Latinoamérica.`}
+  title={`${categoria} — Noticias y análisis | Automatización LatAm`}
+  description={descripcion}
 >
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdCollection)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdBreadcrumb)} />
   <section class="mx-auto max-w-[var(--container)] px-4 md:px-8 py-10">
+    <nav aria-label="Breadcrumb" class="text-xs text-ink-500 mb-3">
+      <a href="/" class="hover:text-brand-600">Inicio</a>
+      <span class="mx-1">›</span>
+      <span class="text-ink-700">{categoria}</span>
+    </nav>
     <p class="text-brand-600 font-semibold uppercase tracking-wider text-sm mb-2">Categoría</p>
     <h1 class="text-3xl md:text-5xl font-serif font-bold text-ink-900 mb-3">{categoria}</h1>
-    <p class="text-ink-500 text-lg max-w-2xl mb-10">
+    <p class="text-ink-500 text-lg max-w-2xl mb-3">
+      {descripcion}
+    </p>
+    <p class="text-ink-500 text-sm max-w-2xl mb-10">
       {noticias.length} {noticias.length === 1 ? 'noticia publicada' : 'noticias publicadas'} en esta categoría.
     </p>
 

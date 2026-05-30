@@ -4,27 +4,40 @@ import Base from '../../layouts/Base.astro';
 import ArticleCard from '../../components/ArticleCard.astro';
 import AdSlot from '../../components/AdSlot.astro';
 
+// Slugifier robusto: NFD + remueve combinantes (U+0300-U+036F). Mismo
+// algoritmo que [...slug].astro para que los enlaces de tags resuelvan bien.
+const slugify = (s: string) =>
+  s.toLowerCase()
+   .normalize('NFD')
+   .replace(/[̀-ͯ]/g, '')
+   .replace(/[^a-z0-9]+/g, '-')
+   .replace(/^-+|-+$/g, '');
+
 export async function getStaticPaths() {
   const noticias = await getCollection('noticias');
-  const tagsMap = new Map<string, CollectionEntry<'noticias'>[]>();
+  const tagsMap = new Map<string, { items: CollectionEntry<'noticias'>[]; label: string }>();
+
+  // Construimos el slug con la misma funcion que usa [...slug].astro y
+  // guardamos el primer label original que encontramos para mostrarlo.
+  const buildSlug = (s: string) =>
+    s.toLowerCase()
+     .normalize('NFD')
+     .replace(/[̀-ͯ]/g, '')
+     .replace(/[^a-z0-9]+/g, '-')
+     .replace(/^-+|-+$/g, '');
 
   for (const n of noticias) {
     for (const t of n.data.tags ?? []) {
-      const slug = t
-        .toLowerCase()
-        .normalize('NFD')
-        .replace(/[̀-ͯ]/g, '')
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/^-+|-+$/g, '');
+      const slug = buildSlug(t);
       if (!slug) continue;
-      if (!tagsMap.has(slug)) tagsMap.set(slug, []);
-      tagsMap.get(slug)!.push(n);
+      if (!tagsMap.has(slug)) tagsMap.set(slug, { items: [], label: t });
+      tagsMap.get(slug)!.items.push(n);
     }
   }
 
-  return Array.from(tagsMap.entries()).map(([slug, items]) => ({
+  return Array.from(tagsMap.entries()).map(([slug, { items, label }]) => ({
     params: { tag: slug },
-    props: { tagLabel: items[0].data.tags.find((t) => t.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') === slug) || slug, items },
+    props: { tagLabel: label, items },
   }));
 }
 
@@ -32,12 +45,44 @@ interface Props { tagLabel: string; items: CollectionEntry<'noticias'>[]; }
 const { tagLabel, items } = Astro.props;
 const ordenadas = items.sort((a, b) => new Date(b.data.fecha).valueOf() - new Date(a.data.fecha).valueOf());
 const labelPretty = tagLabel.replace(/-/g, ' ');
+
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://automatizacionslatam.com';
+const pageUrl = `${siteUrl}${Astro.url.pathname}`;
+
+// CollectionPage + ItemList ayuda a Google a entender la pagina como un hub
+// curado de noticias y aumenta la probabilidad de aparecer como sitelink.
+const jsonLdCollection = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  '@id': pageUrl,
+  name: `${labelPretty} — Noticias`,
+  description: `Noticias relacionadas con ${labelPretty}`,
+  url: pageUrl,
+  inLanguage: 'es',
+  isPartOf: { '@type': 'WebSite', name: 'Automatización LatAm', url: siteUrl },
+  mainEntity: {
+    '@type': 'ItemList',
+    numberOfItems: ordenadas.length,
+    itemListElement: ordenadas.slice(0, 20).map((n, idx) => ({
+      '@type': 'ListItem',
+      position: idx + 1,
+      url: `${siteUrl}/noticia/${n.slug}/`,
+      name: n.data.titulo,
+    })),
+  },
+};
 ---
 <Base
   title={`${labelPretty} — Noticias y análisis | Automatización LatAm`}
   description={`Todas las noticias relacionadas con ${labelPretty} en automatización industrial, IA, robótica y manufactura. ${ordenadas.length} artículo${ordenadas.length === 1 ? '' : 's'}.`}
 >
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdCollection)} />
   <section class="mx-auto max-w-[var(--container)] px-4 md:px-8 py-10">
+    <nav aria-label="Breadcrumb" class="text-xs text-ink-500 mb-3">
+      <a href="/" class="hover:text-brand-600">Inicio</a>
+      <span class="mx-1">›</span>
+      <span class="text-ink-700">#{labelPretty}</span>
+    </nav>
     <p class="text-brand-600 font-semibold uppercase tracking-wider text-sm mb-2">Etiqueta</p>
     <h1 class="text-3xl md:text-5xl font-serif font-bold text-ink-900 mb-3 capitalize">
       #{labelPretty}

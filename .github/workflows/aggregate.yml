@@ -83,6 +83,7 @@ jobs:
           echo "::notice::AdSense (ca-pub-) confirmado en dist/index.html — listo para deploy."
 
       - name: Deploy a Cloudflare Workers
+        id: cf_deploy
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -93,42 +94,111 @@ jobs:
           # worker y falla con "Missing entry-point".
           wranglerVersion: "4"
 
-      - name: Healthcheck post-deploy — verificar AdSense en produccion
-        # Verifica que el deploy sirve AdSense correctamente. Consulta el
-        # *Worker URL directo* (no el custom domain) para bypass del CDN cache
-        # de Cloudflare, que puede devolver una version vieja durante hasta
-        # 10 minutos (max-age=600 en public/_headers para HTML).
+      - name: Capturar version ID del deploy del CI
+        # wrangler-action puede exponer command-output (stdout del wrangler).
+        # Buscamos "Current Version ID: <uuid>" que wrangler imprime tras
+        # cada deploy exitoso. Si el output no esta disponible (depende de la
+        # version de la action), caemos en plan B: listar las versions de
+        # wrangler y tomar la mas reciente (que acaba de crearse).
+        id: ci_version
+        env:
+          CMD_OUTPUT: ${{ steps.cf_deploy.outputs.command-output }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          VERSION_ID=$(echo "$CMD_OUTPUT" | grep -oE 'Current Version ID: [a-f0-9-]{36}' | head -1 | awk '{print $4}')
+          if [ -z "$VERSION_ID" ]; then
+            echo "::warning::command-output vacio. Fallback a wrangler versions list."
+            # La primera Version ID listada por wrangler es la mas reciente.
+            # wrangler lista versions de mas antigua a mas reciente: tail -1.
+            VERSION_ID=$(npx wrangler versions list --name automatizacion-latam-web 2>&1 | grep -oE 'Version ID:[[:space:]]+[a-f0-9-]{36}' | tail -1 | grep -oE '[a-f0-9-]{36}')
+          fi
+          if [ -z "$VERSION_ID" ]; then
+            echo "::error::No pude extraer Version ID del deploy del CI por ningun metodo."
+            exit 1
+          fi
+          echo "Version del CI capturada: $VERSION_ID"
+          echo "version_id=$VERSION_ID" >> $GITHUB_OUTPUT
+
+      - name: Defensa anti deploy fantasma — rollback automatico
+        # Cloudflare tiene una integracion Git que se dispara con cada push a
+        # main (incluidos los commits del bot agregador) y reconstruye SIN
+        # acceso a los Secrets de GitHub. Ese deploy "fantasma" se ejecuta
+        # 10-30s despues del deploy del CI, queda activo y pisa la version
+        # buena con una sin ca-pub- y con SITE_URL fallback a pages.dev.
         #
-        # Tambien verifica el custom domain como informativo (no falla si
-        # el cache aun sirve la vieja — eso se purga solo).
+        # Mientras el usuario no desconecte la integracion Git en el
+        # dashboard, este step monitorea durante ~5 min y, si detecta que la
+        # version activa ya no es la del CI, hace rollback inmediato.
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CI_VERSION: ${{ steps.ci_version.outputs.version_id }}
+        run: |
+          ROLLBACK_COUNT=0
+          # Vigilamos 5 min en pasos de 30s = 10 iteraciones.
+          for i in 1 2 3 4 5 6 7 8 9 10; do
+            sleep 30
+            # Listamos el deployment activo. wrangler lo muestra como ultimo.
+            # Source "Unknown (deployment)" es lo que da CF cuando deploya
+            # tanto por API como por Git Integration. Parseamos el version id
+            # del bloque mas reciente.
+            DEPLOYMENTS=$(npx wrangler deployments list --name automatizacion-latam-web 2>&1)
+            ACTIVE=$(echo "$DEPLOYMENTS" | grep -oE '\(100%\) [a-f0-9-]{36}' | tail -1 | awk '{print $2}')
+            if [ -z "$ACTIVE" ]; then
+              echo "::warning::Iter $i — no pude parsear version activa, salto."
+              continue
+            fi
+            echo "Iter $i — version activa actual: ${ACTIVE:0:8}... (esperada del CI: ${CI_VERSION:0:8}...)"
+            if [ "$ACTIVE" != "$CI_VERSION" ]; then
+              echo "::warning::Detectado deploy fantasma de CF Git Integration. Iniciando rollback al version del CI."
+              # wrangler rollback en non-interactive context auto-acepta.
+              npx wrangler rollback "$CI_VERSION" --name automatizacion-latam-web --message "auto-rollback ante deploy fantasma de CF Git Integration" 2>&1 || true
+              ROLLBACK_COUNT=$((ROLLBACK_COUNT+1))
+              echo "::warning::Rollback #$ROLLBACK_COUNT ejecutado."
+            fi
+          done
+          if [ "$ROLLBACK_COUNT" -gt 0 ]; then
+            echo "::warning::Se ejecutaron $ROLLBACK_COUNT rollback(s) durante este run."
+            echo "::warning::Para eliminar la causa raiz, DESCONECTA la integracion Git en CF dashboard:"
+            echo "::warning::  Cloudflare > Workers & Pages > automatizacion-latam-web > Settings > Builds/Source > Disconnect."
+          else
+            echo "::notice::Sin rollbacks necesarios — el deploy fantasma no ocurrio en este run."
+          fi
+
+      - name: Healthcheck post-deploy — verificar AdSense en produccion
+        # Verifica que la version activa final sirve AdSense. Tras los
+        # rollbacks de defensa, este check confirma que el sitio publico
+        # esta saludable.
         run: |
           WORKER_URL="https://automatizacion-latam-web.jesusdavidquinterofontalvo.workers.dev"
           PUBLIC_URL="https://automatizacionslatam.com"
           UA="AdsBot-Google (+http://www.google.com/adsbot.html)"
 
-          echo "Esperando 10s para que el Worker propague el deploy..."
-          sleep 10
-
           for attempt in 1 2 3 4 5; do
             echo "Intento $attempt sobre Worker URL directo..."
-            HTML=$(curl -s -A "$UA" "$WORKER_URL/?hc=$(date +%s)$RANDOM")
+            # Cache-bust con un path inexistente seguido del path real fuerza
+            # MISS porque CF cachea per-URL. Pero CF tambien respeta el header
+            # CF-Cache-Bypass, asi que combinamos ambos.
+            HTML=$(curl -s -A "$UA" -H "Cache-Control: no-cache" \
+              "$WORKER_URL/?hc=$(date +%s)$RANDOM$RANDOM")
             SIZE=$(echo -n "$HTML" | wc -c)
             HAS_ADS=$(echo "$HTML" | grep -c "ca-pub-" || true)
-            echo "  Worker: ${SIZE} bytes, ca-pub matches: ${HAS_ADS}"
-            if [ "$HAS_ADS" -gt 0 ]; then
-              echo "::notice::Healthcheck OK — el Worker sirve AdSense correctamente (intento $attempt)."
-              # Adicional: check informativo sobre el dominio publico
+            HAS_GOOD_CANONICAL=$(echo "$HTML" | grep -c "automatizacionslatam.com" || true)
+            echo "  Worker: ${SIZE} bytes, ca-pub matches: ${HAS_ADS}, canonical-ok matches: ${HAS_GOOD_CANONICAL}"
+            if [ "$HAS_ADS" -gt 0 ] && [ "$HAS_GOOD_CANONICAL" -gt 0 ]; then
+              echo "::notice::Healthcheck OK — el Worker sirve AdSense + canonical correcto (intento $attempt)."
               PUB=$(curl -s -A "$UA" "$PUBLIC_URL/?hc=$(date +%s)$RANDOM" | grep -c "ca-pub-" || true)
               if [ "$PUB" -gt 0 ]; then
-                echo "::notice::Custom domain tambien sirve AdSense (CF cache propagado)."
+                echo "::notice::Custom domain tambien sirve AdSense."
               else
                 echo "::warning::Custom domain todavia sirve cache anterior. Se propaga solo en <10 min."
               fi
               exit 0
             fi
-            echo "::warning::Intento $attempt: el Worker no muestra ca-pub-. Reintentando en 15s..."
-            sleep 15
+            echo "::warning::Intento $attempt: el Worker no muestra ca-pub- o canonical. Reintentando en 20s..."
+            sleep 20
           done
-          echo "::error::Healthcheck FALLO. El Worker NO sirve AdSense despues del deploy. Esto rompe la monetizacion."
-          echo "::error::Revisar logs del paso 'Build sitio estatico' (que PUBLIC_ADSENSE_CLIENT este poblado) y del paso 'Deploy a Cloudflare Workers'."
+          echo "::error::Healthcheck FALLO. El Worker NO sirve AdSense despues del deploy."
+          echo "::error::Revisar: 1) PUBLIC_ADSENSE_CLIENT en Secrets, 2) integracion Git CF aun activa, 3) astro.config.mjs SITE_URL default."
           exit 1

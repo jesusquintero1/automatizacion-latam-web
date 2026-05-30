@@ -20,14 +20,31 @@ const fechaStr = new Date(fecha).toLocaleDateString('es', {
   day: 'numeric', month: 'long', year: 'numeric',
 });
 
+// Slugifier robusto: NFD + remueve combinantes (U+0300-U+036F) + normaliza.
 const slugify = (s: string) =>
   s.toLowerCase()
-   .replace(/[áéíóúñ]/g, (c) => ({á:'a',é:'e',í:'i',ó:'o',ú:'u',ñ:'n'} as Record<string,string>)[c] ?? c)
+   .normalize('NFD')
+   .replace(/[̀-ͯ]/g, '')
    .replace(/[^a-z0-9]+/g, '-')
    .replace(/^-+|-+$/g, '');
 const catSlug = slugify(categoria);
 const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://automatizacionslatam.com';
 const articleUrl = `${siteUrl}${Astro.url.pathname}`;
+
+// wordCount aproximado del cuerpo (para schema NewsArticle: ayuda a Google a
+// entender la profundidad del articulo).
+const rawBody = noticia.body || '';
+const wordCount = rawBody
+  .replace(/[#*_`>\[\]()-]/g, ' ')
+  .split(/\s+/)
+  .filter((w) => w.length > 1).length;
+// articleBody = texto plano del cuerpo, util para Google News.
+const articleBodyPlain = rawBody
+  .replace(/```[\s\S]*?```/g, '')
+  .replace(/[#*_`>\[\]()-]/g, ' ')
+  .replace(/\s+/g, ' ')
+  .trim()
+  .slice(0, 5000);
 
 const todasNoticias = await getCollection('noticias');
 const tagsSet = new Set(tags);
@@ -46,46 +63,71 @@ const relacionadas = todasNoticias
   .slice(0, 3)
   .map(({ entry }) => entry);
 
+const isoFecha = new Date(fecha).toISOString();
+
+// NewsArticle rico: author Organization + publisher + dateline + isBasedOn
+// (apunta a la fuente original, le da contexto a Google de que es derivado).
 const jsonLdArticle = {
   '@context': 'https://schema.org',
   '@type': 'NewsArticle',
-  headline: titulo,
+  '@id': articleUrl,
+  mainEntityOfPage: { '@type': 'WebPage', '@id': articleUrl },
+  headline: titulo.slice(0, 110),
   description: resumen,
-  datePublished: new Date(fecha).toISOString(),
-  dateModified: new Date(fecha).toISOString(),
+  datePublished: isoFecha,
+  dateModified: isoFecha,
   inLanguage: 'es',
   articleSection: categoria,
   keywords: tags.join(', '),
+  wordCount,
+  articleBody: articleBodyPlain,
   url: articleUrl,
-  ...(imagen ? { image: imagen } : { image: `${siteUrl}/og-default.png` }),
+  image: imagen
+    ? { '@type': 'ImageObject', url: imagen, width: 1200, height: 675 }
+    : { '@type': 'ImageObject', url: `${siteUrl}/og-default.png`, width: 1200, height: 630 },
   author: {
     '@type': 'Organization',
     name: 'Automatización LatAm',
     url: siteUrl,
   },
   publisher: {
-    '@type': 'Organization',
+    '@type': 'NewsMediaOrganization',
     name: 'Automatización LatAm',
     url: siteUrl,
     logo: {
       '@type': 'ImageObject',
       url: `${siteUrl}/og-default.png`,
+      width: 1200,
+      height: 630,
     },
   },
   isBasedOn: fuente.url,
+  isAccessibleForFree: true,
+  // copyrightYear necesita ano.
+  copyrightYear: new Date(fecha).getUTCFullYear(),
+  copyrightHolder: { '@type': 'Organization', name: 'Automatización LatAm' },
 };
 
 const jsonLdBreadcrumb = {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
   itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Inicio', item: siteUrl },
+    { '@type': 'ListItem', position: 1, name: 'Inicio', item: `${siteUrl}/` },
     { '@type': 'ListItem', position: 2, name: categoria, item: `${siteUrl}/categoria/${catSlug}/` },
     { '@type': 'ListItem', position: 3, name: titulo, item: articleUrl },
   ],
 };
 ---
-<Base title={`${titulo} — Automatización LatAm`} description={resumen} ogImage={imagen}>
+<Base
+  title={`${titulo} — Automatización LatAm`}
+  description={resumen}
+  ogImage={imagen}
+  articulo={true}
+  publishedTime={isoFecha}
+  modifiedTime={isoFecha}
+  ogSection={categoria}
+  ogTags={tags}
+>
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdArticle)} />
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdBreadcrumb)} />
 
@@ -154,13 +196,14 @@ const jsonLdBreadcrumb = {
     </p>
 
     {tags.length > 0 && (
-      <div class="flex flex-wrap gap-2 mt-6">
+      <div class="flex flex-wrap gap-2 mt-6" aria-label="Etiquetas del artículo">
         {tags.map((t) => {
-          const tagSlug = t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+          const tagSlug = slugify(t);
           return (
             <a
               href={`/tag/${tagSlug}/`}
               class="text-xs bg-ink-300/20 text-ink-700 px-3 py-1 rounded-full hover:bg-brand-100 hover:text-brand-700 transition"
+              rel="tag"
             >
               #{t}
             </a>

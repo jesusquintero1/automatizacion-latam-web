@@ -33,9 +33,33 @@ const CATEGORIAS_DESTACADAS = [
 
 const titlePagina = isFirst
   ? 'Automatización LatAm — Noticias diarias de PLC, robótica e Industria 4.0'
-  : `Página ${page.currentPage} — Automatización LatAm`;
+  : `Archivo página ${page.currentPage} — Automatización LatAm`;
+
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://automatizacionslatam.com';
+
+// JSON-LD ItemList — solo en home: marca las primeras 12 noticias como
+// candidatas a Top Stories en Google y mejora la visibilidad como hub.
+const jsonLdItemList = isFirst ? {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  '@id': `${siteUrl}/#noticias-recientes`,
+  name: 'Noticias recientes de automatización industrial',
+  numberOfItems: data.length,
+  itemListElement: data.map((n, idx) => ({
+    '@type': 'ListItem',
+    position: idx + 1,
+    url: `${siteUrl}/noticia/${n.slug}/`,
+    name: n.data.titulo,
+  })),
+} : null;
+
+// Imagen LCP (above-the-fold) en home: preload para CWV. Solo si la
+// destacada trae imagen.
+const lcpImage = isFirst && destacada?.data.imagen ? destacada.data.imagen : null;
 ---
 <Base title={titlePagina}>
+  {lcpImage && <link rel="preload" as="image" href={lcpImage} fetchpriority="high" slot="head" />}
+  {jsonLdItemList && <script type="application/ld+json" set:html={JSON.stringify(jsonLdItemList)} slot="head" />}
   {isFirst && (
     <section class="bg-gradient-to-br from-brand-50 to-white border-b border-ink-300/20">
       <div class="mx-auto max-w-[var(--container)] px-4 md:px-8 py-10 md:py-14">

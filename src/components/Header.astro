@@ -1,11 +1,13 @@
 ---
+// El logo lleva al home asi que omitimos "Inicio" en nav — usamos ese slot
+// para "Sobre" que AdSense y Google valoran como senal E-E-A-T.
 const navItems = [
-  { href: '/', label: 'Inicio' },
   { href: '/categoria/inteligencia-artificial', label: 'IA' },
   { href: '/categoria/plc-y-control', label: 'PLC y Control' },
   { href: '/categoria/robotica', label: 'Robótica' },
   { href: '/categoria/industria-4-0', label: 'Industria 4.0' },
   { href: '/categoria/ciberseguridad-ot', label: 'Ciberseguridad OT' },
+  { href: '/sobre', label: 'Sobre' },
 ];
 ---
 <header class="border-b border-ink-300/30 bg-white sticky top-0 z-40 backdrop-blur-md bg-white/90">
