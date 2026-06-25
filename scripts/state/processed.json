@@ -1559,7 +1559,37 @@
       "url": "https://industrialcyber.co/threats-attacks/darktrace-identifies-rising-cyber-exposure-tied-to-ai-driven-manufacturing-operations/",
       "fuente": "Industrial Cyber",
       "fecha_proceso": "2026-05-29T16:03:17.140070+00:00"
+    },
+    "5d2de9152522b89c": {
+      "url": "https://huggingface.co/blog/vllm-jobs",
+      "fuente": "Hugging Face Blog",
+      "fecha_proceso": "2026-06-25T23:27:13.526297+00:00"
+    },
+    "9fde553deecda35f": {
+      "url": "https://techcrunch.com/2026/06/25/patronus-ai-lands-50m-to-build-digital-worlds-that-stress-test-ai-agents/",
+      "fuente": "TechCrunch AI",
+      "fecha_proceso": "2026-06-25T23:27:26.174733+00:00"
+    },
+    "e24e12ef9468cee2": {
+      "url": "https://techcrunch.com/2026/06/25/anthropics-claude-is-winning-over-paid-consumers-a-market-owned-by-chatgpt/",
+      "fuente": "TechCrunch AI",
+      "fecha_proceso": "2026-06-25T23:27:40.612888+00:00"
+    },
+    "953f6a831f2a6db5": {
+      "url": "https://www.marktechpost.com/2026/06/25/deepreinforce-releases-ornith-1-0-an-open-source-coding-model-family-that-learns-its-own-rl-scaffolds/",
+      "fuente": "MarkTechPost",
+      "fecha_proceso": "2026-06-25T23:27:51.768251+00:00"
+    },
+    "823ad1f425c10d1a": {
+      "url": "https://www.electronicsweekly.com/news/products/connectors/lapps-olflex-robot-range-for-automated-dynamic-3d-movements-2026-06/",
+      "fuente": "Electronics Weekly",
+      "fecha_proceso": "2026-06-25T23:28:07.682823+00:00"
+    },
+    "a6c8fb2c971719f4": {
+      "url": "https://www.designworldonline.com/direct-tof-module-reaches-9-m-range/",
+      "fuente": "Design World Online",
+      "fecha_proceso": "2026-06-25T23:28:24.197221+00:00"
     }
   },
-  "ultima_corrida": "2026-06-25T20:15:10.609966+00:00"
+  "ultima_corrida": "2026-06-25T23:28:24.197274+00:00"
 }
