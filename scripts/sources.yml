@@ -154,7 +154,7 @@ fuentes:
 
 # Configuración global del agregador.
 config:
-  max_noticias_por_run: 12        # Tope total por ejecución (con 15 fuentes activas, +cobertura)
+  max_noticias_por_run: 5         # cap por run; con cron 12h = ~10/día (recorte costos API 2026-06-26)
   max_por_fuente: 2               # Máx noticias tomadas de la misma fuente en un run
   modelo: "claude-haiku-4-5"      # Haiku 4.5 para volumen alto y costo bajo
   # User-agent de navegador real — muchos sitios bloquean UAs "raros".
