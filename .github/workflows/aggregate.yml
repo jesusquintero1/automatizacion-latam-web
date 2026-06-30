@@ -42,6 +42,20 @@ jobs:
       - name: Instalar dependencias Node
         run: npm ci
 
+      - name: Analytics + Orquestador
+        # "Cerebro" de la flota: Analytics lee Search Console + GA4 (best-effort,
+        # degrada sin credenciales) y el Orquestador emite daily-plan.json con
+        # cuotas por categoría y keywords prioritarias que dirigen al agregador.
+        env:
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          GA4_PROPERTY_ID: ${{ secrets.GA4_PROPERTY_ID }}
+          GSC_SITE_URL: https://automatizacionslatam.com
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          python scripts/analytics.py --verbose || echo "::warning::Analytics degradado, sigo."
+          python scripts/orchestrator.py --verbose
+          { echo "## Plan del día"; echo; cat scripts/state/daily-report.md; } >> "$GITHUB_STEP_SUMMARY"
+
       - name: Correr agregador
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -53,7 +67,7 @@ jobs:
         run: |
           git config user.name "automatizacion-latam-bot"
           git config user.email "bot@automatizacionslatam.com"
-          git add src/content/noticias/ scripts/state/processed.json
+          git add src/content/noticias/ scripts/state/processed.json scripts/state/daily-plan.json scripts/state/analytics-report.json scripts/state/daily-report.md
           if git diff --staged --quiet; then
             echo "Sin cambios — nada que commitear."
           else

@@ -63,6 +63,7 @@ ROOT = Path(__file__).resolve().parent.parent
 CONTENT_DIR = ROOT / "src" / "content" / "noticias"
 STATE_DIR = Path(__file__).resolve().parent / "state"
 STATE_FILE = STATE_DIR / "processed.json"
+PLAN_FILE = STATE_DIR / "daily-plan.json"
 SOURCES_FILE = Path(__file__).resolve().parent / "sources.yml"
 
 CATEGORIAS_VALIDAS = [
@@ -239,6 +240,31 @@ def save_state(state: dict[str, Any]) -> None:
     STATE_DIR.mkdir(parents=True, exist_ok=True)
     state["ultima_corrida"] = dt.datetime.now(dt.timezone.utc).isoformat()
     STATE_FILE.write_text(json.dumps(state, indent=2, ensure_ascii=False), encoding="utf-8")
+
+
+def load_daily_plan(path: Path) -> dict[str, Any]:
+    """Carga el daily-plan.json del orquestador. Best-effort: si no existe o está
+    corrupto devuelve un plan vacío y el agregador se comporta como siempre."""
+    if not path.exists():
+        log.info("Sin daily-plan (%s) — selección por fecha, sin cuotas.", path.name)
+        return {"max_por_categoria": {}, "keywords_prioritarias": []}
+    try:
+        plan = json.loads(path.read_text(encoding="utf-8"))
+        kws = plan.get("keywords_prioritarias", []) or []
+        cuotas = plan.get("max_por_categoria", {}) or {}
+        log.info("Daily-plan cargado: %d keywords, %d categorías con cuota.", len(kws), len(cuotas))
+        return {"max_por_categoria": cuotas, "keywords_prioritarias": kws}
+    except (json.JSONDecodeError, OSError) as e:
+        log.warning("Daily-plan ilegible (%s) — sigo sin él.", e)
+        return {"max_por_categoria": {}, "keywords_prioritarias": []}
+
+
+def _keyword_hits(item: "FeedItem", keywords: list[str]) -> int:
+    """Cuántas keywords prioritarias aparecen en el titular+resumen crudos."""
+    if not keywords:
+        return 0
+    texto = f"{item.titulo_original} {item.resumen_original}".lower()
+    return sum(1 for kw in keywords if kw in texto)
 
 
 # ---------------------------------------------------------------------------
@@ -822,6 +848,8 @@ def main() -> int:
     ap.add_argument("--dry-run", action="store_true", help="No escribe archivos")
     ap.add_argument("--verbose", action="store_true", help="Log detallado")
     ap.add_argument("--max", type=int, default=None, help="Override tope de noticias por run")
+    ap.add_argument("--daily-plan", default=str(PLAN_FILE),
+                    help="Ruta al daily-plan.json del orquestador (cuotas + keywords)")
     args = ap.parse_args()
 
     setup_logging(args.verbose)
@@ -845,6 +873,13 @@ def main() -> int:
 
     log.info("Modelo: %s · max total: %d · max/fuente: %d", modelo, max_total, max_por_fuente)
 
+    # Plan editorial del orquestador: keywords prioritarias (re-rank) + cuotas
+    # por categoría (corrige la deriva de nicho). Best-effort: si no hay plan,
+    # el agregador se comporta como siempre (orden por fecha, sin topes).
+    plan = load_daily_plan(Path(args.daily_plan))
+    keywords_prioritarias: list[str] = plan["keywords_prioritarias"]
+    cuotas: dict[str, int] = plan["max_por_categoria"]
+
     state = load_state()
     procesados: dict[str, Any] = state.get("procesados", {})
 
@@ -860,20 +895,39 @@ def main() -> int:
         save_state(state)
         return 0
 
-    # Ordenar por fecha desc y tomar los top N
-    candidatos.sort(key=lambda i: i.fecha, reverse=True)
-    candidatos = candidatos[:max_total]
-    log.info("Procesando %d noticias nuevas con Claude…", len(candidatos))
+    # Re-rank: primero los que matchean keywords prioritarias (categorías
+    # hambrientas / demanda de Search Console), desempatando por fecha desc.
+    # Sin plan, _keyword_hits da 0 para todos → queda el orden por fecha de antes.
+    candidatos.sort(key=lambda i: (_keyword_hits(i, keywords_prioritarias), i.fecha), reverse=True)
+    if keywords_prioritarias:
+        con_match = sum(1 for i in candidatos if _keyword_hits(i, keywords_prioritarias))
+        log.info("Re-rank por plan: %d/%d candidatos matchean keywords prioritarias.",
+                 con_match, len(candidatos))
+    # No truncamos a max_total aún: las cuotas por categoría pueden saltar items,
+    # y queremos candidatos de reserva para llenar el cupo del run.
+    log.info("Procesando hasta %d noticias (de %d candidatos) con Claude…", max_total, len(candidatos))
 
     client: Anthropic | None = None if args.dry_run else Anthropic()
     escritas = 0
     nuevas_paths: list[Path] = []
+    publicadas_por_categoria: dict[str, int] = {}
+    llamadas = 0
+    # Tope de llamadas a Claude: max_total + holgura para rellenar cupos cuando
+    # las cuotas saltan algún artículo. Acota el costo aunque haya muchos
+    # candidatos de una categoría topada.
+    limite_llamadas = max_total + 5
     for item in candidatos:
+        if escritas >= max_total:
+            break
         log.info("→ %s (%s)", item.titulo_original[:80], item.fuente_nombre)
         if args.dry_run:
-            log.info("  [dry-run] saltando llamada a Claude")
+            hits = _keyword_hits(item, keywords_prioritarias)
+            log.info("  [dry-run] saltando llamada a Claude (keyword hits: %d)", hits)
             escritas += 1
             continue
+        if llamadas >= limite_llamadas:
+            log.info("  Tope de llamadas a Claude (%d) alcanzado — cierro el run.", limite_llamadas)
+            break
         assert client is not None
         # Si la fuente no proveyó imagen, buscar en APIs libres (Openverse, Wikimedia).
         # Falla silenciosamente si las APIs no responden — el artículo se publica igual.
@@ -881,12 +935,21 @@ def main() -> int:
             _find_image_for(item, user_agent, client=client, modelo=modelo)
         except Exception as e:
             log.warning("  Búsqueda de imagen falló (no crítico): %s", e)
+        llamadas += 1
         article = rewrite_with_claude(client, item, modelo)
         if article is None:
             log.warning("  saltado")
             continue
+        # Cuota por categoría (plan del orquestador): si esta categoría ya llenó
+        # su cupo del run, saltamos el artículo para corregir la deriva de nicho.
+        cap = cuotas.get(article.categoria, 99)
+        if publicadas_por_categoria.get(article.categoria, 0) >= cap:
+            log.info("  ⊘ cuota de categoría alcanzada (%s, máx %d) — saltado.",
+                     article.categoria, cap)
+            continue
         path = write_article(item, article, args.dry_run)
         nuevas_paths.append(path)
+        publicadas_por_categoria[article.categoria] = publicadas_por_categoria.get(article.categoria, 0) + 1
         procesados[item.item_id] = {
             "url": item.url,
             "fuente": item.fuente_nombre,
