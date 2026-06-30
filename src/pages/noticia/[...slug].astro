@@ -48,22 +48,47 @@ const articleBodyPlain = rawBody
 
 const todasNoticias = await getCollection('noticias');
 const tagsSet = new Set(tags);
-const relacionadas = todasNoticias
-  .filter((n) => n.slug !== noticia.slug)
-  .map((n) => {
-    const sharedTags = n.data.tags.filter((t) => tagsSet.has(t)).length;
-    const sameCategoria = n.data.categoria === categoria ? 1 : 0;
-    // Score: 3 puntos por tag compartido + 1 por misma categoría + boost por novedad.
-    const ageDays = (Date.now() - new Date(n.data.fecha).valueOf()) / 86_400_000;
-    const freshness = Math.max(0, 1 - ageDays / 30);
-    return { entry: n, score: sharedTags * 3 + sameCategoria + freshness };
-  })
-  .filter(({ score }) => score > 0)
-  .sort((a, b) => b.score - a.score || new Date(b.entry.data.fecha).valueOf() - new Date(a.entry.data.fecha).valueOf())
-  .slice(0, 3)
-  .map(({ entry }) => entry);
+// SEO: 6 enlaces internos por artículo, con garantía anti-huérfanos. Más
+// enlaces internos = mejor distribución de PageRank y rastreo más profundo.
+const N_RELACIONADAS = 6;
+const candidatas = todasNoticias.filter((n) => n.slug !== noticia.slug);
+const relacionadas = (() => {
+  const scored = candidatas
+    .map((n) => {
+      const sharedTags = n.data.tags.filter((t) => tagsSet.has(t)).length;
+      const sameCategoria = n.data.categoria === categoria ? 1 : 0;
+      // Score: 3 puntos por tag compartido + 1 por misma categoría + boost por novedad.
+      const ageDays = (Date.now() - new Date(n.data.fecha).valueOf()) / 86_400_000;
+      const freshness = Math.max(0, 1 - ageDays / 30);
+      return { entry: n, score: sharedTags * 3 + sameCategoria + freshness };
+    })
+    .filter(({ score }) => score > 0)
+    .sort((a, b) => b.score - a.score || new Date(b.entry.data.fecha).valueOf() - new Date(a.entry.data.fecha).valueOf())
+    .map(({ entry }) => entry);
+  // Anti-huérfanos: si hay menos de N con score, rellena con lo más reciente
+  // (misma categoría primero) para que NINGÚN artículo quede sin enlaces internos.
+  if (scored.length < N_RELACIONADAS) {
+    const yaIncluidas = new Set(scored.map((n) => n.slug));
+    const relleno = candidatas
+      .filter((n) => !yaIncluidas.has(n.slug))
+      .sort((a, b) => {
+        const catA = a.data.categoria === categoria ? 1 : 0;
+        const catB = b.data.categoria === categoria ? 1 : 0;
+        return catB - catA || new Date(b.data.fecha).valueOf() - new Date(a.data.fecha).valueOf();
+      });
+    scored.push(...relleno);
+  }
+  return scored.slice(0, N_RELACIONADAS);
+})();
 
 const isoFecha = new Date(fecha).toISOString();
+
+// SEO: la meta description útil de Google es ~155 caracteres. El resumen llega
+// hasta ~280, así que lo truncamos en límite de palabra para el <meta>, pero
+// mostramos el resumen completo en la página.
+const metaDescription = resumen.length > 155
+  ? resumen.slice(0, 155).replace(/\s+\S*$/, '').trimEnd() + '…'
+  : resumen;
 
 // NewsArticle rico: author Organization + publisher + dateline + isBasedOn
 // (apunta a la fuente original, le da contexto a Google de que es derivado).
@@ -120,7 +145,7 @@ const jsonLdBreadcrumb = {
 ---
 <Base
   title={`${titulo} — Automatización LatAm`}
-  description={resumen}
+  description={metaDescription}
   ogImage={imagen}
   articulo={true}
   publishedTime={isoFecha}
@@ -250,7 +275,7 @@ const jsonLdBreadcrumb = {
 
     {relacionadas.length > 0 && (
       <section class="mt-12 border-t border-ink-300/30 pt-10">
-        <h2 class="text-2xl font-serif font-bold text-ink-900 mb-6">Sigue leyendo en {categoria}</h2>
+        <h2 class="text-2xl font-serif font-bold text-ink-900 mb-6">Sigue leyendo</h2>
         <div class="space-y-6">
           {relacionadas.map((n) => <ArticleCard noticia={n} />)}
         </div>

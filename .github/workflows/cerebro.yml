@@ -47,6 +47,7 @@ jobs:
         run: |
           python scripts/analytics.py --verbose || echo "::warning::Analytics degradado, sigo."
           python scripts/orchestrator.py --verbose
+          python scripts/seo.py --verbose || echo "::warning::Auditoría SEO falló (no crítico)."
           { echo "## Plan recalculado por el cerebro"; echo; cat scripts/state/daily-report.md; } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Publicar estado en rama flota-estado
@@ -54,7 +55,7 @@ jobs:
           git config user.name "automatizacion-latam-bot"
           git config user.email "bot@automatizacionslatam.com"
           git checkout -B flota-estado
-          git add -f scripts/state/daily-plan.json scripts/state/analytics-report.json scripts/state/daily-report.md
+          git add -f scripts/state/daily-plan.json scripts/state/analytics-report.json scripts/state/daily-report.md scripts/state/seo-report.json
           if git diff --staged --quiet; then
             echo "::notice::Plan sin cambios — el cerebro no commitea este ciclo."
           else
