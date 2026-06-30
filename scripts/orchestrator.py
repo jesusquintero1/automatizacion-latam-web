@@ -286,6 +286,18 @@ def write_report(plan: dict, analytics: dict) -> None:
     log.info("Reporte escrito en %s", REPORT_FILE)
 
 
+def _plan_cambió(nuevo: dict) -> bool:
+    """True si el contenido del plan cambió respecto al ya guardado (ignora el
+    timestamp 'generado', que cambia en cada corrida)."""
+    VOLATIL = {"generado"}
+    try:
+        viejo = json.loads(PLAN_FILE.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return True
+    limpio = lambda d: {k: v for k, v in d.items() if k not in VOLATIL}
+    return limpio(viejo) != limpio(nuevo)
+
+
 # ---------------------------------------------------------------------------
 # main
 # ---------------------------------------------------------------------------
@@ -308,6 +320,14 @@ def main() -> int:
 
     analytics = load_analytics()
     plan = build_plan(conteo, analytics)
+
+    # Idempotencia: si el contenido del plan (ignorando el timestamp) es idéntico
+    # al ya commiteado, no reescribimos nada. Así el cron del "cerebro" puede
+    # correr cada hora sin generar commits ruidosos — solo actúa cuando hay un
+    # cambio real (nuevas noticias del redactor o datos frescos de analytics).
+    if PLAN_FILE.exists() and not _plan_cambió(plan):
+        log.info("Plan sin cambios de contenido — no reescribo (evita commits ruidosos).")
+        return 0
 
     PLAN_FILE.write_text(json.dumps(plan, indent=2, ensure_ascii=False), encoding="utf-8")
     log.info("Plan escrito en %s", PLAN_FILE)

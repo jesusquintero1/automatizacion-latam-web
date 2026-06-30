@@ -1,0 +1,64 @@
+name: Cerebro (Analytics + Orquestador)
+
+# Los agentes "pensantes" corren cada hora. NO llaman a Claude (costo ~$0) y NO
+# despliegan: solo recalculan el plan del día y lo publican en una rama de estado
+# separada (flota-estado) que Cloudflare NO despliega — así no hay riesgo de
+# "deploy fantasma" ni se interfiere con el redactor que vive en main.
+#
+# Gracias a la idempotencia del orquestador, solo commitea cuando el plan cambia
+# de verdad (nuevas noticias o datos frescos de Search Console), no cada hora.
+
+on:
+  schedule:
+    - cron: "30 * * * *"   # cada hora, minuto 30 (no coincide con el redactor)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: cerebro
+  cancel-in-progress: true
+
+jobs:
+  pensar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+          cache-dependency-path: scripts/requirements.txt
+
+      - name: Instalar dependencias Python
+        run: pip install -r scripts/requirements.txt
+
+      - name: Analytics + Orquestador
+        env:
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          GA4_PROPERTY_ID: ${{ secrets.GA4_PROPERTY_ID }}
+          GSC_SITE_URL: https://automatizacionslatam.com
+        run: |
+          python scripts/analytics.py --verbose || echo "::warning::Analytics degradado, sigo."
+          python scripts/orchestrator.py --verbose
+          { echo "## Plan recalculado por el cerebro"; echo; cat scripts/state/daily-report.md; } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Publicar estado en rama flota-estado
+        run: |
+          git config user.name "automatizacion-latam-bot"
+          git config user.email "bot@automatizacionslatam.com"
+          git checkout -B flota-estado
+          git add -f scripts/state/daily-plan.json scripts/state/analytics-report.json scripts/state/daily-report.md
+          if git diff --staged --quiet; then
+            echo "::notice::Plan sin cambios — el cerebro no commitea este ciclo."
+          else
+            git commit -m "cerebro: estado actualizado $(date -u +%FT%TZ)"
+            git push -f origin flota-estado
+            echo "::notice::Estado de la flota publicado en rama flota-estado."
+          fi

@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel de control · AutomatizaciónLatAm</title>
+<style>
+  :root{
+    --bg:#070b16;--panel:#0f1626;--panel2:#16203a;--line:#233152;
+    --txt:#e9eefb;--mut:#8390b0;--accent:#4f8cff;--accent2:#22d3a8;
+    --warn:#f5a623;--danger:#ff5d6c;--plan:#a78bfa;--money:#ffd34e;--pink:#ff7eb6;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:radial-gradient(1100px 520px at 70% -10%,#13204400,#070b16),var(--bg);
+    color:var(--txt);font-family:'Segoe UI',system-ui,Roboto,sans-serif;line-height:1.5}
+  .wrap{max-width:1220px;margin:0 auto;padding:0 20px}
+  a{color:var(--accent);text-decoration:none}
+  code{font-family:ui-monospace,Consolas,monospace;font-size:.9em;color:var(--accent2)}
+
+  /* HERO / identidad del proyecto */
+  .hero{background:linear-gradient(180deg,#101b34,#0c1322);border:1px solid var(--line);border-radius:0 0 20px 20px;
+    padding:22px 0 20px;margin-bottom:16px}
+  .heroflex{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+  .brand{font-size:24px;font-weight:850;letter-spacing:-.02em}
+  .brand .g{background:linear-gradient(90deg,#4f8cff,#22d3a8);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .what{color:var(--mut);font-size:14px;max-width:680px;margin-top:7px}
+  .what b{color:var(--txt)}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:11px}
+  .chip{font-size:11.5px;background:var(--panel2);border:1px solid var(--line);border-radius:999px;padding:4px 11px;color:var(--mut)}
+  .chip b{color:var(--accent2)}
+  .livebadge{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;color:var(--mut);
+    background:#0b1322;border:1px solid var(--line);border-radius:999px;padding:7px 13px;white-space:nowrap}
+  .dot{width:9px;height:9px;border-radius:50%;background:var(--accent2);animation:ring 1.6s infinite}
+  .dot.bad{background:var(--danger);animation:none}
+  @keyframes ring{0%{box-shadow:0 0 0 0 rgba(34,211,168,.5)}70%{box-shadow:0 0 0 9px rgba(34,211,168,0)}100%{box-shadow:0 0 0 0 rgba(34,211,168,0)}}
+  .goalbar{margin-top:14px;background:linear-gradient(90deg,rgba(255,211,78,.12),rgba(255,211,78,0));
+    border:1px solid rgba(255,211,78,.3);border-radius:12px;padding:10px 14px;font-size:13.5px}
+  .goalbar b{color:var(--money)}
+
+  .ctl{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin:0 0 4px}
+  .btn{background:var(--accent);color:#06122e;border:0;font-weight:800;padding:8px 15px;border-radius:10px;cursor:pointer;font-size:13.5px}
+  .btn.ghost{background:transparent;color:var(--txt);border:1px solid var(--line);font-weight:600}
+  .btn:active{transform:scale(.97)}
+  .upd{margin-left:auto;font-family:ui-monospace,Consolas,monospace;font-size:12px;color:var(--mut)}
+  .err{background:rgba(255,93,108,.08);border:1px solid rgba(255,93,108,.3);color:#ffb3bb;border-radius:10px;padding:8px 12px;font-size:12.5px;margin:8px 0 0;display:none}
+
+  /* "ahora mismo" banner */
+  .now{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--accent2);border-radius:12px;
+    padding:13px 16px;margin:14px 0;font-size:14px}
+  .now .lab{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--accent2);font-weight:800}
+  .now .txt{margin-top:3px;color:var(--txt)}
+
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:13px}
+  .kpi{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 15px}
+  .kpi .ic{font-size:17px}
+  .kpi .v{font-size:25px;font-weight:850;font-variant-numeric:tabular-nums;margin-top:2px}
+  .kpi .l{font-size:11.5px;color:var(--mut);margin-top:1px}
+  .kpi.ok .v{color:var(--accent2)}.kpi.bad .v{color:var(--danger)}.kpi.acc .v{color:var(--accent)}.kpi.money .v{color:var(--money)}
+  .kpi small{font-size:11px;color:var(--mut);font-weight:500}
+
+  h2{font-size:15px;margin:22px 0 3px;font-weight:750;display:flex;align-items:center;gap:8px}
+  h2 .hint{font-size:12px;color:var(--mut);font-weight:400}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px 18px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .grid3{display:grid;grid-template-columns:1.1fr 1fr 1fr;gap:14px}
+
+  /* donut */
+  .donutwrap{display:flex;gap:16px;align-items:center}
+  .legend2{font-size:12px;flex:1}
+  .legend2 .li{display:flex;align-items:center;gap:7px;margin:3px 0}
+  .legend2 .sw{width:11px;height:11px;border-radius:3px;flex:none}
+  .legend2 .nm{flex:1;color:var(--txt)}
+  .legend2 .pc{color:var(--mut);font-variant-numeric:tabular-nums}
+  .legend2 .cap{color:var(--danger);font-weight:800;font-size:10px}
+
+  /* bars */
+  .bar{display:grid;grid-template-columns:128px 1fr 58px;align-items:center;gap:9px;margin:5px 0}
+  .bar .nm{font-size:12px;text-align:right;color:var(--mut)}
+  .bar .track{background:var(--panel2);border:1px solid var(--line);border-radius:6px;height:18px;position:relative;overflow:hidden}
+  .bar .fill{height:100%;width:0;border-radius:5px 0 0 5px;transition:width 1s cubic-bezier(.2,.7,.2,1)}
+  .bar .tgt{position:absolute;top:-2px;bottom:-2px;width:2px;background:#fff;opacity:.5}
+  .bar .val{font-size:11px;color:var(--mut);font-family:ui-monospace,Consolas,monospace}
+
+  /* area chart */
+  .chartbox{position:relative}
+  .axis{font-size:10px;fill:var(--mut)}
+  .gridln{stroke:#1a2540;stroke-width:1}
+  .kw{display:inline-block;background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:2px 7px;margin:2px;
+    font-size:10.5px;font-family:ui-monospace,Consolas,monospace;color:var(--accent2)}
+  .reason{font-size:12px;color:var(--mut);background:#0b1322;border:1px solid var(--line);border-radius:9px;padding:9px 11px;margin-top:8px}
+
+  /* fleet */
+  .fleet{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
+  .ag{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:12px;text-align:center;cursor:pointer;transition:.13s;position:relative}
+  .ag:hover{transform:translateY(-3px);border-color:var(--accent2)}
+  .ag .ic{font-size:22px}.ag .nm{font-weight:750;font-size:13px;margin-top:4px}.ag .rl{font-size:10.5px;color:var(--mut)}
+  .ag .pulse{position:absolute;top:9px;right:9px;width:8px;height:8px;border-radius:50%;background:var(--accent2);animation:ring 1.6s infinite}
+  .ag.soon{opacity:.62}.ag.soon .pulse{background:var(--plan);animation:none}
+  .arrowrow{text-align:center;color:var(--mut);font-size:12px;margin:8px 0 2px}
+
+  /* log */
+  .log{font-family:ui-monospace,Consolas,monospace;font-size:12px;max-height:280px;overflow:auto}
+  .logrow{display:flex;gap:9px;align-items:baseline;padding:5px 3px;border-bottom:1px solid #182238}
+  .logrow .when{color:#4a5876;white-space:nowrap;font-size:11px}
+  .logrow .msg{flex:1}
+  .pill{font-size:9.5px;font-weight:800;padding:2px 6px;border-radius:999px;text-transform:uppercase}
+  .pill.ok{background:rgba(34,211,168,.15);color:var(--accent2)}.pill.bad{background:rgba(255,93,108,.15);color:var(--danger)}
+  .pill.run{background:rgba(245,166,35,.15);color:var(--warn)}
+  .pill.brain{background:rgba(167,139,250,.15);color:var(--plan)}
+
+  /* money */
+  .money-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .mcard{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:13px}
+  .mcard .t{font-size:11.5px;color:var(--mut)}.mcard .b{font-weight:800;margin-top:3px;font-size:14.5px}
+  .mcard .b.on{color:var(--accent2)}.mcard .b.off{color:var(--warn)}
+
+  .pop{position:fixed;inset:0;background:rgba(4,7,14,.8);display:none;align-items:center;justify-content:center;z-index:60;padding:18px;backdrop-filter:blur(3px)}
+  .pop.open{display:flex}
+  .popc{background:var(--panel);border:1px solid var(--line);border-radius:18px;max-width:520px;width:100%;padding:24px;position:relative}
+  .popc .x{position:absolute;top:12px;right:15px;background:0;border:0;color:var(--mut);font-size:22px;cursor:pointer}
+  .popc h3{margin:0 0 2px;font-size:20px}.popc .s2{color:var(--mut);font-size:12px;font-family:ui-monospace,Consolas,monospace;margin-bottom:12px}
+  .popc p{color:var(--mut);font-size:14px}
+  footer{padding:22px 0 46px;color:var(--mut);font-size:12px;text-align:center}
+  @media(max-width:900px){.kpis{grid-template-columns:1fr 1fr}.grid2,.grid3{grid-template-columns:1fr}.fleet{grid-template-columns:repeat(3,1fr)}.money-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="hero"><div class="wrap">
+  <div class="heroflex">
+    <div>
+      <div class="brand">🏭 <span class="g">AutomatizaciónLatAm</span> · Panel de control de la flota</div>
+      <div class="what">Sitio de noticias <b>autónomo</b> sobre <b>automatización industrial</b> para Latinoamérica (PLC, robótica, IA industrial, ciberseguridad OT…). Cada artículo lo escribe la IA en español a partir de fuentes RSS, y una <b>flota de agentes</b> decide, publica y despliega solo — sin intervención humana. <a href="https://automatizacionslatam.com" target="_blank">automatizacionslatam.com ↗</a></div>
+      <div class="chips">
+        <span class="chip">Stack: <b>Astro + Cloudflare</b></span>
+        <span class="chip">Redactor: <b>Claude Haiku</b></span>
+        <span class="chip">Cerebro: <b>cada hora</b></span>
+        <span class="chip">Publica: <b>3×/día</b></span>
+        <span class="chip">Monetiza: <b>Google AdSense</b></span>
+      </div>
+    </div>
+    <div class="livebadge"><span class="dot" id="liveDot"></span> <span id="liveTxt">conectando…</span></div>
+  </div>
+  <div class="goalbar">🎯 <b>Meta única: monetizar con Google AdSense.</b> Todo lo que ves aquí (reequilibrar temas, perseguir demanda, publicar a diario) es para subir el tráfico de calidad que genera ingresos por anuncios.</div>
+</div></div>
+
+<div class="wrap">
+  <div class="ctl">
+    <button class="btn" id="refresh">↻ Actualizar</button>
+    <button class="btn ghost" id="auto">⏱ Auto: ON</button>
+    <a class="btn ghost" href="https://github.com/jesusquintero1/automatizacion-latam-web/actions" target="_blank">GitHub Actions ↗</a>
+    <span class="upd" id="updTxt">—</span>
+  </div>
+  <div class="err" id="err"></div>
+
+  <!-- AHORA MISMO -->
+  <div class="now"><div class="lab">🤖 Qué está haciendo la flota ahora mismo</div><div class="txt" id="nowTxt">leyendo el plan del día…</div></div>
+
+  <!-- KPIs -->
+  <div class="kpis">
+    <div class="kpi acc"><div class="ic">📰</div><div class="v" id="kTotal">—</div><div class="l">noticias publicadas</div></div>
+    <div class="kpi" id="kRunCard"><div class="ic">⚙️</div><div class="v" id="kRun">—</div><div class="l">último run del cron</div></div>
+    <div class="kpi ok"><div class="ic">⏭️</div><div class="v" id="kNext">—</div><div class="l">próxima publicación</div></div>
+    <div class="kpi money"><div class="ic">💰</div><div class="v" id="kAds">AdSense</div><div class="l">monetización activa</div></div>
+  </div>
+
+  <!-- CHARTS -->
+  <h2>📊 De qué trata el contenido <span class="hint">· distribución real por tema (el cerebro la reequilibra)</span></h2>
+  <div class="grid2">
+    <div class="card">
+      <div class="donutwrap">
+        <svg id="donut" viewBox="0 0 160 160" width="160" height="160" style="flex:none"></svg>
+        <div class="legend2" id="legend"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div style="font-size:12px;color:var(--mut);margin-bottom:6px">Comparado con el objetivo (línea blanca). 🔴 = tema saturado, topado a 1 por publicación para recuperar el equilibrio.</div>
+      <div id="bars"></div>
+    </div>
+  </div>
+
+  <h2>📈 Ritmo de publicación <span class="hint">· noticias por día (de los commits reales del bot)</span></h2>
+  <div class="card chartbox">
+    <svg id="area" viewBox="0 0 900 180" width="100%" height="180"></svg>
+  </div>
+
+  <!-- PLAN DETALLE + LOG -->
+  <div class="grid2" style="margin-top:14px">
+    <div>
+      <h2>🎯 Plan del día <span class="hint">· lo que decidió el Orquestador</span></h2>
+      <div class="card">
+        <div style="font-size:12px;color:var(--mut)" id="planMeta">cargando…</div>
+        <div style="margin:10px 0 5px;font-size:12px;color:var(--mut)">Palabras clave que prioriza hoy:</div>
+        <div id="kws"></div>
+        <div class="reason" id="reason">—</div>
+      </div>
+    </div>
+    <div>
+      <h2>📡 Actividad en vivo <span class="hint">· runs + commits reales</span></h2>
+      <div class="card"><div class="log" id="log"><div class="logrow"><span class="msg" style="color:var(--mut)">cargando…</span></div></div></div>
+    </div>
+  </div>
+
+  <!-- FLEET -->
+  <h2>🤝 La flota y cómo se comunican <span class="hint">· clic en un agente</span></h2>
+  <div class="card">
+    <div class="fleet" id="fleet"></div>
+    <div class="arrowrow">se coordinan por archivos de estado: <code>analytics-report.json</code> → <code>daily-plan.json</code> → noticias <code>.md</code></div>
+  </div>
+
+  <!-- MONEY -->
+  <h2>💰 Monetización · Google AdSense <span class="hint">· el objetivo de todo</span></h2>
+  <div class="card money-grid">
+    <div class="mcard"><div class="t">AdSense en el sitio</div><div class="b on">● configurado (ca-pub-)</div></div>
+    <div class="mcard"><div class="t">Palanca de la flota</div><div class="b">+ tráfico de calidad</div></div>
+    <div class="mcard"><div class="t">Ingresos en vivo ($)</div><div class="b off">◐ requiere AdSense API</div></div>
+  </div>
+
+  <footer>Todo en este panel se lee en vivo del repositorio real · <a href="https://github.com/jesusquintero1/automatizacion-latam-web" target="_blank">github</a> · sin simulaciones.</footer>
+</div>
+
+<div class="pop" id="pop"><div class="popc"><button class="x" id="popx">×</button><div id="popbody"></div></div></div>
+
+<script>
+const REPO="jesusquintero1/automatizacion-latam-web";
+const RAW=(branch,p)=>`https://raw.githubusercontent.com/${REPO}/${branch}/${p}?t=${Date.now()}`;
+const API=p=>`https://api.github.com/repos/${REPO}/${p}`;
+const $=id=>document.getElementById(id);
+const TARGET={"PLC y Control":20,"Robótica":12,"Industria 4.0":14,"Inteligencia Artificial":16,"Ciberseguridad OT":12,"Energía y Sostenibilidad":10,"Mercado y Negocios":8,"Casos de Estudio":6,"General":2};
+const COLORS={"Inteligencia Artificial":"#a78bfa","Mercado y Negocios":"#ff7eb6","Ciberseguridad OT":"#ff5d6c","Industria 4.0":"#4f8cff","PLC y Control":"#22d3a8","Robótica":"#f5a623","Energía y Sostenibilidad":"#34d399","Casos de Estudio":"#7fd0ff","General":"#5b6b8c"};
+const NS="http://www.w3.org/2000/svg";const mk=(t,a)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e;};
+
+/* ===== FLEET ===== */
+const FLEET=[
+ {ic:"📊",nm:"Analytics",rl:"datos",soon:0,file:"scripts/analytics.py",full:"Lee Search Console + GA4 vía service account (degrada con gracia sin credenciales). Detecta qué busca la gente y qué temas traen tráfico."},
+ {ic:"🎯",nm:"Orquestador",rl:"cerebro",soon:0,file:"scripts/orchestrator.py",full:"Compara el corpus contra el objetivo, topa los temas saturados (IA) y libera los hambrientos. Emite el plan del día. Corre cada hora sin costo."},
+ {ic:"✍️",nm:"Redactor",rl:"contenido",soon:0,file:"scripts/aggregator.py",full:"Re-rankea candidatos por las keywords del plan, reescribe con Claude Haiku en español y aplica la cuota por tema. Publica 3×/día."},
+ {ic:"🛡️",nm:"Ops",rl:"salud",soon:0,file:".github/workflows",full:"Valida que el deploy lleve AdSense, revierte deploys fantasma de Cloudflare y verifica la web en vivo con AdsBot-Google."},
+ {ic:"🔍",nm:"SEO",rl:"tráfico",soon:1,file:"(planeado)",full:"Enlazado interno, clusters y pillar pages para ganar autoridad temática y tráfico. Próximo agente a construir."},
+ {ic:"💰",nm:"Monetización",rl:"AdSense",soon:1,file:"(planeado)",full:"Conectará AdSense API + GA4 para medir RPM por tema y hacer que el Orquestador priorice el contenido que más ingresos genera."},
+];
+const fleetEl=$('fleet');
+FLEET.forEach(a=>{const d=document.createElement('div');d.className='ag'+(a.soon?' soon':'');
+  d.innerHTML=`<span class="pulse"></span><div class="ic">${a.ic}</div><div class="nm">${a.nm}</div><div class="rl">${a.rl}</div>`;
+  d.onclick=()=>{$('popbody').innerHTML=`<h3>${a.ic} ${a.nm}</h3><div class="s2">${a.rl} · ${a.file}</div><p>${a.full}</p>
+    <div style="font-size:11px;color:${a.soon?'var(--plan)':'var(--accent2)'};font-weight:700;margin-top:6px">${a.soon?'◐ Planeado':'● Activo y corriendo'}</div>`;
+  $('pop').classList.add('open');};
+  fleetEl.appendChild(d);});
+$('popx').onclick=()=>$('pop').classList.remove('open');$('pop').onclick=e=>{if(e.target===$('pop'))$('pop').classList.remove('open')};
+
+/* ===== DONUT ===== */
+function drawDonut(dist,caps,total){
+  const svg=$('donut');svg.innerHTML='';const cx=80,cy=80,r=58,C=2*Math.PI*r;
+  svg.appendChild(mk('circle',{cx,cy,r,fill:'none',stroke:'#16203a','stroke-width':20}));
+  const cats=Object.keys(dist).filter(c=>dist[c]>0).sort((a,b)=>dist[b]-dist[a]);
+  let off=0;
+  cats.forEach(c=>{const frac=dist[c]/total;const len=frac*C;
+    const seg=mk('circle',{cx,cy,r,fill:'none',stroke:COLORS[c]||'#888','stroke-width':20,
+      'stroke-dasharray':`${len} ${C-len}`,'stroke-dashoffset':-off,
+      transform:`rotate(-90 ${cx} ${cy})`,opacity:0});
+    svg.appendChild(seg);off+=len;
+    setTimeout(()=>{seg.style.transition='opacity .5s';seg.setAttribute('opacity','1');},60);});
+  const t1=mk('text',{x:cx,y:cy-2,'text-anchor':'middle',fill:'#e9eefb','font-size':'26','font-weight':'800'});t1.textContent=total;
+  const t2=mk('text',{x:cx,y:cy+15,'text-anchor':'middle',fill:'#8390b0','font-size':'10'});t2.textContent='noticias';
+  svg.appendChild(t1);svg.appendChild(t2);
+  // legend
+  const leg=$('legend');leg.innerHTML='';
+  cats.forEach(c=>{const capped=(caps[c]||99)<5;
+    const li=document.createElement('div');li.className='li';
+    li.innerHTML=`<span class="sw" style="background:${COLORS[c]||'#888'}"></span>
+      <span class="nm">${c}</span><span class="pc">${(dist[c]/total*100).toFixed(0)}%</span>
+      ${capped?'<span class="cap">TOPE</span>':''}`;
+    leg.appendChild(li);});
+}
+/* ===== BARS (actual vs objetivo) ===== */
+function drawBars(dist,caps,total){
+  const cats=Object.keys(dist).sort((a,b)=>dist[b]-dist[a]);
+  const maxShare=Math.max(...cats.map(c=>dist[c]/total*100),...cats.map(c=>TARGET[c]||0));
+  const bars=$('bars');bars.innerHTML='';
+  cats.forEach(c=>{const share=dist[c]/total*100;const capped=(caps[c]||99)<5;
+    const row=document.createElement('div');row.className='bar';
+    row.innerHTML=`<div class="nm">${c}</div>
+      <div class="track"><div class="fill" style="background:${capped?'linear-gradient(90deg,#ff5d6c,#f5a623)':'linear-gradient(90deg,#2c5cff,'+(COLORS[c]||'#4f8cff')+')'}"></div>
+        <div class="tgt" style="left:${((TARGET[c]||5)/maxShare*100).toFixed(1)}%"></div></div>
+      <div class="val">${share.toFixed(0)}%${capped?' ·1':''}</div>`;
+    bars.appendChild(row);
+    requestAnimationFrame(()=>row.querySelector('.fill').style.width=(share/maxShare*100).toFixed(1)+'%');});
+}
+/* ===== AREA chart (noticias/día) ===== */
+function drawArea(series){ // series: [{day:Date,n:int}]
+  const svg=$('area');svg.innerHTML='';const W=900,H=180,pad=28;
+  if(!series.length){svg.innerHTML='<text x="450" y="90" text-anchor="middle" fill="#5b6b8c" font-size="13">sin datos de publicación todavía</text>';return;}
+  const maxN=Math.max(...series.map(s=>s.n),3);
+  const x=i=>pad+ i*( (W-pad*2)/Math.max(series.length-1,1) );
+  const y=n=>H-pad - (n/maxN)*(H-pad*2);
+  // gridlines + y labels
+  for(let g=0;g<=maxN;g+=Math.ceil(maxN/3)||1){
+    svg.appendChild(mk('line',{x1:pad,y1:y(g),x2:W-pad,y2:y(g),class:'gridln'}));
+    const t=mk('text',{x:4,y:y(g)+3,class:'axis'});t.textContent=g;svg.appendChild(t);}
+  // area path
+  let d=`M ${x(0)} ${y(0)}`;series.forEach((s,i)=>d+=` L ${x(i)} ${y(s.n)}`);
+  d+=` L ${x(series.length-1)} ${y(0)} Z`;
+  const grad=mk('linearGradient',{id:'ag',x1:0,y1:0,x2:0,y2:1});
+  grad.appendChild(mk('stop',{offset:0,'stop-color':'#22d3a8','stop-opacity':.45}));
+  grad.appendChild(mk('stop',{offset:1,'stop-color':'#22d3a8','stop-opacity':0}));
+  const defs=mk('defs',{});defs.appendChild(grad);svg.appendChild(defs);
+  svg.appendChild(mk('path',{d,fill:'url(#ag)'}));
+  // line
+  let dl=`M ${x(0)} ${y(series[0].n)}`;series.forEach((s,i)=>dl+=` L ${x(i)} ${y(s.n)}`);
+  svg.appendChild(mk('path',{d:dl,fill:'none',stroke:'#22d3a8','stroke-width':2.5}));
+  // points + x labels (every ~3)
+  series.forEach((s,i)=>{svg.appendChild(mk('circle',{cx:x(i),cy:y(s.n),r:3,fill:'#22d3a8'}));
+    if(i%Math.ceil(series.length/6)===0||i===series.length-1){
+      const t=mk('text',{x:x(i),y:H-8,'text-anchor':'middle',class:'axis'});
+      t.textContent=s.day.toLocaleDateString([], {month:'2-digit',day:'2-digit'});svg.appendChild(t);}});
+}
+
+/* ===== FETCH ===== */
+function showErr(m){$('err').style.display='block';$('err').textContent='⚠ '+m;}
+function clearErr(){$('err').style.display='none';}
+
+async function loadPlan(){
+  // intenta rama flota-estado (fresca, horaria); cae a main si no existe
+  let plan=null;
+  for(const br of ['flota-estado','main']){
+    try{const r=await fetch(RAW(br,'scripts/state/daily-plan.json'));if(r.ok){plan=await r.json();plan._branch=br;break;}}catch(e){}
+  }
+  if(!plan)throw new Error('no pude leer daily-plan.json');
+  const dist=plan.distribucion_actual||{},caps=plan.max_por_categoria||{};
+  const total=Object.values(dist).reduce((a,b)=>a+b,0)||1;
+  $('kTotal').textContent=total;
+  drawDonut(dist,caps,total);drawBars(dist,caps,total);
+  const kws=plan.keywords_prioritarias||[];
+  $('kws').innerHTML=kws.slice(0,26).map(k=>`<span class="kw">${k}</span>`).join('')+(kws.length>26?' …':'');
+  $('reason').textContent=plan.razonamiento||'—';
+  const gen=plan.generado?new Date(plan.generado):null;
+  const topadas=Object.keys(caps).filter(c=>(caps[c]||99)<5);
+  $('planMeta').innerHTML=`datos: <b>${plan.fuente_datos||'?'}</b> · rama <code>${plan._branch}</code> · ${gen?'hace '+fmtAgo(gen):'—'}`;
+  // "ahora mismo" en lenguaje natural
+  const libres=Object.keys(dist).filter(c=>(caps[c]||99)>=5 && (dist[c]/total*100)<(TARGET[c]||5)).slice(0,3);
+  $('nowTxt').innerHTML=`Está <b>priorizando</b> ${libres.length?libres.map(c=>'<b style="color:'+(COLORS[c]||'#fff')+'">'+c+'</b>').join(', '):'el contenido industrial'} y <b>frenando</b> ${topadas.length?topadas.join(', '):'nada'} (saturados). Re-rankea con ${kws.length} palabras clave.`;
+}
+
+function fmtAgo(d){const s=(Date.now()-d)/1000;if(s<90)return Math.round(s)+'s';if(s<5400)return Math.round(s/60)+'min';if(s<172800)return Math.round(s/3600)+'h';return Math.round(s/86400)+'d';}
+
+async function loadRuns(){
+  const r=await fetch(API('actions/runs?per_page=12'));
+  if(!r.ok)throw new Error('API runs '+r.status+(r.status==403?' (límite GitHub, espera 1h)':''));
+  const runs=(await r.json()).workflow_runs||[];
+  if(runs.length){const last=runs.find(x=>x.name&&x.name.includes('Agregador'))||runs[0];
+    const concl=last.status!=='completed'?'run':last.conclusion;const ok=concl==='success';
+    $('kRun').innerHTML=ok?'<span style="color:var(--accent2)">✓ OK</span>':(concl==='run'?'<span style="color:var(--warn)">⟳…</span>':'<span style="color:var(--danger)">✕</span>');
+    $('kRunCard').className='kpi '+(ok?'ok':(concl==='run'?'':'bad'));
+    $('liveDot').className='dot'+(ok?'':' bad');
+    $('liveTxt').innerHTML=`sistema ${ok?'operativo':concl} · último run hace ${fmtAgo(new Date(last.created_at))}`;
+  }
+  return runs;
+}
+async function loadCommits(){
+  const r=await fetch(API('commits?per_page=40'));
+  if(!r.ok)throw new Error('API commits '+r.status);
+  return await r.json();
+}
+function renderLog(runs,commits){
+  const items=[];
+  runs.slice(0,8).forEach(x=>{const concl=x.status!=='completed'?'run':x.conclusion;const brain=x.name&&x.name.includes('Cerebro');
+    items.push({t:new Date(x.created_at),msg:(brain?'🧠 ':'⚙️ ')+(x.name||'run')+' #'+x.run_number,url:x.html_url,
+      pill:concl==='success'?'<span class="pill ok">éxito</span>':(concl==='run'?'<span class="pill run">corriendo</span>':'<span class="pill bad">fallo</span>'),
+      brain});});
+  commits.slice(0,12).forEach(c=>{const m=c.commit.message.split('\n')[0];
+    if(/^auto: publicar/.test(m))items.push({t:new Date(c.commit.author.date),msg:'📰 '+m,url:c.html_url,pill:''});
+    else if(/^cerebro:/.test(m))items.push({t:new Date(c.commit.author.date),msg:'🧠 '+m,url:c.html_url,pill:'<span class="pill brain">cerebro</span>'});
+  });
+  items.sort((a,b)=>b.t-a.t);
+  const log=$('log');log.innerHTML='';
+  items.slice(0,15).forEach(it=>{const row=document.createElement('div');row.className='logrow';
+    row.innerHTML=`<span class="when">${it.t.toLocaleString([], {month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'})}</span>
+      <span class="msg"><a href="${it.url}" target="_blank">${it.msg}</a> ${it.pill}</span>`;log.appendChild(row);});
+}
+function cadence(commits){
+  const byDay={};
+  commits.forEach(c=>{const m=c.commit.message.split('\n')[0];const mm=m.match(/^auto: publicar (\d+) noticia/);
+    if(mm){const d=new Date(c.commit.author.date);const key=d.toISOString().slice(0,10);
+      byDay[key]=(byDay[key]||0)+parseInt(mm[1]);}});
+  // últimos 14 días
+  const out=[];for(let i=13;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const key=d.toISOString().slice(0,10);
+    out.push({day:new Date(key),n:byDay[key]||0});}
+  return out;
+}
+function nextCron(){
+  const now=new Date();const h=now.getUTCHours();const slots=[0,8,16,24];
+  let nh=slots.find(s=>s>h);const next=new Date(now);
+  if(nh===24){next.setUTCDate(now.getUTCDate()+1);nh=0;}next.setUTCHours(nh,0,0,0);
+  const mins=Math.round((next-now)/60000);
+  $('kNext').innerHTML=`${String(nh).padStart(2,'0')}:00 <small>en ${Math.floor(mins/60)}h${mins%60}m</small>`;
+}
+async function refresh(){
+  clearErr();$('updTxt').textContent='actualizando…';
+  try{await loadPlan();}catch(e){showErr('Plan: '+e.message);}
+  try{const [runs,commits]=await Promise.all([loadRuns(),loadCommits()]);
+    renderLog(runs,commits);drawArea(cadence(commits));
+  }catch(e){showErr(e.message);$('liveTxt').textContent='sin conexión a la API';}
+  nextCron();$('updTxt').textContent='✓ '+new Date().toLocaleTimeString();
+}
+const POLL=180000;let autoOn=true,autoTimer=setInterval(refresh,POLL);
+$('refresh').onclick=refresh;
+$('auto').onclick=e=>{autoOn=!autoOn;if(autoOn){autoTimer=setInterval(refresh,POLL);e.target.textContent='⏱ Auto: ON';}else{clearInterval(autoTimer);e.target.textContent='⏱ Auto: OFF';}};
+nextCron();refresh();
+</script>
+</body>
+</html>
