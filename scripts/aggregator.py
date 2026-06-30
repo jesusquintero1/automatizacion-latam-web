@@ -783,7 +783,7 @@ def write_article(item: FeedItem, article: RewrittenArticle, dry_run: bool) -> P
         path = CONTENT_DIR / f"{fecha_str}-{slug_base}-{counter}.md"
         counter += 1
 
-    tags_yaml = "\n".join(f"  - {t}" for t in article.tags) if article.tags else "  []"
+    tags_yaml = "\n".join(f"  - {_yaml_escape(t)}" for t in article.tags) if article.tags else "  []"
     imagen_yaml = f"imagen: {_yaml_escape(item.imagen)}\n" if item.imagen else ""
     imagen_atribucion_yaml = f"imagen_atribucion: {_yaml_escape(item.imagen_atribucion)}\n" if item.imagen_atribucion else ""
     imagen_fuente_yaml = f"imagen_fuente: {_yaml_escape(item.imagen_fuente)}\n" if item.imagen_fuente else ""

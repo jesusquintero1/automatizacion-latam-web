@@ -14,7 +14,7 @@ tags:
   - agentes-ia
   - roi-empresarial
   - automatizacion-inteligente
-  - 2026
+  - "2026"
   - inflection-point
 ---
 
