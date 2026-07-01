@@ -36,13 +36,23 @@ const NEWSLETTER_ENDPOINT = import.meta.env.PUBLIC_NEWSLETTER_ENDPOINT || '';
     </div>
   </section>
 
-  <div class="mx-auto max-w-[var(--container)] px-4 md:px-8 py-10 grid md:grid-cols-3 gap-8">
+  <div class="mx-auto max-w-[var(--container)] px-4 md:px-8 py-10 grid grid-cols-2 md:grid-cols-4 gap-8">
     <div>
       <p class="text-white font-bold text-lg mb-2">Automatización LatAm</p>
       <p class="text-sm leading-relaxed">
         Noticias y análisis diario de automatización industrial, PLC, robótica e Industria 4.0
         para profesionales en Latinoamérica.
       </p>
+    </div>
+    <div>
+      <p class="text-white font-semibold mb-2">Guías del tema</p>
+      <ul class="text-sm space-y-1">
+        <li><a href="/tema/plc-y-control" class="hover:text-white">Guía de PLC y control</a></li>
+        <li><a href="/tema/ciberseguridad-ot" class="hover:text-white">Guía de ciberseguridad OT</a></li>
+        <li><a href="/tema/industria-4-0" class="hover:text-white">Guía de Industria 4.0</a></li>
+        <li><a href="/tema/inteligencia-artificial" class="hover:text-white">Guía de IA industrial</a></li>
+        <li><a href="/tema/robotica" class="hover:text-white">Guía de robótica</a></li>
+      </ul>
     </div>
     <div>
       <p class="text-white font-semibold mb-2">Categorías</p>

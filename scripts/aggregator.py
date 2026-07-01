@@ -165,14 +165,18 @@ Reglas críticas (no negociables — aplican solo si la nota está EN alcance):
 
 Formato de salida — SIEMPRE responde con un objeto JSON válido con esta estructura exacta:
 {
-  "titulo": "Titular en español, atractivo, máximo 90 caracteres",
+  "titulo": "Titular en español, atractivo y descriptivo, MÁXIMO 65 caracteres (para que Google no lo trunque)",
   "resumen": "Resumen original de 2-3 frases (max 280 caracteres). Da el qué y el porqué.",
   "categoria": "Una de las 8 categorías permitidas",
   "porQueImporta": "1-2 frases sobre el impacto para la industria en LatAm.",
-  "cuerpo": "Artículo en markdown de 450-650 palabras (no menos de 450). Usa ## para 3-4 \
-secciones: contexto, qué se anunció, cómo funciona/detalles técnicos, implicaciones para LatAm. \
-Profundiza: aporta cifras concretas, nombres de tecnologías y ejemplos cuando estén disponibles. \
-NO uses tablas ni HTML — solo markdown puro.",
+  "cuerpo": "Artículo en markdown de 700-1000 palabras (NUNCA menos de 700). Usa ## para 5-6 \
+secciones bien desarrolladas, por ejemplo: contexto del sector, qué se anunció, cómo funciona / \
+detalles técnicos, cifras y datos concretos, implicaciones prácticas para plantas y equipos en \
+LatAm, y qué vigilar a futuro. Profundiza de verdad: cada sección con 2-4 párrafos sustanciales, \
+aporta cifras específicas, nombres propios de tecnologías, equipos y estándares (IEC, OPC UA, \
+Siemens, Schneider, etc.), ejemplos concretos y comparaciones. Escribe para un ingeniero o \
+técnico que quiere entender a fondo, no un resumen superficial. NO uses tablas ni HTML — solo \
+markdown puro con encabezados ## y párrafos.",
   "tags": ["3-5", "palabras", "clave", "lowercase", "sin-tildes"]
 }
 
@@ -740,10 +744,11 @@ def _validate_article(data: dict[str, Any]) -> RewrittenArticle | None:
         tags = []
     tags = [str(t).lower().strip() for t in tags if t][:5]
 
-    # CAPA 4: rechazar artículos demasiado cortos (potencial respuesta de error/excusa).
+    # CAPA 4: rechazar artículos cortos (error/excusa o contenido delgado que
+    # perjudica SEO/AdSense). Piso ~2000 chars ≈ 330 palabras; el prompt pide 700+.
     cuerpo = str(data["cuerpo"]).strip()
-    if len(cuerpo) < 800:
-        log.info("  ⊘ Cuerpo demasiado corto (%d chars, mínimo 800) — descartando", len(cuerpo))
+    if len(cuerpo) < 2000:
+        log.info("  ⊘ Cuerpo demasiado corto (%d chars, mínimo 2000) — descartando", len(cuerpo))
         return None
 
     return RewrittenArticle(

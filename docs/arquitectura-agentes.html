@@ -208,6 +208,31 @@
     <div class="arrowrow">se coordinan por archivos de estado: <code>analytics-report.json</code> → <code>daily-plan.json</code> → noticias <code>.md</code></div>
   </div>
 
+  <!-- SEO -->
+  <h2>🔍 Salud SEO <span class="hint">· auditoría real del agente SEO (tráfico → AdSense)</span></h2>
+  <div class="grid2">
+    <div class="card" style="display:flex;align-items:center;gap:18px">
+      <div style="text-align:center;flex:none">
+        <div id="seoScore" style="font-size:52px;font-weight:850;line-height:1;color:var(--accent2)">—</div>
+        <div style="font-size:12px;color:var(--mut)">/ 100</div>
+      </div>
+      <div style="font-size:13px;color:var(--mut)">
+        Puntaje de salud SEO del corpus, calculado cada hora por <code>scripts/seo.py</code>
+        sin costo. Pondera contenido corto, artículos con pocos enlaces internos, títulos
+        largos y duplicados.
+      </div>
+    </div>
+    <div class="card">
+      <div class="counts">
+        <div class="cnt"><div class="v" id="seoThin" style="color:var(--warn)">—</div><div class="l">contenido corto (&lt;350 palabras)</div></div>
+        <div class="cnt"><div class="v" id="seoOrphan" style="color:var(--plan)">—</div><div class="l">pocos enlaces entrantes</div></div>
+        <div class="cnt"><div class="v" id="seoTitles" style="color:var(--accent)">—</div><div class="l">títulos largos (&gt;70)</div></div>
+        <div class="cnt"><div class="v" id="seoDup" style="color:var(--danger)">—</div><div class="l">títulos duplicados</div></div>
+      </div>
+      <div style="margin-top:10px;font-size:12px;color:var(--mut)">Pillar pages sugeridas: <span id="seoPillars" style="color:var(--accent2)">—</span></div>
+    </div>
+  </div>
+
   <!-- MONEY -->
   <h2>💰 Monetización · Google AdSense <span class="hint">· el objetivo de todo</span></h2>
   <div class="card money-grid">
@@ -319,6 +344,22 @@ function drawArea(series){ // series: [{day:Date,n:int}]
 function showErr(m){$('err').style.display='block';$('err').textContent='⚠ '+m;}
 function clearErr(){$('err').style.display='none';}
 
+async function loadSeo(){
+  let seo=null;
+  for(const br of ['flota-estado','main']){
+    try{const r=await fetch(RAW(br,'scripts/state/seo-report.json'));if(r.ok){seo=await r.json();break;}}catch(e){}
+  }
+  if(!seo)return;
+  const s=seo.salud_seo;
+  $('seoScore').textContent=s;
+  $('seoScore').style.color = s>=80?'var(--accent2)':(s>=60?'var(--warn)':'var(--danger)');
+  $('seoThin').textContent=seo.thin_content?.n ?? '—';
+  $('seoOrphan').textContent=seo.huerfanos?.n ?? '—';
+  $('seoTitles').textContent=seo.titulos_largos?.n ?? '—';
+  $('seoDup').textContent=(seo.titulos_duplicados||[]).length;
+  $('seoPillars').textContent=(seo.pillars_sugeridos||[]).join(', ')||'—';
+}
+
 async function loadPlan(){
   // intenta rama flota-estado (fresca, horaria); cae a main si no existe
   let plan=null;
@@ -397,6 +438,7 @@ function nextCron(){
 async function refresh(){
   clearErr();$('updTxt').textContent='actualizando…';
   try{await loadPlan();}catch(e){showErr('Plan: '+e.message);}
+  try{await loadSeo();}catch(e){}
   try{const [runs,commits]=await Promise.all([loadRuns(),loadCommits()]);
     renderLog(runs,commits);drawArea(cadence(commits));
   }catch(e){showErr(e.message);$('liveTxt').textContent='sin conexión a la API';}

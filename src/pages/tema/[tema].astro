@@ -1,0 +1,271 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import AdSlot from '../../components/AdSlot.astro';
+
+// Pillar pages (páginas-guía evergreen). Distintas de /categoria: apuntan a
+// keywords "head" con contenido perenne + subtemas + FAQ, y concentran
+// autoridad temática repartiendo enlaces internos a los artículos del cluster.
+export async function getStaticPaths() {
+  const PILLARS = {
+    'plc-y-control': {
+      categoria: 'PLC y Control',
+      title: 'PLC y control industrial: guía completa para ingenieros',
+      h1: 'PLC y control industrial: la guía para ingenieros',
+      description: 'Qué es un PLC, cómo se relaciona con HMI, SCADA y DCS, los lenguajes IEC 61131 y la instrumentación de campo. Guía en español para automatización industrial en Latinoamérica.',
+      intro: `
+        <p>El <strong>controlador lógico programable (PLC)</strong> es el corazón de casi cualquier planta automatizada. Es una computadora industrial robusta, diseñada para operar durante años en ambientes con polvo, vibración y temperaturas extremas, que lee señales de sensores, ejecuta una lógica programada y acciona salidas hacia motores, válvulas y actuadores. Desde una envasadora hasta una refinería, el PLC decide, en milisegundos, qué debe pasar a continuación.</p>
+        <h2>PLC, HMI, SCADA y DCS: cómo encajan</h2>
+        <p>El PLC no trabaja solo. La <strong>HMI (interfaz hombre-máquina)</strong> es la pantalla donde el operador visualiza el proceso y da órdenes. El <strong>SCADA</strong> supervisa y registra datos de múltiples PLC distribuidos en una planta o incluso en varias ubicaciones. Y el <strong>DCS (sistema de control distribuido)</strong> se usa en procesos continuos de gran escala —petroquímica, generación eléctrica— donde el control y la redundancia son críticos. Entender dónde termina uno y empieza el otro es clave para diseñar una arquitectura sólida.</p>
+        <h2>Los lenguajes de programación: IEC 61131-3</h2>
+        <p>La norma <strong>IEC 61131-3</strong> define cinco lenguajes estandarizados. El más difundido sigue siendo <strong>LADDER (diagrama de escalera)</strong>, heredero directo de los relés electromecánicos y muy intuitivo para electricistas. Junto a él conviven el texto estructurado (ST), el diagrama de bloques de funciones (FBD), la lista de instrucciones (IL) y el diagrama de funciones secuenciales (SFC/Grafcet). Dominar al menos LADDER y ST es hoy un requisito básico para el ingeniero de automatización.</p>
+        <h2>Instrumentación, variadores y motion control</h2>
+        <p>Un lazo de control es tan bueno como sus sensores. La instrumentación de campo —transmisores de presión, temperatura, nivel y caudal— alimenta al PLC con la realidad del proceso. Los <strong>variadores de frecuencia (VFD)</strong> regulan la velocidad de los motores para ahorrar energía y suavizar arranques, y el <strong>motion control</strong> coordina ejes con precisión para robótica y maquinaria. Protocolos como OPC UA, Modbus, PROFINET y EtherNet/IP son el tejido que conecta todo.</p>
+        <h2>Por qué importa en Latinoamérica</h2>
+        <p>La industria latinoamericana atraviesa una ola de modernización: retrofits de líneas antiguas, migración de relés a PLC y adopción de estándares abiertos. Para el técnico de la región, mantenerse al día con lanzamientos de Siemens, Schneider, Rockwell, Omron o Delta —y con las tendencias de control definido por software— es lo que separa una carrera estancada de una en ascenso. Esta sección reúne, en español, las noticias que importan.</p>
+      `,
+      subtemas: [
+        { label: 'SCADA y HMI', keys: ['scada', 'hmi'] },
+        { label: 'Lenguajes IEC 61131 (LADDER, ST, FBD)', keys: ['ladder', 'iec', '61131', 'grafcet'] },
+        { label: 'Variadores y motion control', keys: ['variador', 'vfd', 'motion', 'motor'] },
+        { label: 'Instrumentación y sensores', keys: ['sensor', 'instrument', 'opc', 'modbus'] },
+      ],
+      faq: [
+        { q: '¿Qué es un PLC en pocas palabras?', a: 'Un PLC es una computadora industrial que lee sensores, ejecuta una lógica programada y controla actuadores como motores y válvulas, diseñada para operar de forma confiable en ambientes industriales.' },
+        { q: '¿Qué lenguaje de PLC debería aprender primero?', a: 'LADDER (diagrama de escalera) es el más difundido y el punto de partida habitual; luego conviene sumar Texto Estructurado (ST) para lógica más compleja.' },
+        { q: '¿Cuál es la diferencia entre SCADA y DCS?', a: 'SCADA supervisa y adquiere datos de PLC distribuidos, ideal para telemetría y plantas dispersas; el DCS integra control y supervisión en procesos continuos de gran escala con alta redundancia.' },
+      ],
+    },
+    'ciberseguridad-ot': {
+      categoria: 'Ciberseguridad OT',
+      title: 'Ciberseguridad OT: guía completa para la industria',
+      h1: 'Ciberseguridad OT: proteger la planta industrial',
+      description: 'Qué es la ciberseguridad OT, en qué se diferencia de la IT, la norma IEC 62443, ataques a PLC y HMI, y buenas prácticas de segmentación. Guía en español para infraestructura industrial en LatAm.',
+      intro: `
+        <p>La <strong>ciberseguridad OT (tecnología de operación)</strong> protege los sistemas que controlan procesos físicos: PLC, HMI, SCADA, RTU y toda la maquinaria de una planta. A diferencia de la ciberseguridad IT —enfocada en datos y confidencialidad—, en OT lo primero es la <strong>disponibilidad y la seguridad física</strong>: un ataque puede detener una línea, dañar equipos o poner en riesgo vidas.</p>
+        <h2>IT vs OT: por qué no se protegen igual</h2>
+        <p>En IT se puede parchear un servidor el martes por la noche. En OT, un PLC que controla un horno no se reinicia sin planificar una parada. Los sistemas industriales suelen tener décadas de antigüedad, protocolos sin cifrado (Modbus, PROFINET) y ciclos de vida de 15-20 años. Esa longevidad, sumada a la creciente conexión con redes corporativas, crea una superficie de ataque que los atacantes ya explotan.</p>
+        <h2>La norma IEC 62443</h2>
+        <p>El estándar de referencia es la <strong>IEC 62443</strong>, que define niveles de seguridad, zonas y conductos, y requisitos tanto para fabricantes como para operadores. Junto a marcos como <strong>NIST SP 800-82</strong> y las alertas de <strong>CISA</strong>, forma la base sobre la que se construye un programa de ciberseguridad industrial serio.</p>
+        <h2>Amenazas reales: ransomware y vulnerabilidades en PLC</h2>
+        <p>El ransomware OT que detiene plantas enteras, las vulnerabilidades (CVE) en controladores de fabricantes conocidos y los ataques a infraestructura crítica dejaron de ser hipótesis. Casos como Stuxnet, Triton o los ataques a oleoductos mostraron el potencial de daño. Vigilar los boletines de vulnerabilidades y aplicar mitigaciones a tiempo es hoy parte del trabajo.</p>
+        <h2>Buenas prácticas y contexto LatAm</h2>
+        <p>Segmentar las redes OT/IT, aplicar el principio de menor privilegio, monitorear el tráfico industrial y tener un plan de respuesta son medidas al alcance de cualquier planta. En Latinoamérica, donde la digitalización avanza más rápido que la madurez en seguridad, este tema es urgente. Aquí seguimos, en español, las amenazas y defensas que importan.</p>
+      `,
+      subtemas: [
+        { label: 'Norma IEC 62443 y marcos', keys: ['iec', '62443', 'nist', 'cisa'] },
+        { label: 'Ransomware y ataques OT', keys: ['ransomware', 'ataque', 'malware'] },
+        { label: 'Vulnerabilidades en PLC/HMI', keys: ['cve', 'vulnerabilidad', 'plc', 'exploit'] },
+        { label: 'Post-cuántica y cifrado', keys: ['cuantica', 'cifrado', 'post-cuantica'] },
+      ],
+      faq: [
+        { q: '¿Qué es la ciberseguridad OT?', a: 'Es la disciplina que protege los sistemas de control industrial (PLC, HMI, SCADA) frente a ataques, priorizando la disponibilidad y la seguridad física del proceso por encima de la confidencialidad de datos.' },
+        { q: '¿En qué se diferencia de la ciberseguridad IT?', a: 'La IT protege datos y prioriza confidencialidad; la OT protege procesos físicos y prioriza disponibilidad y seguridad, con equipos longevos que no se pueden parchear o reiniciar libremente.' },
+        { q: '¿Qué norma rige la ciberseguridad industrial?', a: 'La IEC 62443 es el estándar de referencia internacional, complementado por NIST SP 800-82 y las alertas de CISA.' },
+      ],
+    },
+    'industria-4-0': {
+      categoria: 'Industria 4.0',
+      title: 'Industria 4.0: qué es y tecnologías clave',
+      h1: 'Industria 4.0: la fábrica conectada, explicada',
+      description: 'Qué es la Industria 4.0, IIoT, gemelos digitales, MES y edge computing, y cómo transforman la manufactura. Guía en español para profesionales de automatización en Latinoamérica.',
+      intro: `
+        <p>La <strong>Industria 4.0</strong> es la convergencia entre el mundo físico de la producción (OT) y el mundo digital de los datos (IT). No es una sola tecnología, sino un conjunto: sensores conectados, análisis de datos, computación en la nube y en el borde, y modelos digitales que permiten que la fábrica se vuelva más flexible, predecible y eficiente.</p>
+        <h2>IIoT: el Internet Industrial de las Cosas</h2>
+        <p>El <strong>IIoT</strong> conecta máquinas, sensores y sistemas para capturar datos en tiempo real. Ese flujo de información es la materia prima de todo lo demás: sin datos confiables no hay mantenimiento predictivo, ni optimización, ni gemelos digitales que funcionen.</p>
+        <h2>Gemelos digitales</h2>
+        <p>Un <strong>gemelo digital</strong> es una réplica virtual de una máquina, línea o planta que se alimenta de datos reales. Permite simular cambios, anticipar fallas y optimizar sin tocar el equipo físico. De un motor a una fábrica completa, es una de las herramientas más potentes de la Industria 4.0.</p>
+        <h2>MES y edge computing</h2>
+        <p>El <strong>MES (sistema de ejecución de manufactura)</strong> conecta la planta con la gestión, siguiendo cada orden de producción en detalle. El <strong>edge computing</strong> procesa datos junto a la máquina, reduciendo latencia y dependencia de la nube: decisiones críticas se toman en el borde, en milisegundos.</p>
+        <h2>Por qué importa en la región</h2>
+        <p>Para las plantas latinoamericanas, la Industria 4.0 no exige reemplazarlo todo: se puede empezar por retrofits, conectando equipos existentes y sumando analítica paso a paso. El desafío es hacerlo con una estrategia clara y sin descuidar la ciberseguridad. Aquí reunimos, en español, los avances que marcan el rumbo.</p>
+      `,
+      subtemas: [
+        { label: 'IIoT e Internet industrial', keys: ['iiot', 'iot', 'industrial-iot'] },
+        { label: 'Gemelos digitales', keys: ['gemelo', 'digital-twin', 'twin'] },
+        { label: 'MES y fábrica conectada', keys: ['mes', 'fabrica', 'manufactura'] },
+        { label: 'Edge computing', keys: ['edge', 'nube', 'cloud'] },
+      ],
+      faq: [
+        { q: '¿Qué es la Industria 4.0?', a: 'Es la convergencia de las tecnologías digitales (IIoT, datos, nube, edge, gemelos digitales) con la producción industrial, para lograr fábricas más conectadas, flexibles y eficientes.' },
+        { q: '¿Qué es un gemelo digital?', a: 'Una réplica virtual de una máquina o planta alimentada con datos reales, que permite simular, predecir fallas y optimizar sin intervenir el equipo físico.' },
+        { q: '¿Hay que reemplazar toda la planta para adoptar Industria 4.0?', a: 'No. Se puede empezar con retrofits, conectando equipos existentes y sumando analítica de forma incremental, con una estrategia clara y atención a la ciberseguridad.' },
+      ],
+    },
+    'inteligencia-artificial': {
+      categoria: 'Inteligencia Artificial',
+      title: 'IA en la industria: guía de inteligencia artificial aplicada',
+      h1: 'Inteligencia artificial en la industria',
+      description: 'Qué es la IA generativa, los LLM (Claude, GPT, Gemini), los agentes de IA y su aplicación a la manufactura. Guía en español para profesionales de automatización en LatAm.',
+      intro: `
+        <p>La <strong>inteligencia artificial</strong> pasó de la investigación a la planta. Modelos capaces de entender lenguaje, generar texto e imágenes, detectar defectos por visión y hasta ejecutar tareas de forma autónoma están cambiando cómo se diseña, opera y mantiene la industria.</p>
+        <h2>IA generativa y LLM</h2>
+        <p>Los <strong>modelos de lenguaje grande (LLM)</strong> como Claude, GPT o Gemini pueden redactar procedimientos, resumir manuales técnicos, asistir en programación de PLC y responder preguntas de operación. Su irrupción es tan veloz que seguir sus lanzamientos se volvió parte del trabajo de cualquier equipo técnico.</p>
+        <h2>Agentes de IA</h2>
+        <p>Un <strong>agente de IA</strong> no solo responde: planifica y ejecuta tareas de varios pasos usando herramientas. En la industria empiezan a asistir en diagnóstico, documentación y flujos de trabajo, y prometen automatizar procesos que antes exigían intervención humana constante.</p>
+        <h2>IA aplicada a la manufactura</h2>
+        <p>Más allá del texto, la IA industrial incluye <strong>visión de máquina</strong> para control de calidad, <strong>mantenimiento predictivo</strong> que anticipa fallas a partir de datos de sensores, y optimización de procesos. Aquí la IA se conecta directamente con el mundo OT.</p>
+        <h2>Regulación, ética y contexto LatAm</h2>
+        <p>Con el poder llegan las preguntas: sesgos, seguridad, consumo energético y regulación. Para Latinoamérica, la oportunidad es enorme —cerrar brechas de productividad— pero exige adoptar la IA con criterio. En esta sección seguimos, en español, lo que de verdad importa para el sector industrial.</p>
+      `,
+      subtemas: [
+        { label: 'LLM y modelos generativos', keys: ['llm', 'gpt', 'claude', 'gemini', 'generativa'] },
+        { label: 'Agentes de IA', keys: ['agente', 'agentes', 'autonomo'] },
+        { label: 'Visión y mantenimiento predictivo', keys: ['vision', 'predictivo', 'mantenimiento'] },
+        { label: 'Regulación y ética', keys: ['regulacion', 'etica', 'seguridad'] },
+      ],
+      faq: [
+        { q: '¿Cómo se aplica la IA en la industria?', a: 'En visión de máquina para calidad, mantenimiento predictivo a partir de sensores, optimización de procesos y asistentes basados en LLM para documentación y programación.' },
+        { q: '¿Qué es un agente de IA?', a: 'Un sistema de IA que planifica y ejecuta tareas de varios pasos usando herramientas, en lugar de solo responder una pregunta puntual.' },
+        { q: '¿Qué LLM son los más usados?', a: 'Modelos como Claude (Anthropic), GPT (OpenAI) y Gemini (Google) lideran; la elección depende del caso de uso, el costo y los requisitos de privacidad.' },
+      ],
+    },
+    'robotica': {
+      categoria: 'Robótica',
+      title: 'Robótica industrial: guía de robots, cobots y AGV',
+      h1: 'Robótica industrial: robots, cobots y AGV',
+      description: 'Qué es la robótica industrial, diferencias entre robots, cobots, AGV y AMR, y sus aplicaciones. Guía en español para automatización en Latinoamérica.',
+      intro: `
+        <p>La <strong>robótica industrial</strong> automatiza tareas físicas con precisión, velocidad y repetibilidad: soldar, ensamblar, paletizar, inspeccionar o mover materiales. Es una de las palancas más visibles de la productividad moderna, y cada año se vuelve más accesible.</p>
+        <h2>Robots industriales tradicionales</h2>
+        <p>Los <strong>brazos robóticos</strong> de fabricantes como ABB, KUKA, FANUC o Yaskawa dominan las líneas de alta producción. Operan tras vallas de seguridad, con gran carga y alcance, y son el estándar en automotriz y manufactura pesada.</p>
+        <h2>Cobots: robots colaborativos</h2>
+        <p>Los <strong>cobots</strong> están diseñados para trabajar junto a personas, sin jaulas, con sensores que detienen el movimiento ante contacto. Son más fáciles de programar y reprogramar, lo que los hace ideales para pymes y líneas flexibles.</p>
+        <h2>AGV y AMR: robótica móvil</h2>
+        <p>Los <strong>AGV (vehículos guiados automáticamente)</strong> siguen rutas fijas; los <strong>AMR (robots móviles autónomos)</strong> navegan de forma inteligente y esquivan obstáculos. Ambos transforman la logística interna de fábricas y almacenes.</p>
+        <h2>Visión de máquina y contexto LatAm</h2>
+        <p>La <strong>visión de máquina</strong> le da ojos al robot: guía, inspección y control de calidad. Para Latinoamérica, la robótica —y en especial los cobots— abre la puerta a automatizar sin grandes inversiones ni infraestructura compleja. Aquí seguimos, en español, los lanzamientos y aplicaciones que importan.</p>
+      `,
+      subtemas: [
+        { label: 'Cobots (robots colaborativos)', keys: ['cobot', 'colaborativo'] },
+        { label: 'AGV y AMR (robótica móvil)', keys: ['agv', 'amr', 'movil'] },
+        { label: 'Brazos robóticos', keys: ['brazo', 'robot', 'robotico'] },
+        { label: 'Visión de máquina', keys: ['vision', 'camara'] },
+      ],
+      faq: [
+        { q: '¿Cuál es la diferencia entre un robot industrial y un cobot?', a: 'El robot industrial tradicional opera tras vallas de seguridad con gran carga y velocidad; el cobot está diseñado para trabajar junto a personas sin jaulas y es más fácil de programar.' },
+        { q: '¿Qué diferencia hay entre AGV y AMR?', a: 'El AGV sigue rutas fijas predefinidas; el AMR navega de forma autónoma e inteligente, esquivando obstáculos sin necesidad de guías físicas.' },
+        { q: '¿La robótica es viable para pymes?', a: 'Sí, especialmente los cobots, que requieren menos inversión, espacio e infraestructura, y se programan con relativa facilidad.' },
+      ],
+    },
+  };
+
+  return Object.entries(PILLARS).map(([tema, data]) => ({
+    params: { tema },
+    props: { pillar: data, tema },
+  }));
+}
+
+const { pillar, tema } = Astro.props;
+
+const noticias = (await getCollection('noticias'))
+  .filter((n) => n.data.categoria === pillar.categoria)
+  .sort((a, b) => new Date(b.data.fecha).valueOf() - new Date(a.data.fecha).valueOf());
+
+// Agrupar por subtema según los tags de cada artículo (sub-clusters internos).
+const subtemasConNoticias = pillar.subtemas
+  .map((st: { label: string; keys: string[] }) => {
+    const matches = noticias.filter((n) =>
+      n.data.tags.some((t) => st.keys.some((k) => t.includes(k))),
+    ).slice(0, 5);
+    return { label: st.label, noticias: matches };
+  })
+  .filter((st) => st.noticias.length > 0);
+
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://automatizacionslatam.com';
+const pageUrl = `${siteUrl}/tema/${tema}/`;
+
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: pillar.faq.map((f: { q: string; a: string }) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+const jsonLdBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Inicio', item: `${siteUrl}/` },
+    { '@type': 'ListItem', position: 2, name: 'Temas', item: `${siteUrl}/` },
+    { '@type': 'ListItem', position: 3, name: pillar.categoria, item: pageUrl },
+  ],
+};
+const jsonLdCollection = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  '@id': pageUrl,
+  name: pillar.h1,
+  description: pillar.description,
+  url: pageUrl,
+  inLanguage: 'es',
+  isPartOf: { '@type': 'WebSite', name: 'Automatización LatAm', url: siteUrl },
+};
+const catSlug = tema; // los slugs de pillar coinciden con los de categoría
+---
+<Base title={`${pillar.title} | Automatización LatAm`} description={pillar.description}>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdBreadcrumb)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdCollection)} />
+
+  <article class="mx-auto max-w-3xl px-4 md:px-8 py-10 prose-article">
+    <nav aria-label="Breadcrumb" class="text-xs text-ink-500 mb-3 not-prose">
+      <a href="/" class="hover:text-brand-600">Inicio</a>
+      <span class="mx-1">›</span>
+      <span class="text-ink-700">{pillar.categoria}</span>
+    </nav>
+    <p class="text-brand-600 font-semibold uppercase tracking-wider text-sm mb-2 not-prose">Guía del tema</p>
+    <h1 class="text-3xl md:text-5xl font-serif font-bold text-ink-900 mb-6">{pillar.h1}</h1>
+
+    <div set:html={pillar.intro} />
+
+    <AdSlot slot="7777777777" label="Publicidad" />
+
+    {subtemasConNoticias.length > 0 && (
+      <section class="not-prose mt-10">
+        <h2 class="text-2xl font-serif font-bold text-ink-900 mb-6">Explora por subtema</h2>
+        {subtemasConNoticias.map((st) => (
+          <div class="mb-6">
+            <h3 class="text-lg font-semibold text-ink-800 mb-2">{st.label}</h3>
+            <ul class="space-y-1">
+              {st.noticias.map((n) => (
+                <li>
+                  <a href={`/noticia/${n.slug}/`} class="text-brand-600 hover:underline">{n.data.titulo}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </section>
+    )}
+
+    {noticias.length > 0 && (
+      <section class="not-prose mt-10">
+        <h2 class="text-2xl font-serif font-bold text-ink-900 mb-6">Últimas noticias de {pillar.categoria}</h2>
+        <div class="space-y-6">
+          {noticias.slice(0, 8).map((n) => <ArticleCard noticia={n} />)}
+        </div>
+        <p class="mt-6">
+          <a href={`/categoria/${catSlug}`} class="text-brand-600 font-semibold hover:underline">
+            Ver todas las noticias de {pillar.categoria} →
+          </a>
+        </p>
+      </section>
+    )}
+
+    <section class="not-prose mt-12 border-t border-ink-300/30 pt-8">
+      <h2 class="text-2xl font-serif font-bold text-ink-900 mb-6">Preguntas frecuentes</h2>
+      <div class="space-y-5">
+        {pillar.faq.map((f: { q: string; a: string }) => (
+          <div>
+            <h3 class="font-semibold text-ink-900 mb-1">{f.q}</h3>
+            <p class="text-ink-700">{f.a}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  </article>
+</Base>
