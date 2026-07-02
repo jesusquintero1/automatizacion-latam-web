@@ -1,11 +1,11 @@
-_Generado: 2026-07-02T01:59:43.130661+00:00 · fuente datos: degradado_
+_Generado: 2026-07-02T17:07:57.043654+00:00 · fuente datos: degradado_
 
 ### Distribución actual del corpus
 
 | Categoría | Artículos | Share | Cuota hoy |
 |---|---:|---:|---:|
 | Inteligencia Artificial | 155 | 41% | 1 |
-| Mercado y Negocios | 52 | 14% | 1 |
+| Mercado y Negocios | 53 | 14% | 1 |
 | Industria 4.0 | 47 | 12% | — |
 | Ciberseguridad OT | 46 | 12% | — |
 | PLC y Control | 34 | 9% | — |
@@ -21,3 +21,17 @@ Topadas a 1/run por sobre-representación: Inteligencia Artificial (41%), Mercad
 ### Keywords prioritarias (re-rank del agregador)
 
 `plc`, `scada`, `hmi`, `dcs`, `ladder`, `iec 61131`, `vfd`, `variable frequency drive`, `motion control`, `instrumentation`, `opc ua`, `field sensor`, `controller`, `automation controller`, `robot`, `cobot`, `collaborative robot`, `agv`, `amr`, `robotic arm`, `end effector`, `machine vision`, `robotics`, `pick and place`, `iiot`, `industrial iot`, `digital twin`, `mes`, `edge computing`, `smart factory` …
+
+### SEO — auditoría del corpus
+
+**Salud SEO: 83/100** · 380 artículos
+
+| Chequeo | Resultado |
+|---|---:|
+| Contenido corto (< 350 palabras) | 45 |
+| Meta descripción muy corta | 0 |
+| Títulos > 70 caracteres | 226 |
+| Títulos duplicados | 0 |
+| Huérfanos (< 2 enlaces entrantes) | 110 |
+
+**Pillar pages sugeridas** (temas con masa crítica): PLC y Control, Inteligencia Artificial, Mercado y Negocios, Industria 4.0, Ciberseguridad OT.
