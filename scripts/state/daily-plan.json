@@ -1,14 +1,14 @@
 {
-  "generado": "2026-07-03T01:30:16.985973+00:00",
+  "generado": "2026-07-03T10:24:21.656177+00:00",
   "fuente_datos": "degradado",
   "distribucion_actual": {
     "PLC y Control": 34,
     "Robótica": 19,
     "Industria 4.0": 47,
-    "Inteligencia Artificial": 156,
+    "Inteligencia Artificial": 157,
     "Ciberseguridad OT": 46,
     "Energía y Sostenibilidad": 10,
-    "Mercado y Negocios": 53,
+    "Mercado y Negocios": 54,
     "Casos de Estudio": 3,
     "General": 14
   },
@@ -56,6 +56,15 @@
     "smart factory",
     "connected factory",
     "it/ot",
+    "ot security",
+    "ics security",
+    "vulnerability",
+    "cve",
+    "ransomware",
+    "iec 62443",
+    "critical infrastructure",
+    "scada attack",
+    "plc exploit",
     "energy management",
     "microgrid",
     "renewable",
@@ -72,5 +81,5 @@
     "real-world results",
     "rollout"
   ],
-  "razonamiento": "Topadas a 1/run por sobre-representación: Inteligencia Artificial (41%), Mercado y Negocios (14%), General (4%). Liberadas (hambrientas): PLC y Control, Robótica, Industria 4.0, Energía y Sostenibilidad, Casos de Estudio. (Analytics en modo degradado: plan basado solo en balance interno.)"
+  "razonamiento": "Topadas a 1/run por sobre-representación: Inteligencia Artificial (41%), Mercado y Negocios (14%), General (4%). Liberadas (hambrientas): PLC y Control, Robótica, Industria 4.0, Ciberseguridad OT, Energía y Sostenibilidad, Casos de Estudio. (Analytics en modo degradado: plan basado solo en balance interno.)"
 }
