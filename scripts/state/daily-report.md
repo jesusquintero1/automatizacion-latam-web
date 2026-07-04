@@ -1,4 +1,4 @@
-_Generado: 2026-07-03T17:09:30.090032+00:00 · fuente datos: degradado_
+_Generado: 2026-07-04T01:30:06.304413+00:00 · fuente datos: degradado_
 
 ### Distribución actual del corpus
 
@@ -8,10 +8,10 @@ _Generado: 2026-07-03T17:09:30.090032+00:00 · fuente datos: degradado_
 | Mercado y Negocios | 54 | 14% | 1 |
 | Industria 4.0 | 48 | 12% | — |
 | Ciberseguridad OT | 46 | 12% | — |
-| PLC y Control | 35 | 9% | — |
+| PLC y Control | 36 | 9% | — |
 | Robótica | 20 | 5% | — |
 | General | 14 | 4% | 1 |
-| Energía y Sostenibilidad | 10 | 3% | — |
+| Energía y Sostenibilidad | 11 | 3% | — |
 | Casos de Estudio | 3 | 1% | — |
 
 ### Razonamiento del plan
