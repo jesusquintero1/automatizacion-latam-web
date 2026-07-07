@@ -1,4 +1,4 @@
-_Generado: 2026-07-07T10:43:23.400101+00:00 · fuente datos: degradado_
+_Generado: 2026-07-07T17:49:32.284123+00:00 · fuente datos: degradado_
 
 ### Distribución actual del corpus
 
@@ -8,7 +8,7 @@ _Generado: 2026-07-07T10:43:23.400101+00:00 · fuente datos: degradado_
 | Mercado y Negocios | 56 | 14% | 1 |
 | Industria 4.0 | 49 | 12% | — |
 | Ciberseguridad OT | 47 | 11% | — |
-| PLC y Control | 43 | 10% | — |
+| PLC y Control | 44 | 11% | — |
 | Robótica | 22 | 5% | — |
 | General | 14 | 3% | 1 |
 | Energía y Sostenibilidad | 12 | 3% | — |
