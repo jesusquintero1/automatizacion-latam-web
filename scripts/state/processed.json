@@ -2139,7 +2139,27 @@
       "url": "https://industrialcyber.co/news/forescout-added-to-nato-cybersecurity-catalogue-for-defense-and-critical-infrastructure-deployments/",
       "fuente": "Industrial Cyber",
       "fecha_proceso": "2026-07-09T01:30:02.818988+00:00"
+    },
+    "847e8393ba84cae5": {
+      "url": "https://industrialcyber.co/ai/eu-action-plan-sets-roadmap-to-counter-ai-driven-cyber-threats-strengthen-critical-infrastructure-security/",
+      "fuente": "Industrial Cyber",
+      "fecha_proceso": "2026-07-09T10:49:17.226853+00:00"
+    },
+    "24f39d57c254a966": {
+      "url": "https://industrialcyber.co/ransomware/nozomi-identifies-apex2-and-c2c-golang-malware-driving-faster-iot-botnet-attacks-raising-risks-for-ot-environments/",
+      "fuente": "Industrial Cyber",
+      "fecha_proceso": "2026-07-09T10:49:38.255562+00:00"
+    },
+    "e7afab5c789f9f75": {
+      "url": "https://www.marktechpost.com/2026/07/09/nvidia-releases-nemotron-labs-3-puzzle-75b-a9b-a-compressed-hybrid-moe-llm-delivering-2-03x-server-throughput-at-matched-user-throughput/",
+      "fuente": "MarkTechPost",
+      "fecha_proceso": "2026-07-09T10:49:57.978984+00:00"
+    },
+    "4ec65c912628ded0": {
+      "url": "https://www.designworldonline.com/comau-acquires-invent-for-intralogistics-automation/",
+      "fuente": "Design World Online",
+      "fecha_proceso": "2026-07-09T10:50:19.211042+00:00"
     }
   },
-  "ultima_corrida": "2026-07-09T01:30:23.093629+00:00"
+  "ultima_corrida": "2026-07-09T10:50:20.963634+00:00"
 }
