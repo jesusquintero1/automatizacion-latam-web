@@ -1,4 +1,4 @@
-_Generado: 2026-07-11T01:20:19.599856+00:00 · fuente datos: degradado_
+_Generado: 2026-07-11T09:13:44.474227+00:00 · fuente datos: degradado_
 
 ### Distribución actual del corpus
 
@@ -9,7 +9,7 @@ _Generado: 2026-07-11T01:20:19.599856+00:00 · fuente datos: degradado_
 | Ciberseguridad OT | 59 | 13% | — |
 | Industria 4.0 | 49 | 11% | — |
 | PLC y Control | 48 | 11% | — |
-| Robótica | 25 | 6% | — |
+| Robótica | 26 | 6% | — |
 | General | 14 | 3% | 1 |
 | Energía y Sostenibilidad | 13 | 3% | — |
 | Casos de Estudio | 3 | 1% | — |
