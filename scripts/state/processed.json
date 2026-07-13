@@ -2284,7 +2284,27 @@
       "url": "https://openai.com/index/deutsche-telekom",
       "fuente": "OpenAI Blog",
       "fecha_proceso": "2026-07-12T16:42:54.031966+00:00"
+    },
+    "1efd7b861c265aa3": {
+      "url": "https://www.iiot-world.com/smart-manufacturing/how-to-scale-ai-in-manufacturing/",
+      "fuente": "IIoT World",
+      "fecha_proceso": "2026-07-13T10:47:48.800066+00:00"
+    },
+    "d398df706142ece1": {
+      "url": "https://www.electronicsweekly.com/news/products/test-measurement-products/cp1000-probe-features-1-5mhz-bandwidth-for-measurements-up-to-1000a-2026-07/",
+      "fuente": "Electronics Weekly",
+      "fecha_proceso": "2026-07-13T10:48:22.623141+00:00"
+    },
+    "458c33cfed8ec59d": {
+      "url": "https://industrialcyber.co/manufacturing/cyfirma-warns-nation-state-actors-are-increasing-attacks-on-manufacturing-ot-and-ics-environments/",
+      "fuente": "Industrial Cyber",
+      "fecha_proceso": "2026-07-13T10:49:03.537577+00:00"
+    },
+    "ff42aba94ebc6863": {
+      "url": "https://industrialcyber.co/nist/nist-unveils-sp-1326-to-guide-supplier-cybersecurity-due-diligence-boost-cybersecurity-supply-chain-risk-management/",
+      "fuente": "Industrial Cyber",
+      "fecha_proceso": "2026-07-13T10:49:22.093499+00:00"
     }
   },
-  "ultima_corrida": "2026-07-13T01:23:53.871997+00:00"
+  "ultima_corrida": "2026-07-13T10:49:22.694461+00:00"
 }
