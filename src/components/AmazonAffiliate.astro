@@ -34,14 +34,18 @@ const {
   tag,
 } = Astro.props;
 
-// Tag de afiliado: prioriza prop, luego env (PUBLIC_AMAZON_TAG_<MKT>), luego placeholder.
+// Tag de afiliado: prioriza prop, luego env (PUBLIC_AMAZON_TAG_<MKT>).
+// SIN placeholder: si no hay tag real configurado, el bloque NO se renderiza.
+// Mostrar un enlace de afiliado con un tag falso no genera comisión y viola el
+// espíritu del Operating Agreement de Amazon (no publicar enlaces antes de estar
+// aprobado). El módulo aparece automáticamente cuando existe PUBLIC_AMAZON_TAG_*.
 const envTag =
   marketplace === 'mx' ? import.meta.env.PUBLIC_AMAZON_TAG_MX :
   marketplace === 'es' ? import.meta.env.PUBLIC_AMAZON_TAG_ES :
   marketplace === 'br' ? import.meta.env.PUBLIC_AMAZON_TAG_BR :
   import.meta.env.PUBLIC_AMAZON_TAG_US;
 
-const affTag = tag || envTag || 'automatizacionl-21';
+const affTag = tag || envTag;
 
 const tld = {
   us: 'com',
@@ -50,8 +54,9 @@ const tld = {
   br: 'com.br',
 }[marketplace];
 
-const url = `https://www.amazon.${tld}/dp/${asin}?tag=${affTag}`;
+const url = affTag ? `https://www.amazon.${tld}/dp/${asin}?tag=${affTag}` : null;
 ---
+{url && (
 <aside class="my-8 border border-ink-300/40 rounded-lg overflow-hidden bg-white">
   <p class="text-[10px] uppercase tracking-wider text-ink-500 px-4 pt-3 flex items-center gap-2">
     <span class="inline-block w-2 h-2 rounded-full bg-amber-500"></span>
@@ -88,3 +93,4 @@ const url = `https://www.amazon.${tld}/dp/${asin}?tag=${affTag}`;
     </div>
   </div>
 </aside>
+)}

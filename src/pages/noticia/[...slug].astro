@@ -3,6 +3,7 @@ import { getCollection, type CollectionEntry } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import AdSlot from '../../components/AdSlot.astro';
 import ArticleCard from '../../components/ArticleCard.astro';
+import ProductosRecomendados from '../../components/ProductosRecomendados.astro';
 
 export async function getStaticPaths() {
   const noticias = await getCollection('noticias');
@@ -213,6 +214,8 @@ const jsonLdBreadcrumb = {
         <p class="text-ink-700 leading-relaxed">{porQueImporta}</p>
       </aside>
     )}
+
+    <ProductosRecomendados categoria={categoria} />
 
     <p class="text-sm text-ink-500 border-t border-ink-300/30 pt-6 mt-10">
       Este resumen es un análisis original. Para leer la noticia completa visita la fuente original:

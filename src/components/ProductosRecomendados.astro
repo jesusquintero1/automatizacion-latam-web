@@ -1,0 +1,35 @@
+---
+// Estantería de productos afiliados relevantes a la categoría del artículo.
+// Se auto-oculta por completo si:
+//   - no hay tag de afiliado configurado (AmazonAffiliate no renderiza nada), o
+//   - la categoría no tiene productos con ASIN real (productosDe() los filtra).
+// Por eso es seguro incluirlo en todas las páginas de artículo desde ya.
+import AmazonAffiliate from './AmazonAffiliate.astro';
+import { productosDe } from '../data/amazon-productos';
+
+interface Props {
+  categoria: string;
+  max?: number;
+}
+
+const { categoria, max = 3 } = Astro.props;
+const productos = productosDe(categoria).slice(0, max);
+---
+{productos.length > 0 && (
+  <section class="mt-12 border-t border-ink-300/30 pt-8" aria-label="Herramientas y libros recomendados">
+    <h2 class="text-xl font-serif font-bold text-ink-900 mb-1">Herramientas y libros recomendados</h2>
+    <p class="text-sm text-ink-500 mb-4">
+      Selección relacionada con <span class="font-medium">{categoria}</span>. Enlaces de afiliado:
+      si compras a través de ellos, el sitio recibe una comisión sin costo extra para ti.
+    </p>
+    {productos.map((p) => (
+      <AmazonAffiliate
+        asin={p.asin}
+        titulo={p.titulo}
+        descripcion={p.descripcion}
+        marketplace={p.marketplace ?? 'us'}
+        imagen={p.imagen}
+      />
+    ))}
+  </section>
+)}
