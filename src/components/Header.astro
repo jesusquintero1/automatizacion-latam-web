@@ -9,6 +9,17 @@ const navItems = [
   { href: '/categoria/ciberseguridad-ot', label: 'Ciberseguridad OT' },
   { href: '/sobre', label: 'Sobre' },
 ];
+
+// Páginas-guía (pillars evergreen). Se listan en un menú "Guías" para darles
+// enlaces internos desde el Header y concentrar autoridad temática.
+const guiaItems = [
+  { href: '/guias/aprender-automatizacion-industrial', label: '★ Cómo aprender automatización' },
+  { href: '/tema/plc-y-control', label: 'PLC y control industrial' },
+  { href: '/tema/inteligencia-artificial', label: 'IA en la industria' },
+  { href: '/tema/robotica', label: 'Robótica industrial' },
+  { href: '/tema/industria-4-0', label: 'Industria 4.0 e IIoT' },
+  { href: '/tema/ciberseguridad-ot', label: 'Ciberseguridad OT' },
+];
 ---
 <header class="border-b border-ink-300/30 bg-white sticky top-0 z-40 backdrop-blur-md bg-white/90">
   <div class="mx-auto max-w-[var(--container)] px-4 md:px-8 flex items-center justify-between h-16">
@@ -20,6 +31,17 @@ const navItems = [
       {navItems.map(({ href, label }) => (
         <a href={href} class="hover:text-brand-600 transition-colors">{label}</a>
       ))}
+      <details class="guias-menu relative">
+        <summary class="list-none cursor-pointer hover:text-brand-600 transition-colors flex items-center gap-1">
+          Guías
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </summary>
+        <div class="absolute right-0 mt-2 w-64 bg-white border border-ink-300/30 rounded-lg shadow-lg py-2 z-50">
+          {guiaItems.map(({ href, label }) => (
+            <a href={href} class="block px-4 py-2 text-ink-700 hover:bg-brand-50 hover:text-brand-600">{label}</a>
+          ))}
+        </div>
+      </details>
     </nav>
     <button id="mobile-menu-toggle" class="md:hidden p-2" aria-label="Abrir menú">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -31,10 +53,26 @@ const navItems = [
     {navItems.map(({ href, label }) => (
       <a href={href} class="block py-1 text-ink-700 hover:text-brand-600">{label}</a>
     ))}
+    <p class="pt-2 mt-2 border-t border-ink-300/20 text-[11px] uppercase tracking-wider text-ink-500">Guías</p>
+    {guiaItems.map(({ href, label }) => (
+      <a href={href} class="block py-1 text-ink-700 hover:text-brand-600">{label}</a>
+    ))}
   </nav>
 </header>
+<style>
+  /* Cierra el menú "Guías" al hacer clic fuera es gestionado por <details>;
+     ocultamos el marcador por defecto del summary. */
+  .guias-menu > summary::-webkit-details-marker { display: none; }
+</style>
 <script>
   const btn = document.getElementById('mobile-menu-toggle');
   const menu = document.getElementById('mobile-menu');
   btn?.addEventListener('click', () => menu?.classList.toggle('hidden'));
+
+  // Cerrar el dropdown "Guías" al hacer clic fuera.
+  document.addEventListener('click', (e) => {
+    document.querySelectorAll('details.guias-menu[open]').forEach((d) => {
+      if (!d.contains(e.target as Node)) d.removeAttribute('open');
+    });
+  });
 </script>

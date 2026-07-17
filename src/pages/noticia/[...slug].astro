@@ -29,6 +29,13 @@ const slugify = (s: string) =>
    .replace(/[^a-z0-9]+/g, '-')
    .replace(/^-+|-+$/g, '');
 const catSlug = slugify(categoria);
+// Categorías que tienen página-guía (pillar) en /tema/. Solo estas se enlazan
+// para no generar 404 (las 9 categorías existen, pero solo 5 tienen pillar).
+const PILLAR_SLUGS = new Set([
+  'plc-y-control', 'inteligencia-artificial', 'robotica',
+  'industria-4-0', 'ciberseguridad-ot',
+]);
+const hasPillar = PILLAR_SLUGS.has(catSlug);
 const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://automatizacionslatam.com';
 const articleUrl = `${siteUrl}${Astro.url.pathname}`;
 
@@ -212,6 +219,19 @@ const jsonLdBreadcrumb = {
       <aside class="bg-brand-50 border-l-4 border-brand-500 p-6 my-10 rounded-r-lg">
         <h3 class="text-lg font-semibold text-brand-900 mb-2">Por qué importa</h3>
         <p class="text-ink-700 leading-relaxed">{porQueImporta}</p>
+      </aside>
+    )}
+
+    {hasPillar && (
+      <aside class="border border-brand-200 bg-white rounded-lg p-5 my-8 flex items-start gap-4">
+        <span class="inline-block w-10 h-10 rounded-md bg-brand-100 text-brand-700 shrink-0 grid place-items-center text-xl">📘</span>
+        <div>
+          <p class="text-sm text-ink-500 mb-1">Guía completa</p>
+          <a href={`/tema/${catSlug}/`} class="font-semibold text-brand-700 hover:underline">
+            {categoria}: la guía para entender el tema a fondo →
+          </a>
+          <p class="text-sm text-ink-600 mt-1">Conceptos clave, cómo encajan las piezas y las preguntas frecuentes, en un solo lugar.</p>
+        </div>
       </aside>
     )}
 

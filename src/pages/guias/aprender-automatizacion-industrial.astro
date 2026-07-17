@@ -1,0 +1,133 @@
+---
+// Guía evergreen de intención comercial/informacional (alto RPM + landing Amazon).
+// Standalone: NO se genera desde el sistema de pillars de noticias porque su
+// formato es de "guía para aprender/comprar", no de cluster de noticias.
+// Objetivo de keywords: "aprender automatización industrial", "qué PLC elegir",
+// "mejores libros/cursos de automatización", "cómo empezar en automatización".
+import Base from '../../layouts/Base.astro';
+import AdSlot from '../../components/AdSlot.astro';
+import ProductosRecomendados from '../../components/ProductosRecomendados.astro';
+
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://automatizacionslatam.com';
+const pageUrl = `${siteUrl}/guias/aprender-automatizacion-industrial/`;
+const title = 'Cómo aprender automatización industrial en 2026: ruta, libros, cursos y herramientas';
+const description = 'Guía práctica para empezar en automatización industrial: qué es un PLC, la ruta de aprendizaje paso a paso, los mejores libros y cursos, y las herramientas básicas. En español, para Latinoamérica.';
+
+const faq = [
+  { q: '¿Qué necesito para empezar en automatización industrial?', a: 'Una base de electricidad y lógica, un simulador o PLC de entrenamiento, y un plan de estudio que vaya de lo eléctrico a la programación LADDER y luego a SCADA/HMI. No necesitas comprar equipo caro al inicio: muchos fabricantes ofrecen software de simulación gratuito.' },
+  { q: '¿Qué lenguaje de PLC debo aprender primero?', a: 'LADDER (diagrama de escalera), por ser el más difundido y el más intuitivo si vienes de electricidad. Luego conviene sumar Texto Estructurado (ST) para lógica más compleja. Ambos están definidos en la norma IEC 61131-3.' },
+  { q: '¿Se puede aprender automatización sin ir a la universidad?', a: 'Sí. Muchos técnicos entran por cursos técnicos, certificaciones de fabricante (Siemens, Rockwell, Schneider) y práctica con simuladores. La universidad ayuda para roles de ingeniería y diseño, pero la operación y el mantenimiento son muy accesibles por vía técnica.' },
+  { q: '¿Cuánto gana un técnico en automatización en Latinoamérica?', a: 'Varía mucho por país y experiencia, pero es de los perfiles técnicos mejor pagados del sector industrial, y la demanda crece con la modernización de plantas (retrofits, Industria 4.0). La especialización en SCADA, robótica o ciberseguridad OT eleva el salario.' },
+  { q: '¿Qué marca de PLC conviene aprender?', a: 'Siemens (TIA Portal) y Rockwell/Allen-Bradley dominan en la industria pesada; Schneider, Omron y Delta son muy comunes en LatAm por costo. Aprender los conceptos (IEC 61131-3, lazos de control) es más importante que la marca: se transfieren entre plataformas.' },
+];
+
+const jsonLdArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: title,
+  description,
+  inLanguage: 'es',
+  mainEntityOfPage: pageUrl,
+  author: { '@type': 'Organization', name: 'Automatización LatAm' },
+  publisher: { '@type': 'Organization', name: 'Automatización LatAm', url: siteUrl },
+};
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+};
+const jsonLdBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Inicio', item: `${siteUrl}/` },
+    { '@type': 'ListItem', position: 2, name: 'Guías', item: `${siteUrl}/guias/aprender-automatizacion-industrial/` },
+    { '@type': 'ListItem', position: 3, name: 'Aprender automatización industrial', item: pageUrl },
+  ],
+};
+---
+<Base title={`${title} | Automatización LatAm`} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdBreadcrumb)} />
+
+  <article class="mx-auto max-w-3xl px-4 md:px-8 py-10 prose-article">
+    <nav aria-label="Breadcrumb" class="text-xs text-ink-500 mb-3 not-prose">
+      <a href="/" class="hover:text-brand-600">Inicio</a>
+      <span class="mx-1">›</span>
+      <span class="text-ink-700">Guía</span>
+    </nav>
+    <p class="text-brand-600 font-semibold uppercase tracking-wider text-sm mb-2 not-prose">Guía para empezar</p>
+    <h1 class="text-3xl md:text-5xl font-serif font-bold text-ink-900 mb-6">Cómo aprender automatización industrial en 2026</h1>
+
+    <p class="text-xl text-ink-700 leading-relaxed border-l-4 border-brand-500 pl-4 mb-8 italic not-prose">
+      Una ruta realista para pasar de cero a empleable en automatización industrial: qué estudiar, en qué orden, con qué recursos y qué herramientas necesitas de verdad. Sin humo y pensada para el contexto latinoamericano.
+    </p>
+
+    <p>La automatización industrial es una de las áreas técnicas con mayor demanda y mejor remuneradas del sector manufacturero, y en Latinoamérica atraviesa una ola de modernización: plantas que migran de relés a PLC, líneas que suman robótica, y fábricas que adoptan Industria 4.0. La buena noticia es que se puede entrar por muchas puertas —técnica, ingeniería o autodidacta— y que el costo de empezar hoy es más bajo que nunca gracias a los simuladores gratuitos.</p>
+
+    <h2>Qué es la automatización industrial (y qué hace un profesional del área)</h2>
+    <p>Automatizar es hacer que una máquina o un proceso funcione con la mínima intervención humana, de forma segura y repetible. En el corazón de casi cualquier planta hay un <strong>PLC (controlador lógico programable)</strong>: una computadora industrial robusta que lee sensores, ejecuta una lógica programada y acciona motores, válvulas y actuadores. Alrededor del PLC conviven la <strong>HMI</strong> (la pantalla del operador), el <strong>SCADA</strong> (supervisión y datos de varios PLC) y la instrumentación de campo. El profesional de automatización diseña, programa, pone en marcha y mantiene todo ese conjunto.</p>
+
+    <AdSlot slot="7777777777" label="Publicidad" />
+
+    <h2>La ruta de aprendizaje, paso a paso</h2>
+    <p>Este es un orden que funciona porque cada etapa se apoya en la anterior:</p>
+    <ol>
+      <li><strong>Fundamentos eléctricos.</strong> Ley de Ohm, circuitos, relés, contactores, sensores y actuadores. Sin esta base, la programación queda en el aire.</li>
+      <li><strong>Lógica de control y LADDER.</strong> El lenguaje de diagrama de escalera (IEC 61131-3) es el punto de entrada natural, sobre todo si vienes de la electricidad. Empieza con un simulador gratuito antes de tocar hardware.</li>
+      <li><strong>PLC en la práctica.</strong> Elige una plataforma (Siemens TIA Portal, Rockwell, Schneider u Omron) y programa ejercicios reales: arranque de motor, semáforo, banda transportadora.</li>
+      <li><strong>HMI y SCADA.</strong> Aprende a diseñar pantallas de operador y a supervisar procesos, incluyendo históricos y alarmas.</li>
+      <li><strong>Redes industriales.</strong> Modbus, PROFINET, EtherNet/IP y OPC UA: cómo se comunican los equipos en planta.</li>
+      <li><strong>Especialización.</strong> Robótica, variadores y motion control, Industria 4.0/IIoT o ciberseguridad OT, según hacia dónde quieras crecer.</li>
+    </ol>
+
+    <div class="not-prose">
+      <ProductosRecomendados categoria="PLC y Control" max={3} />
+    </div>
+
+    <h2>Los mejores recursos para estudiar</h2>
+    <p>No necesitas gastar mucho para empezar, pero un buen libro de referencia y un curso estructurado aceleran el proceso frente a saltar de video en video sin plan. Prioriza materiales que combinen teoría con ejercicios prácticos, y que expliquen la norma IEC 61131-3, porque es transferible entre marcas.</p>
+    <ul>
+      <li><strong>Libros:</strong> busca títulos introductorios de PLC y LADDER, y una referencia de instrumentación y control de procesos para la parte de sensores y lazos.</li>
+      <li><strong>Cursos:</strong> las certificaciones de fabricante (Siemens, Rockwell, Schneider) son muy valoradas por los empleadores; plataformas como Udemy o Domestika tienen rutas introductorias más económicas.</li>
+      <li><strong>Simuladores gratuitos:</strong> varios fabricantes ofrecen versiones de prueba o educativas de su software; son ideales para practicar sin comprar equipo.</li>
+    </ul>
+
+    <h2>Herramientas básicas que sí vale la pena tener</h2>
+    <p>Cuando pases de la simulación a la práctica, hay un equipo mínimo que se usa a diario en campo:</p>
+    <ul>
+      <li>Un <strong>multímetro digital</strong> confiable (idealmente TRMS) para diagnóstico eléctrico.</li>
+      <li>Un <strong>kit de entrenamiento PLC/HMI</strong> si quieres montar un banco de pruebas en casa o en el aula.</li>
+      <li>Herramienta manual de electricista de calidad y elementos de seguridad.</li>
+    </ul>
+
+    <div class="not-prose">
+      <ProductosRecomendados categoria="Robótica" max={2} />
+    </div>
+
+    <h2>Guías por área (para profundizar)</h2>
+    <p>Cuando quieras ir más a fondo en un tema concreto, estas guías reúnen los conceptos clave y las noticias del área:</p>
+    <ul class="not-prose">
+      <li><a href="/tema/plc-y-control/" class="text-brand-600 hover:underline">PLC y control industrial</a></li>
+      <li><a href="/tema/robotica/" class="text-brand-600 hover:underline">Robótica industrial</a></li>
+      <li><a href="/tema/industria-4-0/" class="text-brand-600 hover:underline">Industria 4.0 e IIoT</a></li>
+      <li><a href="/tema/inteligencia-artificial/" class="text-brand-600 hover:underline">Inteligencia artificial en la industria</a></li>
+      <li><a href="/tema/ciberseguridad-ot/" class="text-brand-600 hover:underline">Ciberseguridad OT</a></li>
+    </ul>
+
+    <AdSlot slot="3333333333" label="Publicidad" />
+
+    <section class="not-prose mt-12 border-t border-ink-300/30 pt-8">
+      <h2 class="text-2xl font-serif font-bold text-ink-900 mb-6">Preguntas frecuentes</h2>
+      <div class="space-y-5">
+        {faq.map((f) => (
+          <div>
+            <h3 class="font-semibold text-ink-900 mb-1">{f.q}</h3>
+            <p class="text-ink-700">{f.a}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  </article>
+</Base>

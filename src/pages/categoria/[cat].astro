@@ -35,6 +35,18 @@ export async function getStaticPaths() {
 interface Props { categoria: string; }
 const { categoria } = Astro.props;
 
+// Slug de la categoría (mismo criterio que getStaticPaths, redefinido porque los
+// helpers de getStaticPaths NO son visibles aquí). Coincide con el slug de pillar.
+const catSlug = categoria.toLowerCase()
+  .replace(/[áéíóúñ]/g, (c) => ({á:'a',é:'e',í:'i',ó:'o',ú:'u',ñ:'n'}[c] ?? c))
+  .replace(/[^a-z0-9]+/g, '-')
+  .replace(/^-+|-+$/g, '');
+const PILLAR_SLUGS = new Set([
+  'plc-y-control', 'inteligencia-artificial', 'robotica',
+  'industria-4-0', 'ciberseguridad-ot',
+]);
+const hasPillar = PILLAR_SLUGS.has(catSlug);
+
 const noticias = (await getCollection('noticias'))
   .filter((n) => n.data.categoria === categoria)
   .sort((a, b) => new Date(b.data.fecha).valueOf() - new Date(a.data.fecha).valueOf());
@@ -105,9 +117,15 @@ const jsonLdBreadcrumb = {
     <p class="text-ink-500 text-lg max-w-2xl mb-3">
       {descripcion}
     </p>
-    <p class="text-ink-500 text-sm max-w-2xl mb-10">
+    <p class="text-ink-500 text-sm max-w-2xl mb-4">
       {noticias.length} {noticias.length === 1 ? 'noticia publicada' : 'noticias publicadas'} en esta categoría.
     </p>
+    {hasPillar && (
+      <a href={`/tema/${catSlug}/`}
+         class="inline-flex items-center gap-2 text-sm font-semibold text-brand-700 bg-brand-50 border border-brand-200 rounded-full px-4 py-2 mb-10 hover:bg-brand-100 transition">
+        📘 Leer la guía completa de {categoria} →
+      </a>
+    )}
 
     {noticias.length === 0 ? (
       <p class="text-ink-500">Aún no hay noticias en {categoria}.</p>
