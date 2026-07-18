@@ -1,0 +1,123 @@
+---
+// Guía evergreen "qué es un HMI". Completa el trío definicional PLC-SCADA-HMI.
+// Alto volumen, alto RPM industrial. Definicional + intención de compra (paneles HMI).
+import Base from '../../layouts/Base.astro';
+import AdSlot from '../../components/AdSlot.astro';
+import ProductosRecomendados from '../../components/ProductosRecomendados.astro';
+
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://automatizacionslatam.com';
+const pageUrl = `${siteUrl}/guias/que-es-un-hmi/`;
+const title = '¿Qué es un HMI? Guía completa: para qué sirve, tipos y cómo elegir un panel';
+const description = 'Qué es una HMI (interfaz hombre-máquina), para qué sirve, cómo se relaciona con el PLC y el SCADA, los tipos de panel y qué mirar al elegir uno. Guía en español para la industria en Latinoamérica.';
+
+const faq = [
+  { q: '¿Qué es una HMI?', a: 'HMI son las siglas de Human-Machine Interface (interfaz hombre-máquina). Es la pantalla mediante la cual un operador visualiza el estado de una máquina o proceso y envía órdenes, normalmente conectada a un PLC.' },
+  { q: '¿Cuál es la diferencia entre HMI y SCADA?', a: 'Una HMI es la interfaz local de una máquina o estación; un SCADA supervisa muchos equipos distribuidos y guarda históricos a nivel de planta. Dicho simple: la HMI es la pantalla de una máquina, el SCADA es el centro de control de toda la operación.' },
+  { q: '¿La HMI reemplaza al PLC?', a: 'No. El PLC ejecuta la lógica y controla los equipos; la HMI solo muestra información y recibe órdenes del operador para pasárselas al PLC. Trabajan juntos: el PLC controla, la HMI comunica.' },
+  { q: '¿Qué mirar al elegir una HMI?', a: 'El tamaño y resolución de pantalla, si necesita ser táctil, los protocolos de comunicación compatibles con tu PLC (Modbus, PROFINET, EtherNet/IP), el grado de protección (IP65 para ambientes hostiles), y el software de diseño de pantallas.' },
+];
+
+const jsonLdArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: title,
+  description,
+  inLanguage: 'es',
+  mainEntityOfPage: pageUrl,
+  author: { '@type': 'Organization', name: 'Automatización LatAm' },
+  publisher: { '@type': 'Organization', name: 'Automatización LatAm', url: siteUrl },
+};
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+};
+const jsonLdBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Inicio', item: `${siteUrl}/` },
+    { '@type': 'ListItem', position: 2, name: 'Guías', item: `${siteUrl}/guias/que-es-un-hmi/` },
+    { '@type': 'ListItem', position: 3, name: 'Qué es un HMI', item: pageUrl },
+  ],
+};
+---
+<Base title={`${title} | Automatización LatAm`} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdBreadcrumb)} />
+
+  <article class="mx-auto max-w-3xl px-4 md:px-8 py-10 prose-article">
+    <nav aria-label="Breadcrumb" class="text-xs text-ink-500 mb-3 not-prose">
+      <a href="/" class="hover:text-brand-600">Inicio</a>
+      <span class="mx-1">›</span>
+      <span class="text-ink-700">Guía</span>
+    </nav>
+    <p class="text-brand-600 font-semibold uppercase tracking-wider text-sm mb-2 not-prose">Guía técnica</p>
+    <h1 class="text-3xl md:text-5xl font-serif font-bold text-ink-900 mb-6">¿Qué es un HMI?</h1>
+
+    <p class="text-xl text-ink-700 leading-relaxed border-l-4 border-brand-500 pl-4 mb-8 italic not-prose">
+      La HMI es la cara visible de la automatización: la pantalla por la que el operador entiende y maneja una máquina. Aquí te explicamos qué es, cómo encaja con el PLC y el SCADA, y cómo elegir una.
+    </p>
+
+    <p>Cada vez que ves a un operador tocar una pantalla junto a una máquina industrial para arrancarla, ver una alarma o ajustar una temperatura, está usando una <strong>HMI</strong>. Es una de las piezas más visibles de la automatización, y también una de las más malentendidas.</p>
+
+    <h2>Qué significa HMI</h2>
+    <p>HMI son las siglas de <strong>Human-Machine Interface</strong>: interfaz hombre-máquina. Es el punto de contacto entre la persona y el proceso automatizado. Traduce el estado interno de la máquina —que vive en el PLC como números y bits— a algo comprensible: gráficos, indicadores, botones y alarmas. Y en sentido inverso, convierte las acciones del operador en órdenes para el PLC.</p>
+
+    <AdSlot slot="7777777777" label="Publicidad" />
+
+    <h2>Cómo encaja con el PLC y el SCADA</h2>
+    <p>La forma más clara de entenderlo es ver las tres capas juntas:</p>
+    <ul>
+      <li><strong>PLC</strong> — controla la máquina (la lógica y los actuadores).</li>
+      <li><strong>HMI</strong> — comunica: muestra al operador lo que hace el PLC y le permite intervenir, normalmente en la propia máquina.</li>
+      <li><strong>SCADA</strong> — supervisa muchas máquinas o estaciones a la vez, a nivel de planta, con históricos y alarmas centralizadas.</li>
+    </ul>
+    <p>Si quieres profundizar en las otras dos capas, tenemos guías dedicadas de <a href="/guias/que-es-un-plc/" class="text-brand-600 hover:underline">qué es un PLC</a> y <a href="/guias/que-es-scada/" class="text-brand-600 hover:underline">qué es SCADA</a>.</p>
+
+    <h2>Para qué sirve una HMI</h2>
+    <ul>
+      <li><strong>Visualizar</strong> el proceso en tiempo real (temperaturas, niveles, estados de motores).</li>
+      <li><strong>Operar</strong> la máquina: arrancar, parar, cambiar parámetros o recetas.</li>
+      <li><strong>Alarmar</strong>: avisar de fallas o condiciones anómalas y registrar cuándo ocurrieron.</li>
+      <li><strong>Diagnosticar</strong>: ayudar al técnico a encontrar el problema más rápido.</li>
+    </ul>
+
+    <div class="not-prose">
+      <ProductosRecomendados categoria="PLC y Control" max={2} />
+    </div>
+
+    <h2>Tipos de HMI</h2>
+    <ul>
+      <li><strong>Paneles dedicados:</strong> el clásico panel táctil montado en la máquina, robusto y de tamaños que van de 4" a 15" o más.</li>
+      <li><strong>HMI de software (PC):</strong> corre en una PC industrial; ofrece más potencia gráfica y suele solaparse con el SCADA.</li>
+      <li><strong>HMI web/móvil:</strong> acceso desde navegador o smartphone, cada vez más común con la Industria 4.0.</li>
+    </ul>
+
+    <h2>Qué mirar al elegir una HMI</h2>
+    <ul>
+      <li><strong>Tamaño y resolución</strong> de pantalla según la complejidad de tus sinópticos.</li>
+      <li><strong>Compatibilidad de protocolos</strong> con tu PLC (Modbus, PROFINET, EtherNet/IP, OPC UA).</li>
+      <li><strong>Grado de protección (IP):</strong> IP65 o superior para ambientes con polvo o agua.</li>
+      <li><strong>Software de diseño:</strong> facilidad para crear pantallas y disponibilidad de licencias.</li>
+      <li><strong>Ecosistema del fabricante:</strong> a menudo conviene la HMI de la misma marca que el PLC para una integración más simple.</li>
+    </ul>
+
+    <p class="not-prose"><a href="/tema/plc-y-control/" class="text-brand-600 font-semibold hover:underline">Sigue las noticias de PLC, HMI y control industrial →</a></p>
+
+    <AdSlot slot="3333333333" label="Publicidad" />
+
+    <section class="not-prose mt-12 border-t border-ink-300/30 pt-8">
+      <h2 class="text-2xl font-serif font-bold text-ink-900 mb-6">Preguntas frecuentes</h2>
+      <div class="space-y-5">
+        {faq.map((f) => (
+          <div>
+            <h3 class="font-semibold text-ink-900 mb-1">{f.q}</h3>
+            <p class="text-ink-700">{f.a}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  </article>
+</Base>

@@ -1,0 +1,112 @@
+---
+// Guía evergreen "qué es un cobot / robot colaborativo". Alto interés y RPM (robótica).
+import Base from '../../layouts/Base.astro';
+import AdSlot from '../../components/AdSlot.astro';
+import ProductosRecomendados from '../../components/ProductosRecomendados.astro';
+
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://automatizacionslatam.com';
+const pageUrl = `${siteUrl}/guias/que-es-un-cobot/`;
+const title = '¿Qué es un cobot? Robots colaborativos: cómo funcionan, usos y diferencias';
+const description = 'Qué es un cobot (robot colaborativo), en qué se diferencia de un robot industrial tradicional, cómo funciona la seguridad, sus aplicaciones y qué mirar al elegir uno. Guía en español para Latinoamérica.';
+
+const faq = [
+  { q: '¿Qué es un cobot?', a: 'Un cobot (robot colaborativo) es un robot diseñado para trabajar de forma segura junto a personas, sin necesidad de jaulas de seguridad. Es más ligero, sensible y fácil de programar que un robot industrial tradicional.' },
+  { q: '¿Cuál es la diferencia entre un cobot y un robot industrial?', a: 'El robot industrial es rápido, fuerte y trabaja aislado tras vallas por seguridad; el cobot es más lento y liviano, pero puede compartir espacio con las personas gracias a sensores que detectan contacto y detienen el movimiento. También es mucho más fácil de reprogramar.' },
+  { q: '¿Son seguros los cobots?', a: 'Sí, están diseñados con seguridad intrínseca: sensores de fuerza/par, límites de velocidad y bordes redondeados que permiten operar cerca de personas. Aun así, cada aplicación requiere una evaluación de riesgos según normas como ISO/TS 15066.' },
+  { q: '¿Para qué se usan los cobots?', a: 'Tareas repetitivas o ergonómicamente exigentes: carga y descarga de máquinas (machine tending), paletizado, ensamblaje, atornillado, inspección de calidad y aplicación de adhesivos, entre otras. Son ideales para pymes que se automatizan por primera vez.' },
+];
+
+const jsonLdArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: title,
+  description,
+  inLanguage: 'es',
+  mainEntityOfPage: pageUrl,
+  author: { '@type': 'Organization', name: 'Automatización LatAm' },
+  publisher: { '@type': 'Organization', name: 'Automatización LatAm', url: siteUrl },
+};
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+};
+const jsonLdBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Inicio', item: `${siteUrl}/` },
+    { '@type': 'ListItem', position: 2, name: 'Guías', item: `${siteUrl}/guias/que-es-un-cobot/` },
+    { '@type': 'ListItem', position: 3, name: 'Qué es un cobot', item: pageUrl },
+  ],
+};
+---
+<Base title={`${title} | Automatización LatAm`} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdBreadcrumb)} />
+
+  <article class="mx-auto max-w-3xl px-4 md:px-8 py-10 prose-article">
+    <nav aria-label="Breadcrumb" class="text-xs text-ink-500 mb-3 not-prose">
+      <a href="/" class="hover:text-brand-600">Inicio</a>
+      <span class="mx-1">›</span>
+      <span class="text-ink-700">Guía</span>
+    </nav>
+    <p class="text-brand-600 font-semibold uppercase tracking-wider text-sm mb-2 not-prose">Guía técnica</p>
+    <h1 class="text-3xl md:text-5xl font-serif font-bold text-ink-900 mb-6">¿Qué es un cobot?</h1>
+
+    <p class="text-xl text-ink-700 leading-relaxed border-l-4 border-brand-500 pl-4 mb-8 italic not-prose">
+      Los robots colaborativos están llevando la automatización a talleres y pymes que antes no podían costear un robot. Aquí te explicamos qué son, cómo funciona su seguridad y para qué sirven.
+    </p>
+
+    <p>Durante décadas, "robot industrial" significó una máquina enorme y potente encerrada tras una jaula, por razones de seguridad. El <strong>cobot</strong> cambió esa imagen: es un robot pensado para trabajar <em>al lado</em> de las personas, y eso ha abierto la automatización a fábricas y talleres que antes quedaban fuera.</p>
+
+    <h2>Qué significa cobot</h2>
+    <p>"Cobot" es la contracción de <strong>collaborative robot</strong> (robot colaborativo). Es un brazo robótico diseñado para compartir el espacio de trabajo con operarios humanos de forma segura, sin necesidad de vallas ni barreras. Suele ser más ligero, más sensible y —clave— mucho más fácil de programar que un robot industrial clásico: en muchos casos se "enseña" moviendo el brazo con la mano.</p>
+
+    <AdSlot slot="7777777777" label="Publicidad" />
+
+    <h2>Cobot vs. robot industrial tradicional</h2>
+    <ul>
+      <li><strong>Seguridad:</strong> el robot tradicional necesita jaulas; el cobot detecta contacto y se detiene, permitiendo trabajo lado a lado.</li>
+      <li><strong>Velocidad y carga:</strong> el industrial es más rápido y fuerte; el cobot prioriza seguridad sobre velocidad y maneja cargas menores.</li>
+      <li><strong>Programación:</strong> el industrial requiere personal especializado; el cobot se programa por guiado manual o interfaces sencillas.</li>
+      <li><strong>Flexibilidad:</strong> el cobot se reubica y reconfigura fácilmente entre tareas; ideal para lotes pequeños y variados.</li>
+    </ul>
+
+    <h2>Cómo funciona su seguridad</h2>
+    <p>La seguridad del cobot es <strong>intrínseca</strong>, no depende de una jaula. Se apoya en sensores de fuerza y par en cada articulación que detectan un contacto anómalo y detienen el movimiento al instante, límites de velocidad y potencia, y un diseño físico con bordes redondeados y sin puntos de atrapamiento. Aun así, la seguridad final depende de la <strong>aplicación completa</strong> (la herramienta, la pieza, el entorno), por lo que siempre se requiere una evaluación de riesgos, guiada por normas como <strong>ISO/TS 15066</strong> e ISO 10218.</p>
+
+    <div class="not-prose">
+      <ProductosRecomendados categoria="Robótica" max={2} />
+    </div>
+
+    <h2>Aplicaciones típicas</h2>
+    <ul>
+      <li><strong>Machine tending:</strong> cargar y descargar máquinas (CNC, inyectoras).</li>
+      <li><strong>Paletizado</strong> de cajas y productos al final de línea.</li>
+      <li><strong>Ensamblaje y atornillado</strong> de precisión.</li>
+      <li><strong>Inspección de calidad</strong> con cámara y visión artificial.</li>
+      <li><strong>Aplicación de adhesivos, soldadura ligera y pick-and-place.</strong></li>
+    </ul>
+
+    <h2>Cobots en Latinoamérica: por qué crecen</h2>
+    <p>Para muchas pymes de la región, un robot industrial tradicional era inviable por costo, espacio y complejidad. El cobot baja esas tres barreras: cuesta menos, no necesita rediseñar la planta con jaulas y no exige un integrador especializado para cada cambio. Eso lo convierte en una puerta de entrada realista a la automatización, especialmente donde escasea la mano de obra para tareas repetitivas o físicamente exigentes.</p>
+
+    <p class="not-prose"><a href="/tema/robotica/" class="text-brand-600 font-semibold hover:underline">Sigue las últimas noticias de robótica industrial →</a></p>
+
+    <AdSlot slot="3333333333" label="Publicidad" />
+
+    <section class="not-prose mt-12 border-t border-ink-300/30 pt-8">
+      <h2 class="text-2xl font-serif font-bold text-ink-900 mb-6">Preguntas frecuentes</h2>
+      <div class="space-y-5">
+        {faq.map((f) => (
+          <div>
+            <h3 class="font-semibold text-ink-900 mb-1">{f.q}</h3>
+            <p class="text-ink-700">{f.a}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  </article>
+</Base>
