@@ -1,0 +1,155 @@
+---
+// Guía evergreen de intención educativa/estudiante: "TON vs TOF en LADDER con
+// ejemplo". Competencia = PDFs sueltos y vídeos; ninguna página HTML dedicada y
+// bien maquetada en español. Un docente con ejemplos reales rankea. Baja
+// competencia + demanda estable de estudiantes de automatización.
+import Base from '../../layouts/Base.astro';
+import AdSlot from '../../components/AdSlot.astro';
+
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://automatizacionslatam.com';
+const pageUrl = `${siteUrl}/guias/temporizador-ton-tof-ladder/`;
+const title = 'Temporizadores TON, TOF y TP en LADDER: diferencias y ejemplos resueltos';
+const description = 'Qué son los temporizadores TON (retardo a la conexión), TOF (retardo a la desconexión) y TP (pulso) en LADDER, cuándo usar cada uno, con diagramas de escalera y ejemplos resueltos paso a paso.';
+
+const faq = [
+  { q: '¿Cuál es la diferencia entre TON y TOF?', a: 'TON (Timer On-Delay) retarda la activación de la salida: cuenta mientras la entrada está activa y activa la salida al cumplir el tiempo. TOF (Timer Off-Delay) retarda la desactivación: activa la salida de inmediato cuando la entrada se activa y la mantiene un tiempo extra después de que la entrada se apaga.' },
+  { q: '¿Qué es el temporizador TP?', a: 'TP (Timer Pulse) genera un pulso de duración fija: al detectar un flanco en la entrada, activa la salida durante un tiempo predeterminado sin importar lo que pase con la entrada durante ese lapso.' },
+  { q: '¿PT y ET qué significan en un temporizador?', a: 'PT (Preset Time) es el tiempo objetivo que programas. ET (Elapsed Time) es el tiempo transcurrido, un valor que el temporizador va incrementando y que puedes usar en otras partes del programa.' },
+  { q: '¿Cómo hago un temporizador en ZelioSoft o LOGO!?', a: 'En Zelio Logic y LOGO! Siemens hay bloques de temporización equivalentes al TON/TOF: seleccionas el bloque de retardo a la conexión o a la desconexión, defines el tiempo y conectas su entrada de habilitación y su salida. El concepto IEC 61131-3 es el mismo; cambia solo la representación gráfica del entorno.' },
+  { q: '¿Por qué mi temporizador se reinicia solo?', a: 'La causa más común es que la entrada de habilitación (IN) pierde continuidad a mitad de la cuenta: un TON se reinicia a cero si su entrada se desactiva antes de cumplir el tiempo. Revisa que la condición que habilita el temporizador se mantenga estable durante toda la temporización.' },
+];
+
+const jsonLdArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: title,
+  description,
+  inLanguage: 'es',
+  mainEntityOfPage: pageUrl,
+  author: { '@type': 'Organization', name: 'Automatización LatAm' },
+  publisher: { '@type': 'Organization', name: 'Automatización LatAm', url: siteUrl },
+};
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+};
+const jsonLdBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Inicio', item: `${siteUrl}/` },
+    { '@type': 'ListItem', position: 2, name: 'Guías', item: `${siteUrl}/guias/` },
+    { '@type': 'ListItem', position: 3, name: 'Temporizadores en LADDER', item: pageUrl },
+  ],
+};
+
+const ladderTON = `   IN (I0.0)                    TON        Q (Q0.0)
+ ----[ ]------------------------[TON]--------( )----
+                                | PT=5s |
+                                | ET--> |
+   El motor arranca 5 s DESPUÉS de pulsar IN.`;
+
+const ladderTOF = `   IN (I0.0)                    TOF        Q (Q0.0)
+ ----[ ]------------------------[TOF]--------( )----
+                                | PT=5s |
+   El ventilador sigue 5 s DESPUÉS de soltar IN.`;
+---
+<Base title={`${title} | Automatización LatAm`} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdBreadcrumb)} />
+
+  <article class="mx-auto max-w-3xl px-4 md:px-8 py-10 prose-article">
+    <nav aria-label="Breadcrumb" class="text-xs text-ink-500 mb-3 not-prose">
+      <a href="/" class="hover:text-brand-600">Inicio</a>
+      <span class="mx-1">›</span>
+      <a href="/guias/" class="hover:text-brand-600">Guías</a>
+      <span class="mx-1">›</span>
+      <span class="text-ink-700">Temporizadores en LADDER</span>
+    </nav>
+    <p class="text-brand-600 font-semibold uppercase tracking-wider text-sm mb-2 not-prose">Guía técnica</p>
+    <h1 class="text-3xl md:text-5xl font-serif font-bold text-ink-900 mb-6">Temporizadores TON, TOF y TP en LADDER</h1>
+
+    <p class="text-xl text-ink-700 leading-relaxed border-l-4 border-brand-500 pl-4 mb-8 italic not-prose">
+      Los temporizadores son, junto a los contactos y bobinas, la herramienta más usada al programar un PLC. Aquí verás los tres tipos estándar, cuándo usar cada uno y ejemplos resueltos con diagrama de escalera.
+    </p>
+
+    <p>Casi todo automatismo necesita "esperar": arrancar un motor unos segundos después de una señal, mantener un ventilador funcionando un rato tras apagar una máquina, o generar un pulso de duración fija. Para eso existen los <strong>temporizadores</strong>. La norma <strong>IEC 61131-3</strong> define tres tipos estándar —<strong>TON</strong>, <strong>TOF</strong> y <strong>TP</strong>— que encontrarás con el mismo comportamiento en Siemens, Rockwell, Schneider, Zelio, LOGO! y prácticamente cualquier marca.</p>
+
+    <h2>Los tres tipos de temporizador</h2>
+    <p>Todos comparten dos parámetros clave: <strong>PT</strong> (Preset Time, el tiempo que programas) y <strong>ET</strong> (Elapsed Time, el tiempo transcurrido que el bloque va contando). Lo que cambia es <em>cuándo</em> actúan sobre la salida.</p>
+
+    <AdSlot slot="7777777777" label="Publicidad" />
+
+    <h2>TON — Retardo a la conexión (On-Delay)</h2>
+    <p>El <strong>TON</strong> retarda la <em>activación</em>. Mientras su entrada <code>IN</code> está activa, cuenta el tiempo; cuando el tiempo transcurrido (ET) alcanza el preset (PT), activa su salida <code>Q</code>. Si la entrada se desactiva antes de cumplir el tiempo, el temporizador se reinicia a cero y la salida no llega a activarse.</p>
+    <p><strong>Uso típico:</strong> arrancar un motor unos segundos después de dar la orden, para dar tiempo a que otra condición se estabilice.</p>
+    <pre class="not-prose bg-ink-900 text-ink-100 rounded-lg p-4 overflow-x-auto text-sm">{ladderTON}</pre>
+
+    <h2>TOF — Retardo a la desconexión (Off-Delay)</h2>
+    <p>El <strong>TOF</strong> hace lo contrario: retarda la <em>desactivación</em>. En cuanto la entrada <code>IN</code> se activa, la salida <code>Q</code> se activa de inmediato. Cuando la entrada se desactiva, el temporizador empieza a contar y mantiene la salida activa hasta cumplir el preset; recién entonces la apaga.</p>
+    <p><strong>Uso típico:</strong> mantener un ventilador de extracción o la luz de una máquina funcionando unos segundos después de apagarla.</p>
+    <pre class="not-prose bg-ink-900 text-ink-100 rounded-lg p-4 overflow-x-auto text-sm">{ladderTOF}</pre>
+
+    <h2>TP — Pulso (Timer Pulse)</h2>
+    <p>El <strong>TP</strong> genera un pulso de duración fija. Al detectar un flanco de subida en la entrada, activa la salida durante exactamente el tiempo PT, sin importar lo que ocurra con la entrada durante ese lapso (aunque la entrada se apague antes, el pulso completa su duración). Es ideal para dar un impulso constante a una válvula o una señal, independientemente de cuánto dure la pulsación del operador.</p>
+
+    <h2>Tabla comparativa</h2>
+    <div class="not-prose overflow-x-auto my-6">
+      <table class="w-full text-sm border-collapse">
+        <thead>
+          <tr class="border-b-2 border-ink-300">
+            <th class="text-left py-2 pr-4">Tipo</th>
+            <th class="text-left py-2 pr-4">La salida se activa…</th>
+            <th class="text-left py-2">La salida se desactiva…</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-b border-ink-300/30">
+            <td class="py-2 pr-4 font-semibold">TON</td>
+            <td class="py-2 pr-4">PT segundos después de activar IN</td>
+            <td class="py-2">al desactivar IN (inmediato)</td>
+          </tr>
+          <tr class="border-b border-ink-300/30">
+            <td class="py-2 pr-4 font-semibold">TOF</td>
+            <td class="py-2 pr-4">al activar IN (inmediato)</td>
+            <td class="py-2">PT segundos después de desactivar IN</td>
+          </tr>
+          <tr>
+            <td class="py-2 pr-4 font-semibold">TP</td>
+            <td class="py-2 pr-4">al flanco de subida de IN</td>
+            <td class="py-2">PT segundos después (pulso fijo)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Errores frecuentes (que veo en mis estudiantes)</h2>
+    <ul>
+      <li><strong>Confiar en que el TON "recuerda":</strong> si la entrada de habilitación parpadea, el TON reinicia el ET a cero. Para temporizar arranques largos, asegura que la condición de habilitación se mantenga estable (a veces con un enclavamiento SET/RESET previo).</li>
+      <li><strong>Confundir TON con TOF:</strong> un extractor que debe seguir tras apagar la máquina es un TOF, no un TON. Elegir mal invierte el comportamiento.</li>
+      <li><strong>Ignorar el ET:</strong> el valor transcurrido (ET) es útil para mostrar cuentas regresivas en la HMI o encadenar etapas; no lo desperdicies.</li>
+      <li><strong>Olvidar las unidades:</strong> PT se define como una constante de tiempo (p. ej. T#5s). Mezclar milisegundos y segundos es una fuente típica de fallos.</li>
+    </ul>
+
+    <h2>En ZelioSoft, LOGO! y TIA Portal</h2>
+    <p>El concepto es idéntico en todos los entornos; solo cambia la representación. En <strong>Zelio Logic</strong> y <strong>LOGO! Soft Comfort</strong> usarás bloques de "retardo a la conexión" y "retardo a la desconexión", equivalentes directos de TON y TOF. En <strong>TIA Portal</strong> los tienes como las instrucciones <code>TON</code>, <code>TOF</code> y <code>TP</code> de la norma. Aprende el comportamiento una vez y lo aplicas en cualquier marca.</p>
+
+    <p class="not-prose"><a href="/glosario/ladder/" class="text-brand-600 hover:underline">Repasa qué es LADDER en el glosario</a> · <a href="/guias/que-es-un-plc/" class="text-brand-600 hover:underline">Qué es un PLC</a></p>
+
+    <AdSlot slot="3333333333" label="Publicidad" />
+
+    <section class="not-prose mt-12 border-t border-ink-300/30 pt-8">
+      <h2 class="text-2xl font-serif font-bold text-ink-900 mb-6">Preguntas frecuentes</h2>
+      <div class="space-y-5">
+        {faq.map((f) => (
+          <div>
+            <h3 class="font-semibold text-ink-900 mb-1">{f.q}</h3>
+            <p class="text-ink-700">{f.a}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  </article>
+</Base>
