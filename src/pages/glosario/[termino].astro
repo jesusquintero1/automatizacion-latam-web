@@ -1,0 +1,130 @@
+---
+// Página por término del glosario técnico OT/IT. Contenido evergreen ORIGINAL
+// (definiciones curadas, no rewrites) → construye autoridad temática y enlaza el
+// clúster. Indexable a propósito: es el tipo de página de valor que compensa las
+// noticias thin desindexadas en la Ola 2.
+import Base from '../../layouts/Base.astro';
+import AdSlot from '../../components/AdSlot.astro';
+import { GLOSARIO, GLOSARIO_POR_SLUG } from '../../data/glosario';
+
+export async function getStaticPaths() {
+  return GLOSARIO.map((t) => ({
+    params: { termino: t.slug },
+    props: { termino: t },
+  }));
+}
+
+const { termino } = Astro.props;
+
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://automatizacionslatam.com';
+const pageUrl = `${siteUrl}/glosario/${termino.slug}/`;
+
+// Slug de categoría (mismo algoritmo que el resto del sitio: minúsculas + sin
+// tildes + no-alfanumérico a guion). 5 categorías tienen pillar en /tema/; el
+// resto enlaza a /categoria/.
+const PILLARS = new Set(['plc-y-control', 'ciberseguridad-ot', 'industria-4-0', 'inteligencia-artificial', 'robotica']);
+const catSlug = termino.categoria
+  .toLowerCase()
+  .normalize('NFD')
+  .replace(/[̀-ͯ]/g, '')
+  .replace(/[^a-z0-9]+/g, '-')
+  .replace(/^-+|-+$/g, '');
+const catUrl = PILLARS.has(catSlug) ? `/tema/${catSlug}/` : `/categoria/${catSlug}/`;
+
+// Relacionados que existen de verdad en el glosario.
+const relacionados = termino.relacionados
+  .map((s) => GLOSARIO_POR_SLUG[s])
+  .filter(Boolean);
+
+const parrafos = termino.definicion.split('\n\n');
+const tituloCompleto = termino.siglas ? `${termino.termino} (${termino.siglas})` : termino.termino;
+const metaTitle = `¿Qué es ${termino.termino}? Definición | Glosario de automatización`;
+const metaDesc = termino.resumen;
+
+// JSON-LD: DefinedTerm (semántica de glosario) + Article (elegible para rich
+// result, a diferencia de FAQ/HowTo que Google ya retiró) + Breadcrumb.
+const jsonLdDefined = {
+  '@context': 'https://schema.org',
+  '@type': 'DefinedTerm',
+  '@id': pageUrl,
+  name: termino.termino,
+  description: termino.resumen,
+  inDefinedTermSet: {
+    '@type': 'DefinedTermSet',
+    name: 'Glosario de automatización industrial — Automatización LatAm',
+    url: `${siteUrl}/glosario/`,
+  },
+};
+const jsonLdArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: `¿Qué es ${termino.termino}?`,
+  description: termino.resumen,
+  inLanguage: 'es',
+  mainEntityOfPage: pageUrl,
+  author: { '@type': 'Organization', name: 'Automatización LatAm' },
+  publisher: { '@type': 'Organization', name: 'Automatización LatAm', url: siteUrl },
+};
+const jsonLdBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Inicio', item: `${siteUrl}/` },
+    { '@type': 'ListItem', position: 2, name: 'Glosario', item: `${siteUrl}/glosario/` },
+    { '@type': 'ListItem', position: 3, name: termino.termino, item: pageUrl },
+  ],
+};
+---
+<Base title={metaTitle} description={metaDesc}>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdDefined)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdBreadcrumb)} />
+
+  <article class="mx-auto max-w-3xl px-4 md:px-8 py-10 prose-article">
+    <nav aria-label="Breadcrumb" class="text-xs text-ink-500 mb-3 not-prose">
+      <a href="/" class="hover:text-brand-600">Inicio</a>
+      <span class="mx-1">›</span>
+      <a href="/glosario/" class="hover:text-brand-600">Glosario</a>
+      <span class="mx-1">›</span>
+      <span class="text-ink-700">{termino.termino}</span>
+    </nav>
+
+    <p class="text-brand-600 font-semibold uppercase tracking-wider text-sm mb-2 not-prose">Glosario técnico</p>
+    <h1 class="text-3xl md:text-5xl font-serif font-bold text-ink-900 mb-3">¿Qué es {termino.termino}?</h1>
+    {termino.siglas && (
+      <p class="text-ink-500 text-lg mb-6 not-prose"><strong class="text-ink-700">{termino.termino}</strong> — {termino.siglas}</p>
+    )}
+
+    <p class="text-xl text-ink-700 leading-relaxed border-l-4 border-brand-500 pl-4 mb-8 italic not-prose">
+      {termino.resumen}
+    </p>
+
+    {parrafos.map((p) => <p>{p}</p>)}
+
+    <AdSlot slot="8888888888" label="Publicidad" />
+
+    <p class="not-prose mt-6">
+      <a href={catUrl} class="text-brand-600 font-semibold hover:underline">Ver más sobre {termino.categoria} →</a>
+    </p>
+
+    {relacionados.length > 0 && (
+      <section class="not-prose mt-12 border-t border-ink-300/30 pt-8">
+        <h2 class="text-2xl font-serif font-bold text-ink-900 mb-6">Términos relacionados</h2>
+        <ul class="grid sm:grid-cols-2 gap-3">
+          {relacionados.map((r) => (
+            <li>
+              <a href={`/glosario/${r.slug}/`} class="block rounded-lg border border-ink-300/30 p-4 hover:border-brand-500 transition-colors">
+                <span class="font-semibold text-ink-900">{r.termino}</span>
+                <span class="block text-sm text-ink-500 mt-1">{r.resumen}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+
+    <p class="not-prose mt-10">
+      <a href="/glosario/" class="text-brand-600 font-semibold hover:underline">← Volver al glosario completo</a>
+    </p>
+  </article>
+</Base>
