@@ -163,6 +163,31 @@ const lcpImage = isFirst && destacada?.data.imagen ? destacada.data.imagen : nul
             </div>
           </section>
         )}
+
+        {isFirst && (
+          <section class="mt-8 border border-brand-200 rounded-2xl p-6 md:p-10 bg-white">
+            <div class="flex items-center justify-between gap-4 mb-4 flex-wrap">
+              <h2 class="text-2xl font-serif font-bold text-ink-900">Guías para empezar</h2>
+              <a href="/guias/" class="text-sm font-semibold text-brand-600 hover:underline">Ver todas las guías →</a>
+            </div>
+            <p class="text-ink-500 mb-6 max-w-2xl">
+              Recursos perennes para entender los conceptos clave de la automatización, ideales
+              para aprender o repasar lo esencial.
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {[
+                { href: '/guias/que-es-un-plc/', label: '¿Qué es un PLC?' },
+                { href: '/guias/que-es-scada/', label: '¿Qué es SCADA?' },
+                { href: '/guias/que-es-la-industria-4-0/', label: '¿Qué es la Industria 4.0?' },
+                { href: '/guias/aprender-automatizacion-industrial/', label: 'Cómo aprender automatización' },
+              ].map(({ href, label }) => (
+                <a href={href} class="block bg-brand-50 border border-brand-100 rounded-lg px-4 py-3 hover:border-brand-500 hover:shadow-md transition group">
+                  <span class="font-semibold text-ink-900 group-hover:text-brand-600">📘 {label}</span>
+                </a>
+              ))}
+            </div>
+          </section>
+        )}
       </>
     )}
   </section>
