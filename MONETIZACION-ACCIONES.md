@@ -89,6 +89,26 @@ activarla:
 
 ---
 
+## 4. (Opcional, para más adelante) Montar GA4 — cuando haya tráfico
+
+**Estado:** decidido posponer. El sitio no tiene GA4 (no hay gtag en el HTML ni
+propiedad). Con ~9 clics/3 meses, GA4 mediría comportamiento on-site ≈ 0, así que hoy
+no aporta señal accionable. **Search Console ya está activo y cubre lo que el cerebro
+necesita** para decidir contenido. Retomar cuando el tráfico crezca (o cuando AdSense
+apruebe y quieras ingreso por categoría). Pasos, ya mapeados:
+
+1. Analytics → Administrar → **+ Crear → Propiedad**: nombre "AutomatizacionLatAm",
+   zona horaria Colombia (GMT-5), moneda USD.
+2. Crear un **flujo de datos web** para `https://automatizacionslatam.com` → copiar el
+   **Measurement ID** (`G-XXXXXXXX`).
+3. Añadir el secret/variable `PUBLIC_AMAZON_...` no — aquí `PUBLIC_GA_ID=G-XXXXXXXX` en
+   GitHub (el sitio ya tiene el gtag condicionado a esa var en `Base.astro`); se activa
+   en el próximo deploy.
+4. En la nueva propiedad → **Acceso a la gestión de la propiedad** → agregar
+   `cerebro-analytics@cerebro-analytics-502723.iam.gserviceaccount.com` como **Lector**.
+5. Copiar el **ID de propiedad numérico** → secret `GA4_PROPERTY_ID` en GitHub. A partir
+   de ahí `analytics.py` también leerá sesiones por categoría.
+
 ## Qué NO hacer (y por qué)
 - **No** borrar+re-añadir el sitio en AdSense (destruye la cola; el problema real
   es tráfico, no la revisión).

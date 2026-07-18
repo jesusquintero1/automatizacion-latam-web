@@ -1,0 +1,134 @@
+---
+// Guía evergreen de intención informacional/comercial sobre SCADA.
+// Motivada por dato REAL de Search Console: el sitio ya aparece para consultas como
+// "integración de sistemas SCADA para monitorización energética". SCADA es keyword de
+// alto RPM (industrial) con volumen sostenido. Doble beneficio: AdSense + landing Amazon.
+import Base from '../../layouts/Base.astro';
+import AdSlot from '../../components/AdSlot.astro';
+import ProductosRecomendados from '../../components/ProductosRecomendados.astro';
+
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://automatizacionslatam.com';
+const pageUrl = `${siteUrl}/guias/que-es-scada/`;
+const title = '¿Qué es SCADA? Guía completa: cómo funciona, componentes y cómo elegir un sistema';
+const description = 'Qué es un sistema SCADA, para qué sirve, sus componentes (RTU, PLC, HMI, MTU), la diferencia con un DCS y qué mirar al elegir uno. Guía en español para industria y energía en Latinoamérica.';
+
+const faq = [
+  { q: '¿Qué significa SCADA?', a: 'SCADA son las siglas en inglés de Supervisory Control and Data Acquisition (Supervisión, Control y Adquisición de Datos). Es un sistema que permite monitorear y controlar procesos industriales a distancia, recogiendo datos de sensores y equipos en tiempo real.' },
+  { q: '¿Cuál es la diferencia entre SCADA y PLC?', a: 'El PLC es el controlador que ejecuta la lógica y acciona los equipos en campo; el SCADA es la capa de supervisión por encima, que recoge datos de uno o muchos PLC/RTU, los muestra a los operadores y guarda históricos. En resumen: el PLC controla, el SCADA supervisa.' },
+  { q: '¿En qué se diferencia SCADA de un DCS?', a: 'Un SCADA suele supervisar activos geográficamente dispersos (redes eléctricas, acueductos, oleoductos) priorizando la telemetría; un DCS integra control y supervisión en una planta continua y compacta (petroquímica, energía) con alta redundancia y control de lazo cerrado más estrecho. La frontera entre ambos se ha ido difuminando.' },
+  { q: '¿Para qué industrias sirve SCADA?', a: 'Energía y servicios (eléctricas, agua, gas), petróleo y minería, manufactura, transporte y telecomunicaciones. Cualquier operación con equipos distribuidos que haya que vigilar y controlar de forma centralizada es candidata a un SCADA.' },
+  { q: '¿Es seguro un sistema SCADA?', a: 'Los SCADA modernos conectan la red industrial (OT) con la corporativa (IT), lo que amplía la superficie de ataque. Por eso la ciberseguridad OT —segmentación de redes, normas como IEC 62443, monitoreo— es hoy inseparable de cualquier despliegue SCADA serio.' },
+];
+
+const jsonLdArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: title,
+  description,
+  inLanguage: 'es',
+  mainEntityOfPage: pageUrl,
+  author: { '@type': 'Organization', name: 'Automatización LatAm' },
+  publisher: { '@type': 'Organization', name: 'Automatización LatAm', url: siteUrl },
+};
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+};
+const jsonLdBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Inicio', item: `${siteUrl}/` },
+    { '@type': 'ListItem', position: 2, name: 'Guías', item: `${siteUrl}/guias/que-es-scada/` },
+    { '@type': 'ListItem', position: 3, name: 'Qué es SCADA', item: pageUrl },
+  ],
+};
+---
+<Base title={`${title} | Automatización LatAm`} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdBreadcrumb)} />
+
+  <article class="mx-auto max-w-3xl px-4 md:px-8 py-10 prose-article">
+    <nav aria-label="Breadcrumb" class="text-xs text-ink-500 mb-3 not-prose">
+      <a href="/" class="hover:text-brand-600">Inicio</a>
+      <span class="mx-1">›</span>
+      <span class="text-ink-700">Guía</span>
+    </nav>
+    <p class="text-brand-600 font-semibold uppercase tracking-wider text-sm mb-2 not-prose">Guía técnica</p>
+    <h1 class="text-3xl md:text-5xl font-serif font-bold text-ink-900 mb-6">¿Qué es SCADA? Guía completa</h1>
+
+    <p class="text-xl text-ink-700 leading-relaxed border-l-4 border-brand-500 pl-4 mb-8 italic not-prose">
+      Qué es un sistema SCADA, cómo funciona, de qué piezas se compone y qué mirar antes de elegir uno. Explicado desde cero y con foco en la industria y la energía en Latinoamérica.
+    </p>
+
+    <p>Si trabajas cerca de la industria, la energía o los servicios públicos, tarde o temprano te cruzas con la palabra <strong>SCADA</strong>. Detrás de esa sigla hay uno de los sistemas más importantes de la automatización moderna: el que permite que una sola sala de control vigile y opere una red eléctrica, un acueducto o una planta entera, sin importar cuán dispersos estén los equipos.</p>
+
+    <h2>Qué significa SCADA</h2>
+    <p>SCADA es el acrónimo en inglés de <strong>Supervisory Control and Data Acquisition</strong>: supervisión, control y adquisición de datos. En términos simples, es un sistema que <strong>recoge datos</strong> de sensores y equipos repartidos en el terreno, los <strong>presenta</strong> a los operadores en pantallas comprensibles, y les permite <strong>enviar órdenes</strong> de control de vuelta a esos equipos. Todo en tiempo real y, muchas veces, a kilómetros de distancia.</p>
+
+    <AdSlot slot="7777777777" label="Publicidad" />
+
+    <h2>Cómo funciona un sistema SCADA</h2>
+    <p>El flujo, de campo a sala de control, sigue siempre la misma lógica:</p>
+    <ol>
+      <li><strong>Los sensores e instrumentos</strong> miden variables físicas: presión, temperatura, caudal, voltaje, nivel.</li>
+      <li><strong>Los PLC o las RTU</strong> (unidades terminales remotas) leen esas señales, ejecutan lógica local y las convierten en datos digitales.</li>
+      <li><strong>La red de comunicaciones</strong> transporta esos datos (por fibra, radio, celular o protocolos como Modbus, DNP3 u OPC UA) hasta el centro de control.</li>
+      <li><strong>El servidor SCADA (MTU)</strong> reúne todo, lo procesa, dispara alarmas y guarda históricos.</li>
+      <li><strong>La HMI</strong> muestra el proceso al operador en diagramas y tendencias, y le permite actuar.</li>
+    </ol>
+
+    <h2>Los componentes de un SCADA</h2>
+    <ul>
+      <li><strong>Instrumentación de campo:</strong> sensores y actuadores, la interfaz con el mundo físico.</li>
+      <li><strong>RTU y PLC:</strong> los "ojos y manos" remotos que adquieren datos y ejecutan control local.</li>
+      <li><strong>Red de comunicaciones:</strong> el sistema nervioso que conecta el campo con el centro.</li>
+      <li><strong>MTU / servidor SCADA:</strong> el cerebro que centraliza, procesa y almacena.</li>
+      <li><strong>HMI:</strong> la cara visible para el operador, con sinópticos, alarmas y tendencias.</li>
+      <li><strong>Base de datos de históricos (historian):</strong> guarda la evolución del proceso para análisis y reportes.</li>
+    </ul>
+
+    <div class="not-prose">
+      <ProductosRecomendados categoria="PLC y Control" max={3} />
+    </div>
+
+    <h2>SCADA vs. PLC vs. DCS: cómo no confundirlos</h2>
+    <p>Es la duda más común. Una forma sencilla de recordarlo:</p>
+    <ul>
+      <li><strong>PLC</strong> — <em>controla</em>. Ejecuta la lógica y acciona motores, válvulas y equipos en campo.</li>
+      <li><strong>SCADA</strong> — <em>supervisa</em>. Se sitúa por encima de uno o muchos PLC/RTU para monitorear, alarmar y registrar, típicamente sobre activos dispersos.</li>
+      <li><strong>DCS</strong> — <em>integra</em>. Combina control y supervisión en una planta continua y compacta, con alta redundancia y control de lazo más estrecho.</li>
+    </ul>
+    <p>La frontera SCADA–DCS se ha difuminado con los años: hoy muchos sistemas hacen ambas cosas. Para profundizar en la capa de control, revisa nuestra <a href="/tema/plc-y-control/" class="text-brand-600 hover:underline">guía de PLC y control industrial</a>.</p>
+
+    <h2>SCADA en energía y servicios: el caso latinoamericano</h2>
+    <p>Donde SCADA más brilla es en operaciones con activos geográficamente dispersos, y ahí la energía manda: subestaciones eléctricas, parques solares y eólicos, redes de agua y gas. En una región que moderniza su infraestructura y suma generación renovable, la <strong>monitorización energética</strong> centralizada —medir consumo, detectar fallas y optimizar despacho— es una de las aplicaciones que más crece. Un buen SCADA convierte kilómetros de red en una sola pantalla accionable.</p>
+
+    <h2>Qué mirar al elegir un sistema SCADA</h2>
+    <ul>
+      <li><strong>Escalabilidad:</strong> que crezca de decenas a miles de señales sin rehacerlo.</li>
+      <li><strong>Protocolos abiertos:</strong> soporte de OPC UA, Modbus, DNP3, IEC 60870/61850 para no quedar atado a un fabricante.</li>
+      <li><strong>Redundancia y disponibilidad:</strong> servidores y comunicaciones tolerantes a fallos.</li>
+      <li><strong>Ciberseguridad OT:</strong> segmentación, autenticación y alineación con IEC 62443. Ver nuestra <a href="/tema/ciberseguridad-ot/" class="text-brand-600 hover:underline">guía de ciberseguridad OT</a>.</li>
+      <li><strong>Analítica y acceso remoto/nube:</strong> paneles, reportes y, cada vez más, integración con IIoT.</li>
+    </ul>
+
+    <p class="not-prose"><a href="/guias/aprender-automatizacion-industrial/" class="text-brand-600 font-semibold hover:underline">¿Empezando en automatización? Lee nuestra guía para aprender desde cero →</a></p>
+
+    <AdSlot slot="3333333333" label="Publicidad" />
+
+    <section class="not-prose mt-12 border-t border-ink-300/30 pt-8">
+      <h2 class="text-2xl font-serif font-bold text-ink-900 mb-6">Preguntas frecuentes</h2>
+      <div class="space-y-5">
+        {faq.map((f) => (
+          <div>
+            <h3 class="font-semibold text-ink-900 mb-1">{f.q}</h3>
+            <p class="text-ink-700">{f.a}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  </article>
+</Base>
