@@ -744,11 +744,24 @@ def _validate_article(data: dict[str, Any]) -> RewrittenArticle | None:
         tags = []
     tags = [str(t).lower().strip() for t in tags if t][:5]
 
-    # CAPA 4: rechazar artículos cortos (error/excusa o contenido delgado que
-    # perjudica SEO/AdSense). Piso ~2000 chars ≈ 330 palabras; el prompt pide 700+.
+    # CAPA 4: rechazar artículos cortos. El piso DEBE coincidir con
+    # PODA_MIN_PALABRAS del frontend (src/pages/noticia/[...slug].astro): si una
+    # noticia nace con < 450 palabras, el frontend la desindexaría de inmediato,
+    # así que mejor no escribirla — gasta tokens y engorda el corpus thin que
+    # activa el clasificador site-wide de contenido útil de Google.
+    MIN_PALABRAS_CUERPO = 450
     cuerpo = str(data["cuerpo"]).strip()
-    if len(cuerpo) < 2000:
-        log.info("  ⊘ Cuerpo demasiado corto (%d chars, mínimo 2000) — descartando", len(cuerpo))
+    palabras_cuerpo = len(re.findall(r"\S+", cuerpo))
+    if palabras_cuerpo < MIN_PALABRAS_CUERPO:
+        log.info("  ⊘ Cuerpo con %d palabras (mínimo %d) — descartando thin content",
+                 palabras_cuerpo, MIN_PALABRAS_CUERPO)
+        return None
+
+    # CAPA 5: el "por qué importa" es lo único semi-original frente al feed
+    # ajeno. Sin él, la noticia es un rewrite puro que el frontend desindexaría;
+    # la descartamos aquí para no generarla.
+    if not str(data["porQueImporta"]).strip():
+        log.info("  ⊘ Sin 'por qué importa' — descartando (sería noindex en el front)")
         return None
 
     return RewrittenArticle(
@@ -871,7 +884,11 @@ def main() -> int:
     config_full = yaml.safe_load(SOURCES_FILE.read_text(encoding="utf-8"))
     fuentes = [f for f in config_full.get("fuentes", []) if f.get("activa", True)]
     config = config_full.get("config", {})
-    max_total = args.max or config.get("max_noticias_por_run", 8)
+    # Ritmo throttled (2026-07-18): bajado de 8 a 2 por run. Con la cadencia de
+    # 3 runs/día que fijó el owner, son máx 6 noticias/día (antes 24). Menos
+    # volumen + piso de 450 palabras = corpus más denso y menos superficie thin
+    # que arrastre a las guías en el clasificador de contenido útil de Google.
+    max_total = args.max or config.get("max_noticias_por_run", 2)
     max_por_fuente = config.get("max_por_fuente", 2)
     modelo = config.get("modelo", "claude-haiku-4-5")
     user_agent = config.get("user_agent", "AutomatizacionLatAm-Aggregator/0.1")

@@ -11,8 +11,13 @@ interface Props {
   ogImage?: string;
   // articulo: true en paginas de noticia individual (cambia og:type y modifica robots).
   articulo?: boolean;
-  // noIndex: true en paginas que no deben indexarse (p.ej. 404).
+  // noIndex: true en paginas que no deben indexarse (p.ej. 404). Emite
+  // noindex,nofollow (corta todo).
   noIndex?: boolean;
+  // noIndexFollow: true en paginas podadas por baja calidad (noticias thin/viejas).
+  // Emite noindex,FOLLOW: Google las saca del indice pero sigue rastreando sus
+  // enlaces internos hacia las guias/pillars, que es lo que queremos conservar.
+  noIndexFollow?: boolean;
   // Fecha de publicacion / modificacion (solo articulos).
   publishedTime?: string;
   modifiedTime?: string;
@@ -28,6 +33,7 @@ const {
   ogImage,
   articulo = false,
   noIndex = false,
+  noIndexFollow = false,
   publishedTime,
   modifiedTime,
   ogSection,
@@ -130,8 +136,8 @@ const jsonLdWebsite = {
     <meta name="twitter:description" content={description} />
 
     <!-- SEO: robots, theme-color, autor del sitio, color de UI movil -->
-    <meta name="robots" content={noIndex ? 'noindex,nofollow' : 'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1'} />
-    <meta name="googlebot" content={noIndex ? 'noindex,nofollow' : 'index,follow,max-image-preview:large,max-snippet:-1'} />
+    <meta name="robots" content={noIndex ? 'noindex,nofollow' : noIndexFollow ? 'noindex,follow' : 'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1'} />
+    <meta name="googlebot" content={noIndex ? 'noindex,nofollow' : noIndexFollow ? 'noindex,follow' : 'index,follow,max-image-preview:large,max-snippet:-1'} />
     <meta name="author" content="Automatización LatAm" />
     <meta name="publisher" content="Automatización LatAm" />
     <meta name="theme-color" content="#0f4a8a" />
