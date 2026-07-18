@@ -1,0 +1,67 @@
+---
+// Índice de herramientas gratuitas. Cada herramienta es linkbait técnico
+// (útil + embebible) que atrae enlaces sin depender de outreach manual.
+import Base from '../../layouts/Base.astro';
+
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://automatizacionslatam.com';
+const pageUrl = `${siteUrl}/herramientas/`;
+const title = 'Herramientas gratuitas de automatización industrial';
+const description = 'Calculadoras y utilidades gratuitas para técnicos e ingenieros de automatización: escalado analógico de PLC y más. Sin registro.';
+
+const herramientas = [
+  {
+    href: '/herramientas/escalado-analogico/',
+    titulo: 'Calculadora de escalado analógico',
+    desc: 'Convierte cuentas crudas (raw) de una entrada analógica de PLC a unidades de ingeniería y viceversa. Presets Siemens, 12/15/16 bits y 4-20 mA.',
+  },
+];
+
+const jsonLdList = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'Herramientas de automatización industrial',
+  numberOfItems: herramientas.length,
+  itemListElement: herramientas.map((h, idx) => ({
+    '@type': 'ListItem',
+    position: idx + 1,
+    url: `${siteUrl}${h.href}`,
+    name: h.titulo,
+  })),
+};
+const jsonLdBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Inicio', item: `${siteUrl}/` },
+    { '@type': 'ListItem', position: 2, name: 'Herramientas', item: pageUrl },
+  ],
+};
+---
+<Base title={`${title} | Automatización LatAm`} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdList)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdBreadcrumb)} />
+
+  <section class="mx-auto max-w-4xl px-4 md:px-8 py-10">
+    <nav aria-label="Breadcrumb" class="text-xs text-ink-500 mb-3">
+      <a href="/" class="hover:text-brand-600">Inicio</a>
+      <span class="mx-1">›</span>
+      <span class="text-ink-700">Herramientas</span>
+    </nav>
+    <p class="text-brand-600 font-semibold uppercase tracking-wider text-sm mb-2">Utilidades</p>
+    <h1 class="text-3xl md:text-5xl font-serif font-bold text-ink-900 mb-4">Herramientas gratuitas</h1>
+    <p class="text-ink-500 text-lg max-w-2xl mb-10">
+      Calculadoras y utilidades prácticas para el día a día del técnico de automatización. Gratis, sin registro y embebibles en tu propia web.
+    </p>
+
+    <ul class="grid sm:grid-cols-2 gap-4">
+      {herramientas.map((h) => (
+        <li>
+          <a href={h.href} class="block h-full rounded-lg border border-ink-300/30 p-5 hover:border-brand-500 transition-colors">
+            <span class="font-semibold text-ink-900 text-lg">{h.titulo}</span>
+            <span class="block text-sm text-ink-500 mt-2">{h.desc}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+</Base>
