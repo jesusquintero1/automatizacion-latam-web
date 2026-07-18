@@ -1,0 +1,142 @@
+---
+// Guía evergreen del término insignia del nicho: "qué es un PLC". Altísimo volumen de
+// búsqueda + alto RPM industrial. Definicional + intención de compra (trainers, libros).
+// Complementa el pillar de noticias /tema/plc-y-control (distinto: aquí es la guía
+// perenne "qué es / cómo funciona / cómo elegir"; allá es el cluster de noticias).
+import Base from '../../layouts/Base.astro';
+import AdSlot from '../../components/AdSlot.astro';
+import ProductosRecomendados from '../../components/ProductosRecomendados.astro';
+
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://automatizacionslatam.com';
+const pageUrl = `${siteUrl}/guias/que-es-un-plc/`;
+const title = '¿Qué es un PLC? Guía completa: cómo funciona, tipos, lenguajes y cómo elegir uno';
+const description = 'Qué es un PLC (controlador lógico programable), cómo funciona su ciclo de scan, los tipos y marcas (Siemens, Rockwell, Schneider), los lenguajes IEC 61131-3 y cómo elegir uno. Guía en español para Latinoamérica.';
+
+const faq = [
+  { q: '¿Qué es un PLC en palabras simples?', a: 'Un PLC (controlador lógico programable) es una computadora industrial robusta que lee señales de sensores, ejecuta una lógica programada y acciona salidas como motores y válvulas. Es el "cerebro" que automatiza máquinas y procesos en la industria.' },
+  { q: '¿Para qué sirve un PLC?', a: 'Sirve para automatizar procesos: controlar una banda transportadora, dosificar líquidos, arrancar motores en secuencia, gestionar alarmas de seguridad, etc. Reemplaza cableados de relés por lógica programable, más flexible y fiable.' },
+  { q: '¿Qué lenguaje usa un PLC?', a: 'La norma IEC 61131-3 define cinco lenguajes. El más usado es LADDER (diagrama de escalera), heredero de los relés; le siguen Texto Estructurado (ST), Bloques de Funciones (FBD), Lista de Instrucciones (IL) y Grafcet/SFC.' },
+  { q: '¿Cuál es la diferencia entre un PLC y un microcontrolador (Arduino)?', a: 'Un microcontrolador como Arduino es barato y flexible para prototipos, pero un PLC está diseñado para la industria: soporta polvo, vibración y temperaturas extremas, tiene entradas/salidas robustas y aisladas, y una fiabilidad pensada para operar años sin fallar.' },
+  { q: '¿Qué marca de PLC conviene aprender?', a: 'Siemens (TIA Portal) y Rockwell/Allen-Bradley dominan la industria pesada; Schneider, Omron y Delta son muy comunes en LatAm por costo. Lo importante es dominar los conceptos (IEC 61131-3, lazos de control): se transfieren entre marcas.' },
+];
+
+const jsonLdArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: title,
+  description,
+  inLanguage: 'es',
+  mainEntityOfPage: pageUrl,
+  author: { '@type': 'Organization', name: 'Automatización LatAm' },
+  publisher: { '@type': 'Organization', name: 'Automatización LatAm', url: siteUrl },
+};
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+};
+const jsonLdBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Inicio', item: `${siteUrl}/` },
+    { '@type': 'ListItem', position: 2, name: 'Guías', item: `${siteUrl}/guias/que-es-un-plc/` },
+    { '@type': 'ListItem', position: 3, name: 'Qué es un PLC', item: pageUrl },
+  ],
+};
+---
+<Base title={`${title} | Automatización LatAm`} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdBreadcrumb)} />
+
+  <article class="mx-auto max-w-3xl px-4 md:px-8 py-10 prose-article">
+    <nav aria-label="Breadcrumb" class="text-xs text-ink-500 mb-3 not-prose">
+      <a href="/" class="hover:text-brand-600">Inicio</a>
+      <span class="mx-1">›</span>
+      <span class="text-ink-700">Guía</span>
+    </nav>
+    <p class="text-brand-600 font-semibold uppercase tracking-wider text-sm mb-2 not-prose">Guía técnica</p>
+    <h1 class="text-3xl md:text-5xl font-serif font-bold text-ink-900 mb-6">¿Qué es un PLC? Guía completa</h1>
+
+    <p class="text-xl text-ink-700 leading-relaxed border-l-4 border-brand-500 pl-4 mb-8 italic not-prose">
+      El PLC es el corazón de casi cualquier planta automatizada. Aquí te explicamos qué es, cómo funciona por dentro, qué tipos y marcas existen, y qué mirar si vas a aprender o comprar uno.
+    </p>
+
+    <p>Si el mundo de la automatización industrial tuviera una pieza central, sería el <strong>PLC</strong>. Está en la envasadora del supermercado, en la planta de tratamiento de agua de tu ciudad y en la línea de montaje de un auto. Entender qué es y cómo funciona es el primer paso para cualquiera que quiera trabajar en la industria moderna.</p>
+
+    <h2>Qué es un PLC</h2>
+    <p>PLC son las siglas de <strong>Programmable Logic Controller</strong> (controlador lógico programable). Es una <strong>computadora industrial</strong> diseñada para un trabajo muy específico: leer señales de sensores, ejecutar una lógica programada por un ingeniero y accionar salidas hacia motores, válvulas, luces y otros actuadores. A diferencia de una PC de oficina, un PLC está construido para operar durante años en ambientes con polvo, vibración, humedad y temperaturas extremas sin fallar.</p>
+    <p>Antes de los PLC, la lógica de control se cableaba físicamente con <strong>relés</strong>: cambiar el comportamiento de una máquina significaba recablear tableros enteros. El PLC reemplazó ese cableado por un programa, y con ello volvió la automatización flexible, fiable y mucho más rápida de modificar.</p>
+
+    <AdSlot slot="7777777777" label="Publicidad" />
+
+    <h2>Cómo funciona: el ciclo de scan</h2>
+    <p>Un PLC no ejecuta el programa "de una vez", sino en un ciclo continuo y muy rápido llamado <strong>ciclo de scan</strong>, que se repite miles de veces por segundo:</p>
+    <ol>
+      <li><strong>Lectura de entradas:</strong> el PLC toma una "foto" del estado de todos sus sensores y entradas.</li>
+      <li><strong>Ejecución del programa:</strong> resuelve la lógica programada usando esa foto.</li>
+      <li><strong>Escritura de salidas:</strong> actualiza motores, válvulas y salidas según el resultado.</li>
+      <li><strong>Tareas internas:</strong> diagnósticos, comunicaciones, y vuelta a empezar.</li>
+    </ol>
+    <p>Este determinismo —hacer siempre lo mismo, en un tiempo predecible— es lo que hace al PLC confiable para controlar procesos donde un error puede ser costoso o peligroso.</p>
+
+    <h2>Partes de un PLC</h2>
+    <ul>
+      <li><strong>CPU:</strong> el procesador que ejecuta el programa y coordina todo.</li>
+      <li><strong>Módulos de entrada (I):</strong> reciben señales de sensores (digitales y analógicas).</li>
+      <li><strong>Módulos de salida (Q):</strong> envían órdenes a los actuadores.</li>
+      <li><strong>Fuente de alimentación:</strong> típicamente 24 VDC en el mundo industrial.</li>
+      <li><strong>Puertos de comunicación:</strong> Ethernet industrial, Modbus, PROFINET, etc.</li>
+    </ul>
+
+    <div class="not-prose">
+      <ProductosRecomendados categoria="PLC y Control" max={3} />
+    </div>
+
+    <h2>Tipos de PLC</h2>
+    <ul>
+      <li><strong>Compactos (nano/micro):</strong> CPU, entradas y salidas en un solo bloque. Ideales para máquinas pequeñas y aprendizaje (p. ej. la familia Zelio, LOGO!, o micro-PLC de gama baja).</li>
+      <li><strong>Modulares:</strong> un rack donde se combinan CPU y módulos según la necesidad. Escalan a cientos o miles de señales; dominan en plantas medianas y grandes.</li>
+      <li><strong>PLC de seguridad (safety):</strong> certificados para funciones de seguridad (paros de emergencia, cortinas de luz) según normas como IEC 61508.</li>
+    </ul>
+
+    <h2>Los lenguajes de programación (IEC 61131-3)</h2>
+    <p>La norma internacional <strong>IEC 61131-3</strong> estandariza cinco lenguajes:</p>
+    <ul>
+      <li><strong>LADDER (LD):</strong> diagrama de escalera, el más popular, intuitivo para quien viene de la electricidad.</li>
+      <li><strong>Texto Estructurado (ST):</strong> parecido a un lenguaje de programación clásico; ideal para lógica compleja y matemática.</li>
+      <li><strong>Bloques de Funciones (FBD):</strong> bloques conectados, cómodo para lazos de control y señales.</li>
+      <li><strong>Lista de Instrucciones (IL):</strong> de bajo nivel, en desuso.</li>
+      <li><strong>Grafcet / SFC:</strong> para describir secuencias y estados de un proceso.</li>
+    </ul>
+    <p>Para arrancar, LADDER y ST son la combinación más útil. Si quieres una ruta de estudio completa, mira nuestra <a href="/guias/aprender-automatizacion-industrial/" class="text-brand-600 hover:underline">guía para aprender automatización desde cero</a>.</p>
+
+    <h2>Marcas principales</h2>
+    <p><strong>Siemens</strong> (TIA Portal, familias S7) y <strong>Rockwell / Allen-Bradley</strong> lideran la industria pesada a nivel mundial. En Latinoamérica también son muy comunes <strong>Schneider</strong>, <strong>Omron</strong> y <strong>Delta</strong>, valorados por su relación precio-prestaciones. La buena noticia: los conceptos son transferibles, así que aprender uno te acerca a todos.</p>
+
+    <h2>Cómo elegir un PLC (o por dónde empezar a aprender)</h2>
+    <ul>
+      <li><strong>Para aprender:</strong> un micro-PLC o un kit de entrenamiento con software gratuito o de bajo costo es más que suficiente.</li>
+      <li><strong>Para un proyecto real:</strong> cuenta el número de entradas/salidas (I/O) que necesitas, más un margen de crecimiento, y elige compacto o modular según el tamaño.</li>
+      <li><strong>Ecosistema:</strong> prioriza una marca con buen soporte y comunidad en tu país; el software y la disponibilidad de repuestos importan tanto como el hardware.</li>
+      <li><strong>Comunicaciones:</strong> asegúrate de que soporte los protocolos que usarás (Ethernet/IP, PROFINET, Modbus, OPC UA).</li>
+    </ul>
+
+    <p class="not-prose"><a href="/tema/plc-y-control/" class="text-brand-600 font-semibold hover:underline">Sigue las últimas noticias de PLC y control industrial →</a></p>
+
+    <AdSlot slot="3333333333" label="Publicidad" />
+
+    <section class="not-prose mt-12 border-t border-ink-300/30 pt-8">
+      <h2 class="text-2xl font-serif font-bold text-ink-900 mb-6">Preguntas frecuentes</h2>
+      <div class="space-y-5">
+        {faq.map((f) => (
+          <div>
+            <h3 class="font-semibold text-ink-900 mb-1">{f.q}</h3>
+            <p class="text-ink-700">{f.a}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  </article>
+</Base>

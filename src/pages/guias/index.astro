@@ -1,0 +1,68 @@
+---
+// Hub de guías evergreen. Landing de la sección "Guías" y concentrador de enlaces
+// internos hacia cada guía y hacia los pillars. Fuente única de la lista de guías.
+import Base from '../../layouts/Base.astro';
+import AdSlot from '../../components/AdSlot.astro';
+
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://automatizacionslatam.com';
+const pageUrl = `${siteUrl}/guias/`;
+const description = 'Guías prácticas de automatización industrial en español: qué es un PLC, qué es SCADA, Industria 4.0, cómo aprender desde cero y más. Recursos evergreen para técnicos e ingenieros en Latinoamérica.';
+
+const guias = [
+  { href: '/guias/aprender-automatizacion-industrial/', titulo: 'Cómo aprender automatización industrial', desc: 'Ruta de aprendizaje paso a paso, libros, cursos y herramientas para empezar de cero.' },
+  { href: '/guias/que-es-un-plc/', titulo: '¿Qué es un PLC?', desc: 'Qué es, cómo funciona el ciclo de scan, tipos, marcas, lenguajes IEC 61131-3 y cómo elegir uno.' },
+  { href: '/guias/que-es-scada/', titulo: '¿Qué es SCADA?', desc: 'Cómo funciona, sus componentes (RTU, PLC, HMI, MTU), la diferencia con un DCS y cómo elegir un sistema.' },
+  { href: '/guias/que-es-la-industria-4-0/', titulo: '¿Qué es la Industria 4.0?', desc: 'Las tecnologías clave (IIoT, gemelo digital, IA), ejemplos reales y cómo empezar.' },
+];
+
+const pillars = [
+  { href: '/tema/plc-y-control/', titulo: 'PLC y control industrial' },
+  { href: '/tema/inteligencia-artificial/', titulo: 'IA en la industria' },
+  { href: '/tema/robotica/', titulo: 'Robótica industrial' },
+  { href: '/tema/industria-4-0/', titulo: 'Industria 4.0 e IIoT' },
+  { href: '/tema/ciberseguridad-ot/', titulo: 'Ciberseguridad OT' },
+];
+
+const jsonLdBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Inicio', item: `${siteUrl}/` },
+    { '@type': 'ListItem', position: 2, name: 'Guías', item: pageUrl },
+  ],
+};
+---
+<Base title="Guías de automatización industrial | Automatización LatAm" description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdBreadcrumb)} />
+
+  <section class="mx-auto max-w-3xl px-4 md:px-8 py-10">
+    <nav aria-label="Breadcrumb" class="text-xs text-ink-500 mb-3">
+      <a href="/" class="hover:text-brand-600">Inicio</a>
+      <span class="mx-1">›</span>
+      <span class="text-ink-700">Guías</span>
+    </nav>
+    <p class="text-brand-600 font-semibold uppercase tracking-wider text-sm mb-2">Guías</p>
+    <h1 class="text-3xl md:text-5xl font-serif font-bold text-ink-900 mb-3">Guías de automatización industrial</h1>
+    <p class="text-ink-500 text-lg max-w-2xl mb-10">
+      Recursos perennes en español para entender los conceptos clave de la automatización, la industria y la energía. Ideales para empezar o para repasar lo esencial.
+    </p>
+
+    <div class="grid md:grid-cols-2 gap-6">
+      {guias.map((g) => (
+        <a href={g.href} class="block border border-ink-300/40 rounded-lg p-5 bg-white hover:border-brand-400 hover:shadow-sm transition">
+          <h2 class="font-serif font-bold text-xl text-ink-900 mb-1">{g.titulo}</h2>
+          <p class="text-sm text-ink-600">{g.desc}</p>
+        </a>
+      ))}
+    </div>
+
+    <AdSlot slot="4444444444" label="Publicidad" />
+
+    <h2 class="text-2xl font-serif font-bold text-ink-900 mt-12 mb-4">Guías por tema</h2>
+    <ul class="grid sm:grid-cols-2 gap-2">
+      {pillars.map((p) => (
+        <li><a href={p.href} class="text-brand-600 hover:underline">{p.titulo}</a></li>
+      ))}
+    </ul>
+  </section>
+</Base>
