@@ -2509,7 +2509,12 @@
       "url": "https://industrialcyber.co/manufacturing/coca-cola-discloses-ransomware-attack-on-fairlife-production-systems-temporarily-halts-us-operations/",
       "fuente": "Industrial Cyber",
       "fecha_proceso": "2026-07-19T09:42:47.096376+00:00"
+    },
+    "d9b2b6a45e1f9f2c": {
+      "url": "https://huggingface.co/blog/nvidia/scale-diffusers-finetuning-nemo-automodel",
+      "fuente": "Hugging Face Blog",
+      "fecha_proceso": "2026-07-19T16:42:13.741882+00:00"
     }
   },
-  "ultima_corrida": "2026-07-19T09:42:47.999603+00:00"
+  "ultima_corrida": "2026-07-19T16:42:17.463400+00:00"
 }
