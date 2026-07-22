@@ -1,22 +1,22 @@
-_Generado: 2026-07-22T10:11:26.067138+00:00 · fuente datos: google_
+_Generado: 2026-07-22T17:05:19.811564+00:00 · fuente datos: google_
 
 ### Distribución actual del corpus
 
 | Categoría | Artículos | Share | Cuota hoy |
 |---|---:|---:|---:|
-| Inteligencia Artificial | 199 | 38% | 1 |
+| Inteligencia Artificial | 200 | 38% | 1 |
 | Ciberseguridad OT | 74 | 14% | — |
-| Mercado y Negocios | 70 | 14% | 1 |
+| Mercado y Negocios | 70 | 13% | 1 |
 | Industria 4.0 | 56 | 11% | — |
 | PLC y Control | 53 | 10% | — |
-| Robótica | 33 | 6% | — |
-| Energía y Sostenibilidad | 16 | 3% | — |
+| Robótica | 34 | 7% | — |
+| Energía y Sostenibilidad | 17 | 3% | — |
 | General | 14 | 3% | 1 |
 | Casos de Estudio | 3 | 1% | — |
 
 ### Razonamiento del plan
 
-Topadas a 1/run por sobre-representación: Inteligencia Artificial (38%), Mercado y Negocios (14%), General (3%). Liberadas (hambrientas): PLC y Control, Robótica, Industria 4.0, Energía y Sostenibilidad, Casos de Estudio.
+Topadas a 1/run por sobre-representación: Inteligencia Artificial (38%), Mercado y Negocios (13%), General (3%). Liberadas (hambrientas): PLC y Control, Robótica, Industria 4.0, Energía y Sostenibilidad, Casos de Estudio.
 
 ### Keywords prioritarias (re-rank del agregador)
 
@@ -26,7 +26,9 @@ Topadas a 1/run por sobre-representación: Inteligencia Artificial (38%), Mercad
 
 | Query | Impresiones | Clics | CTR | Pos |
 |---|---:|---:|---:|---:|
+| abreviatura de automatizacion | 2 | 0 | 0.0% | 59.5 |
 | agencia de branding corporativo latam | 1 | 0 | 0.0% | 85.0 |
 | empresa de branding corporativo latam | 1 | 0 | 0.0% | 81.0 |
 | golean | 1 | 0 | 0.0% | 86.0 |
 | integración de sistemas scada para monitorización energética en telecomunicaciones | 1 | 0 | 0.0% | 100.0 |
+| temporizador ton | 1 | 0 | 0.0% | 60.0 |

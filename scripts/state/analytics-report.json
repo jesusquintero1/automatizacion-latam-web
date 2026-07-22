@@ -1,9 +1,16 @@
 {
-  "generado": "2026-07-22T10:11:25.973703+00:00",
+  "generado": "2026-07-22T17:05:19.734257+00:00",
   "fuente_datos": "google",
   "ventana_dias": 28,
   "search_console": {
     "top_queries": [
+      {
+        "query": "abreviatura de automatizacion",
+        "impresiones": 2,
+        "clics": 0,
+        "ctr": 0.0,
+        "posicion": 59.5
+      },
       {
         "query": "agencia de branding corporativo latam",
         "impresiones": 1,
@@ -31,6 +38,13 @@
         "clics": 0,
         "ctr": 0.0,
         "posicion": 100.0
+      },
+      {
+        "query": "temporizador ton",
+        "impresiones": 1,
+        "clics": 0,
+        "ctr": 0.0,
+        "posicion": 60.0
       }
     ],
     "huecos_contenido": []
