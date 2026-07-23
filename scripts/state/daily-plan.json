@@ -1,15 +1,15 @@
 {
-  "generado": "2026-07-22T17:05:19.811564+00:00",
+  "generado": "2026-07-23T01:25:49.985233+00:00",
   "fuente_datos": "google",
   "distribucion_actual": {
     "PLC y Control": 53,
     "Robótica": 34,
-    "Industria 4.0": 56,
-    "Inteligencia Artificial": 200,
+    "Industria 4.0": 57,
+    "Inteligencia Artificial": 201,
     "Ciberseguridad OT": 74,
     "Energía y Sostenibilidad": 17,
     "Mercado y Negocios": 70,
-    "Casos de Estudio": 3,
+    "Casos de Estudio": 4,
     "General": 14
   },
   "max_por_categoria": {
