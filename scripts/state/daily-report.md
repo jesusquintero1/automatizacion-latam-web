@@ -1,13 +1,13 @@
-_Generado: 2026-07-24T17:18:24.504667+00:00 · fuente datos: google_
+_Generado: 2026-07-24T18:53:00.599697+00:00 · fuente datos: google_
 
 ### Distribución actual del corpus
 
 | Categoría | Artículos | Share | Cuota hoy |
 |---|---:|---:|---:|
-| Inteligencia Artificial | 206 | 38% | 1 |
+| Inteligencia Artificial | 207 | 38% | 1 |
 | Ciberseguridad OT | 77 | 14% | — |
-| Mercado y Negocios | 71 | 13% | 1 |
-| Industria 4.0 | 62 | 12% | — |
+| Mercado y Negocios | 72 | 13% | 1 |
+| Industria 4.0 | 62 | 11% | — |
 | PLC y Control | 53 | 10% | — |
 | Robótica | 34 | 6% | — |
 | Energía y Sostenibilidad | 18 | 3% | — |
@@ -32,3 +32,17 @@ Topadas a 1/run por sobre-representación: Inteligencia Artificial (38%), Mercad
 | golean | 1 | 0 | 0.0% | 86.0 |
 | integración de sistemas scada para monitorización energética en telecomunicaciones | 1 | 0 | 0.0% | 100.0 |
 | temporizador ton | 1 | 0 | 0.0% | 60.0 |
+
+### SEO — auditoría del corpus
+
+**Salud SEO: 85/100** · 540 artículos
+
+| Chequeo | Resultado |
+|---|---:|
+| Contenido corto (< 350 palabras) | 44 |
+| Meta descripción muy corta | 0 |
+| Títulos > 70 caracteres | 264 |
+| Títulos duplicados | 0 |
+| Huérfanos (< 2 enlaces entrantes) | 153 |
+
+**Pillar pages sugeridas** (temas con masa crítica): PLC y Control, Robótica, Inteligencia Artificial, Mercado y Negocios, Industria 4.0, Ciberseguridad OT.
