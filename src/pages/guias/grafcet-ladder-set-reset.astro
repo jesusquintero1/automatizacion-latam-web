@@ -1,0 +1,141 @@
+---
+// Guía evergreen intención estudiante: "grafcet en ladder ejemplo" / "secuencia
+// de pasos en LADDER con SET RESET". Enseña el patrón un-marcador-por-paso con
+// transiciones R Mn + S Mn+1. 100% original.
+import Base from '../../layouts/Base.astro';
+import AdSlot from '../../components/AdSlot.astro';
+
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://automatizacionslatam.com';
+const pageUrl = `${siteUrl}/guias/grafcet-ladder-set-reset/`;
+const title = 'Grafcet en LADDER con SET/RESET: secuencias paso a paso';
+const description = 'Cómo traducir un Grafcet a LADDER con el patrón un-marcador-por-paso: cada etapa es una marca (M1, M2…) y cada transición hace RESET del paso actual y SET del siguiente. Ejemplo resuelto de una secuencia industrial.';
+
+const faq = [
+  { q: '¿Qué es un Grafcet y por qué pasarlo a LADDER?', a: 'El Grafcet (GRAFCET / SFC, norma IEC 60848) es un diagrama de etapas y transiciones que describe una secuencia de forma clara. Muchos PLC pequeños (Zelio, LOGO!) no programan Grafcet directamente, así que se traduce a LADDER. El patrón SET/RESET conserva la claridad del Grafcet dentro de la escalera.' },
+  { q: '¿Cómo represento una etapa del Grafcet en LADDER?', a: 'Cada etapa es una marca interna (M1, M2, M3…). Solo una etapa está activa a la vez. Las acciones de esa etapa (motores, válvulas) se activan mientras su marca esté en 1.' },
+  { q: '¿Cómo funciona una transición?', a: 'Una transición se dispara cuando la etapa actual está activa Y se cumple su condición (un sensor, un fin de carrera, un temporizador). Al dispararse, hace RESET de la etapa actual y SET de la siguiente, en ese orden. Así el "testigo" de actividad pasa de un paso al siguiente.' },
+  { q: '¿Por qué RESET antes de SET?', a: 'Para garantizar que nunca haya dos etapas activas a la vez ni una etapa que se quede pegada. Reseteas el paso que abandonas y luego activas el que entra. Colocar el RESET del paso actual antes del SET del siguiente evita solapes en el mismo scan.' },
+  { q: '¿Cómo arranca y reinicia la secuencia?', a: 'Con una etapa inicial (M0 o "reposo") que se activa al energizar el PLC o al pulsar un botón de reset. El último paso, al terminar, hace SET de la etapa inicial (o RESET de sí mismo), cerrando el ciclo si la secuencia es repetitiva.' },
+];
+
+const jsonLdArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: title,
+  description,
+  inLanguage: 'es',
+  mainEntityOfPage: pageUrl,
+  author: { '@type': 'Organization', name: 'Automatización LatAm' },
+  publisher: { '@type': 'Organization', name: 'Automatización LatAm', url: siteUrl },
+};
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+};
+const jsonLdBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Inicio', item: `${siteUrl}/` },
+    { '@type': 'ListItem', position: 2, name: 'Guías', item: `${siteUrl}/guias/` },
+    { '@type': 'ListItem', position: 3, name: 'Grafcet en LADDER con SET/RESET', item: pageUrl },
+  ],
+};
+
+const grafcet = `   [M0] Reposo
+     |  (I1 = Marcha)
+   [M1] Avanzar cilindro A     → Q1
+     |  (I2 = fin de carrera A+)
+   [M2] Avanzar cilindro B     → Q2
+     |  (I3 = fin de carrera B+)
+   [M3] Retroceder ambos       → Q3
+     |  (I4 = fin de carrera reposo)
+     └──► vuelve a M0`;
+
+const ladderTransicion = `  M1 (paso 1)      I2 (fin A+)                   M1 (paso 1)
+ ----[ ]-----------[ ]-------------------------------[ R ]----
+  M1 (paso 1)      I2 (fin A+)                   M2 (paso 2)
+ ----[ ]-----------[ ]-------------------------------[ S ]----
+
+   Transición 1→2: si estoy en M1 y llegó el fin de carrera A+,
+   RESET de M1 y SET de M2. El testigo avanza al paso 2.`;
+
+const ladderAccion = `  M1 (paso 1)                                    Q1 (cilindro A)
+ ----[ ]------------------------------------------( )----
+  M2 (paso 2)                                    Q2 (cilindro B)
+ ----[ ]------------------------------------------( )----
+
+   Cada acción se activa mientras su etapa esté activa.`;
+---
+<Base title={`${title} | Automatización LatAm`} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdBreadcrumb)} />
+
+  <article class="mx-auto max-w-3xl px-4 md:px-8 py-10 prose-article">
+    <nav aria-label="Breadcrumb" class="text-xs text-ink-500 mb-3 not-prose">
+      <a href="/" class="hover:text-brand-600">Inicio</a>
+      <span class="mx-1">›</span>
+      <a href="/guias/" class="hover:text-brand-600">Guías</a>
+      <span class="mx-1">›</span>
+      <span class="text-ink-700">Grafcet en LADDER</span>
+    </nav>
+    <p class="text-brand-600 font-semibold uppercase tracking-wider text-sm mb-2 not-prose">Guía técnica</p>
+    <h1 class="text-3xl md:text-5xl font-serif font-bold text-ink-900 mb-6">Grafcet en LADDER: secuencias con SET/RESET</h1>
+
+    <p class="text-xl text-ink-700 leading-relaxed border-l-4 border-brand-500 pl-4 mb-8 italic not-prose">
+      Cuando un proceso tiene pasos que deben ocurrir en orden —avanza A, luego B, luego retrocede— el Grafcet es la forma más clara de pensarlo. Aquí verás el patrón universal para traducirlo a LADDER: <strong>un marcador por paso</strong>, y cada transición hace <strong>RESET del paso actual y SET del siguiente</strong>.
+    </p>
+
+    <p>El <strong>Grafcet</strong> (norma IEC 60848, también llamado SFC) describe una secuencia como <strong>etapas</strong> unidas por <strong>transiciones</strong>. Es intuitivo, pero los PLC pequeños como Zelio o LOGO! no lo programan directamente. La buena noticia: existe un patrón mecánico para llevarlo a LADDER sin perder claridad, y una vez que lo dominas, cualquier secuencia se vuelve trivial.</p>
+
+    <h2>El ejemplo: una secuencia de dos cilindros</h2>
+    <p>Imagina una estación que, al pulsar marcha, avanza el cilindro A, luego el B, y después ambos retroceden. Su Grafcet:</p>
+    <pre class="not-prose bg-ink-900 text-ink-100 rounded-lg p-4 overflow-x-auto text-sm">{grafcet}</pre>
+
+    <AdSlot slot="7777777777" label="Publicidad" />
+
+    <h2>Regla 1 — Un marcador por etapa</h2>
+    <p>Cada etapa del Grafcet es una <strong>marca interna</strong>: M0 (reposo), M1, M2, M3. La regla de oro: <strong>solo una marca activa a la vez</strong>. La marca activa es el "testigo" que indica en qué punto de la secuencia estamos.</p>
+
+    <h2>Regla 2 — Las acciones dependen de la etapa</h2>
+    <p>Las salidas (cilindros, motores, válvulas) se activan <strong>mientras</strong> su etapa esté activa. Son rungs simples: contacto de la marca → bobina de la salida.</p>
+    <pre class="not-prose bg-ink-900 text-ink-100 rounded-lg p-4 overflow-x-auto text-sm">{ladderAccion}</pre>
+
+    <h2>Regla 3 — Las transiciones mueven el testigo</h2>
+    <p>Aquí está el corazón del método. Una transición se cumple cuando <strong>la etapa actual está activa</strong> <em>Y</em> <strong>su condición se cumple</strong> (un fin de carrera, un sensor, un temporizador). Al cumplirse, hace <strong>RESET de la etapa actual y SET de la siguiente</strong>:</p>
+    <pre class="not-prose bg-ink-900 text-ink-100 rounded-lg p-4 overflow-x-auto text-sm">{ladderTransicion}</pre>
+    <p>Repites este par de rungs para cada transición (M2→M3, M3→M0…). Al llegar al último paso, su transición hace SET de M0 y la secuencia vuelve al reposo, lista para repetir.</p>
+
+    <h2>Por qué RESET antes de SET</h2>
+    <p>El orden importa: reseteas la etapa que <strong>abandonas</strong> y luego activas la que <strong>entra</strong>. Si lo hicieras al revés (o en el mismo rung sin cuidado), podrían quedar dos etapas activas un instante, o una etapa "pegada". Con RESET-luego-SET, el testigo salta limpio de un paso al siguiente y nunca hay ambigüedad.</p>
+
+    <h2>Inicialización: la etapa de reposo</h2>
+    <p>La secuencia necesita empezar en un estado conocido. La etapa <strong>M0</strong> se activa al energizar el PLC (con un pulso de arranque) o al pulsar un botón de reset general que hace RESET de todas las marcas y SET de M0. Sin este paso, al encender el PLC ninguna etapa estaría activa y la secuencia no arrancaría nunca.</p>
+
+    <h2>Ventajas de este patrón</h2>
+    <ul>
+      <li><strong>Escalable:</strong> añadir un paso = añadir una marca y su par de rungs de transición. La estructura no cambia.</li>
+      <li><strong>Depurable:</strong> en simulación ves qué marca está activa y sabes exactamente en qué paso está la máquina.</li>
+      <li><strong>Seguro:</strong> como solo hay una etapa activa, las acciones no se solapan por error.</li>
+      <li><strong>Portable:</strong> funciona igual en Zelio, LOGO!, TIA Portal o CODESYS. Es un patrón, no una función propietaria.</li>
+    </ul>
+
+    <p class="not-prose"><a href="/guias/control-nivel-tanque-ladder/" class="text-brand-600 hover:underline">SET/RESET explicado (control de nivel)</a> · <a href="/guias/semaforo-zeliosoft-ladder/" class="text-brand-600 hover:underline">Semáforo en ZelioSoft</a> · <a href="/guias/temporizador-ton-tof-ladder/" class="text-brand-600 hover:underline">Temporizadores en LADDER</a></p>
+
+    <AdSlot slot="3333333333" label="Publicidad" />
+
+    <section class="not-prose mt-12 border-t border-ink-300/30 pt-8">
+      <h2 class="text-2xl font-serif font-bold text-ink-900 mb-6">Preguntas frecuentes</h2>
+      <div class="space-y-5">
+        {faq.map((f) => (
+          <div>
+            <h3 class="font-semibold text-ink-900 mb-1">{f.q}</h3>
+            <p class="text-ink-700">{f.a}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  </article>
+</Base>

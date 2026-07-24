@@ -42,7 +42,8 @@ const GUIAS = [
   '', 'que-es-un-plc/', 'que-es-un-hmi/', 'que-es-scada/', 'que-es-un-cobot/',
   'que-es-la-industria-4-0/', 'aprender-automatizacion-industrial/',
   'temporizador-ton-tof-ladder/', 'semaforo-zeliosoft-ladder/',
-  'control-nivel-tanque-ladder/',
+  'control-nivel-tanque-ladder/', 'entradas-analogicas-zelio-sr3-b261bd/',
+  'grafcet-ladder-set-reset/',
 ];
 
 const HERRAMIENTAS = ['', 'escalado-analogico/'];

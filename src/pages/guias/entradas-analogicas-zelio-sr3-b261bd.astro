@@ -1,0 +1,125 @@
+---
+// Guía evergreen intención estudiante/técnico: "entradas analógicas Zelio
+// SR3-B261BD" / "comparador analógico ZelioSoft". Baja competencia en español,
+// alta intención práctica. 100% original, criterio de ingeniero.
+import Base from '../../layouts/Base.astro';
+import AdSlot from '../../components/AdSlot.astro';
+
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://automatizacionslatam.com';
+const pageUrl = `${siteUrl}/guias/entradas-analogicas-zelio-sr3-b261bd/`;
+const title = 'Entradas analógicas en Zelio SR3-B261BD: comparadores y setpoints';
+const description = 'Cómo usar las entradas analógicas 0-10 V del Zelio Logic SR3-B261BD en ZelioSoft 2: qué bornes admiten señal analógica, cómo configurar un comparador analógico (bloque A), fijar setpoints de nivel o peso y escalar la señal.';
+
+const faq = [
+  { q: '¿Cuáles entradas del SR3-B261BD son analógicas?', a: 'El SR3-B261BD (24 VDC) tiene 10 entradas digitales, y las entradas IB a IG pueden usarse también como entradas analógicas de 0 a 10 V. La misma borna funciona como digital (todo/nada) o como analógica según cómo la trates en el programa; por eso conviene reservar los bornes analógicos y no cablear allí pulsadores.' },
+  { q: '¿Cómo comparo una señal analógica en ZelioSoft?', a: 'Con un bloque comparador analógico (los bloques A1, A2… en ZelioSoft). Un comparador toma el valor de una entrada analógica, lo compara contra un umbral (o contra otra entrada) y entrega un contacto que se cierra cuando se cumple la condición (mayor que, menor que, dentro de un rango). Ese contacto se usa en la escalera como cualquier otro.' },
+  { q: '¿Cómo represento un setpoint de nivel o de peso?', a: 'Un setpoint (SP1, SP2…) se modela como el umbral de un bloque comparador analógico sobre la entrada analógica que mide la variable (por ejemplo IB). No es una entrada digital extra: es el valor de referencia dentro del comparador. Cambiar el setpoint = cambiar ese umbral.' },
+  { q: '¿Qué es la histéresis y por qué la necesito?', a: 'La histéresis es una banda entre el punto de activación y el de desactivación para que la salida no "vibre" cuando la señal queda justo en el umbral. Si una bomba debe parar a 8.0 V y arrancar a 7.5 V, esos 0.5 V son la histéresis. En Zelio se logra con dos comparadores (uno para arrancar, otro para parar) enclavados con SET/RESET.' },
+  { q: '¿Cómo convierto los voltios a unidades de ingeniería (litros, kg, °C)?', a: 'Aplicando un escalado lineal entre el rango eléctrico (0-10 V) y el rango físico del sensor. Es la misma cuenta del escalado 4-20 mA. Puedes usar nuestra calculadora de escalado analógico para obtener la fórmula y verificarla antes de programarla.' },
+];
+
+const jsonLdArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: title,
+  description,
+  inLanguage: 'es',
+  mainEntityOfPage: pageUrl,
+  author: { '@type': 'Organization', name: 'Automatización LatAm' },
+  publisher: { '@type': 'Organization', name: 'Automatización LatAm', url: siteUrl },
+};
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+};
+const jsonLdBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Inicio', item: `${siteUrl}/` },
+    { '@type': 'ListItem', position: 2, name: 'Guías', item: `${siteUrl}/guias/` },
+    { '@type': 'ListItem', position: 3, name: 'Entradas analógicas en Zelio SR3-B261BD', item: pageUrl },
+  ],
+};
+
+const ladderComparador = `  A1 (IB >= SP1 nivel alto)                      M1 (BOMBA)
+ ----[ ]------------------------------------------[ R ]----
+
+  A2 (IB <= SP2 nivel bajo)                      M1 (BOMBA)
+ ----[ ]------------------------------------------[ S ]----
+
+   A1 y A2 son bloques comparadores sobre la entrada
+   analógica IB. SP1 y SP2 son sus umbrales (setpoints).`;
+---
+<Base title={`${title} | Automatización LatAm`} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdBreadcrumb)} />
+
+  <article class="mx-auto max-w-3xl px-4 md:px-8 py-10 prose-article">
+    <nav aria-label="Breadcrumb" class="text-xs text-ink-500 mb-3 not-prose">
+      <a href="/" class="hover:text-brand-600">Inicio</a>
+      <span class="mx-1">›</span>
+      <a href="/guias/" class="hover:text-brand-600">Guías</a>
+      <span class="mx-1">›</span>
+      <span class="text-ink-700">Entradas analógicas Zelio SR3-B261BD</span>
+    </nav>
+    <p class="text-brand-600 font-semibold uppercase tracking-wider text-sm mb-2 not-prose">Guía técnica</p>
+    <h1 class="text-3xl md:text-5xl font-serif font-bold text-ink-900 mb-6">Entradas analógicas y comparadores en el Zelio SR3-B261BD</h1>
+
+    <p class="text-xl text-ink-700 leading-relaxed border-l-4 border-brand-500 pl-4 mb-8 italic not-prose">
+      El salto de "todo o nada" a medir una variable continua —nivel, peso, temperatura, presión— es donde muchos estudiantes se traban. Aquí verás qué bornes del Zelio SR3-B261BD admiten señal analógica de 0-10 V, cómo usar un bloque comparador para fijar setpoints y cómo escalar la lectura a unidades reales.
+    </p>
+
+    <p>El <strong>Zelio Logic SR3-B261BD</strong> es un módulo de 24 VDC con 10 entradas digitales y 6 salidas de relé, muy usado en formación y en máquinas pequeñas. Su ventaja poco conocida: las entradas <strong>IB a IG</strong> pueden trabajar como <strong>entradas analógicas de 0 a 10 V</strong>. Eso te permite leer un sensor de nivel, una celda de carga acondicionada o un transmisor sin añadir hardware.</p>
+
+    <h2>Paso 1 — Qué bornes son analógicos</h2>
+    <p>En el SR3-B261BD, las entradas <strong>IB, IC, ID, IE, IF e IG</strong> aceptan una tensión de 0-10 V y el firmware la pone a disposición del programa como un <strong>valor numérico</strong>, no como un simple 0/1. La misma borna sigue funcionando como digital si la usas en un contacto normal. Regla práctica: <strong>reserva los bornes analógicos</strong> para las señales continuas y no cablees pulsadores ahí, para evitar confusiones.</p>
+
+    <AdSlot slot="7777777777" label="Publicidad" />
+
+    <h2>Paso 2 — El bloque comparador analógico (A)</h2>
+    <p>ZelioSoft no compara voltajes con un contacto normal: usa <strong>bloques comparadores analógicos</strong> (los bloques <strong>A1, A2, A3…</strong>). Cada bloque:</p>
+    <ul>
+      <li>toma el valor de una <strong>entrada analógica</strong> (p. ej. IB),</li>
+      <li>lo compara contra un <strong>umbral</strong> o contra otra entrada,</li>
+      <li>y entrega un <strong>contacto</strong> (Ax) que se cierra cuando la condición se cumple (mayor-que, menor-que, o dentro de un rango).</li>
+    </ul>
+    <p>Ese contacto <code>Ax</code> lo colocas en la escalera igual que un <code>Ix</code>. Así, "el nivel superó el 80%" se convierte en un contacto que puedes usar en cualquier rung.</p>
+
+    <h2>Paso 3 — Setpoints como umbrales del comparador</h2>
+    <p>Aquí está el concepto que conviene fijar bien: un <strong>setpoint (SP1, SP2)</strong> de nivel o de peso <strong>no</strong> es una entrada digital extra — es el <strong>umbral dentro de un bloque comparador</strong> que vigila la entrada analógica. Modelar el control de una bomba por nivel queda así:</p>
+    <pre class="not-prose bg-ink-900 text-ink-100 rounded-lg p-4 overflow-x-auto text-sm">{ladderComparador}</pre>
+    <p>El comparador <strong>A2</strong> (nivel bajo, SP2) da el <strong>SET</strong> a la bomba y <strong>A1</strong> (nivel alto, SP1) da el <strong>RESET</strong>. Los dos umbrales separados crean de forma natural la <strong>histéresis</strong> que evita que la bomba vibre. Es el mismo patrón SET/RESET de la <a href="/guias/control-nivel-tanque-ladder/" class="text-brand-600 hover:underline">guía de control de nivel</a>, pero con boyas reemplazadas por una sola señal analógica y dos setpoints.</p>
+
+    <h2>Paso 4 — Escalar de voltios a unidades reales</h2>
+    <p>El comparador trabaja con el valor eléctrico, pero tú piensas en litros, kilos o grados. Para traducir aplicas un <strong>escalado lineal</strong> entre el rango eléctrico (0-10 V) y el rango físico del sensor. Por ejemplo, un sensor de nivel que da 0 V a 0 % y 10 V a 100 % en un tanque de 5000 L: cada voltio equivale a 500 L, y un setpoint de 4000 L corresponde a 8.0 V.</p>
+    <p>Es exactamente la misma matemática del <strong>escalado 4-20 mA</strong>. Para no equivocarte con la fórmula (y su pendiente y offset), usa la calculadora del sitio antes de fijar el umbral en el comparador:</p>
+    <p class="not-prose"><a href="/herramientas/escalado-analogico/" class="inline-block bg-brand-500 text-white font-semibold px-4 py-2 rounded-md hover:bg-brand-600 transition">→ Calculadora de escalado analógico</a></p>
+
+    <h2>Errores frecuentes</h2>
+    <ul>
+      <li><strong>Cablear el sensor en un borne no analógico:</strong> solo IB-IG leen tensión. En otra entrada, tu 0-10 V se interpreta como digital (activo por encima del umbral lógico) y pierdes la resolución.</li>
+      <li><strong>Un solo comparador para arrancar y parar:</strong> genera vibración. Usa dos umbrales (histéresis) enclavados con SET/RESET.</li>
+      <li><strong>Olvidar la masa común / referencia:</strong> la señal 0-10 V necesita una referencia de 0 V común con el Zelio; sin ella, la lectura "flota".</li>
+      <li><strong>Confundir el valor interno con voltios:</strong> confirma en ZelioSoft en qué escala te entrega el bloque el valor antes de fijar el umbral.</li>
+    </ul>
+
+    <p class="not-prose"><a href="/guias/control-nivel-tanque-ladder/" class="text-brand-600 hover:underline">Control de nivel con SET/RESET</a> · <a href="/guias/temporizador-ton-tof-ladder/" class="text-brand-600 hover:underline">Temporizadores en LADDER</a> · <a href="/glosario/plc/" class="text-brand-600 hover:underline">Qué es un PLC</a></p>
+
+    <AdSlot slot="3333333333" label="Publicidad" />
+
+    <section class="not-prose mt-12 border-t border-ink-300/30 pt-8">
+      <h2 class="text-2xl font-serif font-bold text-ink-900 mb-6">Preguntas frecuentes</h2>
+      <div class="space-y-5">
+        {faq.map((f) => (
+          <div>
+            <h3 class="font-semibold text-ink-900 mb-1">{f.q}</h3>
+            <p class="text-ink-700">{f.a}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  </article>
+</Base>
