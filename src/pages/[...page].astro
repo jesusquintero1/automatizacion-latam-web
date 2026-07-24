@@ -68,8 +68,9 @@ const lcpImage = isFirst && destacada?.data.imagen ? destacada.data.imagen : nul
           Automatización industrial para Latinoamérica, resumida y en tu idioma.
         </h1>
         <p class="text-ink-500 text-lg mt-3 max-w-2xl">
-          Cada día seleccionamos y resumimos las noticias más relevantes de PLC, robótica,
-          Industria 4.0, IA y ciberseguridad OT — de las fuentes que importan, en español.
+          Guías técnicas originales, un glosario del sector y herramientas prácticas para
+          ingenieros y técnicos — además de un resumen diario de las noticias que importan,
+          en español.
         </p>
       </div>
     </section>
@@ -98,6 +99,41 @@ const lcpImage = isFirst && destacada?.data.imagen ? destacada.data.imagen : nul
               {secundarias.map((n) => <ArticleCard noticia={n} />)}
             </aside>
           </div>
+        )}
+
+        {isFirst && (
+          <section class="mb-10 border border-brand-200 rounded-2xl p-6 md:p-10 bg-white">
+            <div class="flex items-center justify-between gap-4 mb-4 flex-wrap">
+              <h2 class="text-2xl font-serif font-bold text-ink-900">Guías y recursos originales</h2>
+              <a href="/guias/" class="text-sm font-semibold text-brand-600 hover:underline">Ver todas las guías →</a>
+            </div>
+            <p class="text-ink-500 mb-6 max-w-2xl">
+              Contenido propio, escrito para ingenieros y técnicos: tutoriales de LADDER y
+              ZelioSoft paso a paso, un glosario del sector y herramientas de cálculo.
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {[
+                { href: '/guias/grafcet-ladder-set-reset/', label: 'Grafcet en LADDER con SET/RESET' },
+                { href: '/guias/entradas-analogicas-zelio-sr3-b261bd/', label: 'Entradas analógicas en Zelio' },
+                { href: '/guias/control-nivel-tanque-ladder/', label: 'Control de nivel con LADDER' },
+                { href: '/guias/temporizador-ton-tof-ladder/', label: 'Temporizadores TON/TOF/TP' },
+                { href: '/guias/que-es-un-plc/', label: '¿Qué es un PLC?' },
+                { href: '/guias/aprender-automatizacion-industrial/', label: 'Cómo aprender automatización' },
+              ].map(({ href, label }) => (
+                <a href={href} class="block bg-brand-50 border border-brand-100 rounded-lg px-4 py-3 hover:border-brand-500 hover:shadow-md transition group">
+                  <span class="font-semibold text-ink-900 group-hover:text-brand-600">📘 {label}</span>
+                </a>
+              ))}
+            </div>
+            <div class="flex flex-wrap gap-3 mt-4">
+              <a href="/glosario/" class="inline-flex items-center gap-2 bg-ink-100/60 border border-ink-300/30 rounded-lg px-4 py-3 hover:border-brand-500 transition group">
+                <span class="font-semibold text-ink-900 group-hover:text-brand-600">📖 Glosario técnico (OT/IT)</span>
+              </a>
+              <a href="/herramientas/escalado-analogico/" class="inline-flex items-center gap-2 bg-ink-100/60 border border-ink-300/30 rounded-lg px-4 py-3 hover:border-brand-500 transition group">
+                <span class="font-semibold text-ink-900 group-hover:text-brand-600">🧮 Calculadora de escalado analógico</span>
+              </a>
+            </div>
+          </section>
         )}
 
         {isFirst && <AdSlot slot="1111111111" layout="fluid" label="Publicidad" />}
@@ -164,30 +200,6 @@ const lcpImage = isFirst && destacada?.data.imagen ? destacada.data.imagen : nul
           </section>
         )}
 
-        {isFirst && (
-          <section class="mt-8 border border-brand-200 rounded-2xl p-6 md:p-10 bg-white">
-            <div class="flex items-center justify-between gap-4 mb-4 flex-wrap">
-              <h2 class="text-2xl font-serif font-bold text-ink-900">Guías para empezar</h2>
-              <a href="/guias/" class="text-sm font-semibold text-brand-600 hover:underline">Ver todas las guías →</a>
-            </div>
-            <p class="text-ink-500 mb-6 max-w-2xl">
-              Recursos perennes para entender los conceptos clave de la automatización, ideales
-              para aprender o repasar lo esencial.
-            </p>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {[
-                { href: '/guias/que-es-un-plc/', label: '¿Qué es un PLC?' },
-                { href: '/guias/que-es-scada/', label: '¿Qué es SCADA?' },
-                { href: '/guias/que-es-la-industria-4-0/', label: '¿Qué es la Industria 4.0?' },
-                { href: '/guias/aprender-automatizacion-industrial/', label: 'Cómo aprender automatización' },
-              ].map(({ href, label }) => (
-                <a href={href} class="block bg-brand-50 border border-brand-100 rounded-lg px-4 py-3 hover:border-brand-500 hover:shadow-md transition group">
-                  <span class="font-semibold text-ink-900 group-hover:text-brand-600">📘 {label}</span>
-                </a>
-              ))}
-            </div>
-          </section>
-        )}
       </>
     )}
   </section>

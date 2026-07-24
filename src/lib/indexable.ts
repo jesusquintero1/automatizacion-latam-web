@@ -28,11 +28,25 @@ export function contarPalabras(body: string): number {
     .filter((w) => w.length > 1).length;
 }
 
+// INTERRUPTOR DE CAMPAÑA ADSENSE. Mientras el sitio esté en revisión por
+// "contenido de poco valor", lo ponemos en `false`: SOLO el contenido original
+// (guías, glosario, herramientas) y las noticias `evergreen` (tutoriales curados
+// a mano) quedan indexables. Así la superficie que Google evalúa está dominada
+// 100% por contenido original propio, no por reescrituras IA de feeds ajenos
+// —que es exactamente lo que dispara el flag de "scaled content abuse"—.
+// Las noticias transitorias siguen sirviéndose (visitantes directos, redes,
+// enlazado interno) pero con `noindex,follow`. TRAS LA APROBACIÓN de AdSense,
+// volver a `true` para reactivar gradualmente la indexación de noticias.
+export const NOTICIAS_TRANSITORIAS_INDEXABLES = false;
+
 // ¿Esta noticia debe indexarse (index,follow) o podarse (noindex,follow)?
 export function noticiaIndexable(n: CollectionEntry<'noticias'>): boolean {
   // El contenido perenne curado a mano (tutoriales LOGO/ZelioSoft, etc.) nunca
   // caduca y siempre se indexa.
   if (n.data.evergreen === true) return true;
+  // Campaña AdSense: mientras el interruptor esté apagado, ninguna noticia
+  // transitoria entra al índice (independiente de longitud/edad).
+  if (!NOTICIAS_TRANSITORIAS_INDEXABLES) return false;
   const wc = contarPalabras(n.body || '');
   const ageDays = (Date.now() - new Date(n.data.fecha).valueOf()) / 86_400_000;
   return wc >= PODA_MIN_PALABRAS && ageDays <= PODA_MAX_DIAS && !!n.data.porQueImporta;
