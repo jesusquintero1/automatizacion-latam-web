@@ -46,11 +46,11 @@ const { tagLabel, items } = Astro.props;
 const ordenadas = items.sort((a, b) => new Date(b.data.fecha).valueOf() - new Date(a.data.fecha).valueOf());
 const labelPretty = tagLabel.replace(/-/g, ' ');
 
-// SEO: un tag con 1-2 noticias es una pagina casi vacia que infla la superficie
-// thin del dominio. La desindexamos (noindex,follow) para no ofrecerle a Google
-// paginas de bajo valor; seguimos rastreando sus enlaces internos.
-const TAG_MIN_NOTICIAS = 3;
-const tagThin = ordenadas.length < TAG_MIN_NOTICIAS;
+// SEO / AdSense: las páginas de tag son listados autogenerados SIN texto
+// editorial propio → contenido de bajo valor que infla la superficie thin del
+// dominio (justo lo que Google penaliza como "contenido de poco valor"). Las
+// desindexamos TODAS (noindex,follow): Google no las ve como páginas, pero
+// seguimos rastreando sus enlaces internos hacia noticias y guías.
 
 const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://automatizacionslatam.com';
 const pageUrl = `${siteUrl}${Astro.url.pathname}`;
@@ -81,7 +81,7 @@ const jsonLdCollection = {
 <Base
   title={`${labelPretty} — Noticias y análisis | Automatización LatAm`}
   description={`Todas las noticias relacionadas con ${labelPretty} en automatización industrial, IA, robótica y manufactura. ${ordenadas.length} artículo${ordenadas.length === 1 ? '' : 's'}.`}
-  noIndexFollow={tagThin}
+  noIndexFollow={true}
 >
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdCollection)} />
   <section class="mx-auto max-w-[var(--container)] px-4 md:px-8 py-10">

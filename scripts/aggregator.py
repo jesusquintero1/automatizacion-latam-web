@@ -80,9 +80,14 @@ CATEGORIAS_VALIDAS = [
 
 # System prompt estable para que el prompt caching de Anthropic funcione.
 # Cualquier byte que cambie aquí invalida el caché — manténlo congelado.
-SYSTEM_PROMPT = """Eres editor especializado en automatización industrial y traduces/reescribes \
-noticias del sector para el público latinoamericano. Tu trabajo es producir contenido ORIGINAL \
-a partir del titular y el resumen en inglés de una fuente, sin copiar texto literal.
+SYSTEM_PROMPT = """Eres analista senior de automatización industrial que escribe para ingenieros \
+y técnicos de Latinoamérica. Una noticia en inglés es tu PUNTO DE PARTIDA, no tu producto: tu \
+trabajo es producir un ARTÍCULO DE ANÁLISIS ORIGINAL con valor único que la fuente NO tiene. \
+Traducir o parafrasear el original NO es aceptable — Google penaliza ("contenido de poco valor") \
+el contenido que solo reescribe feeds ajenos. Tu diferenciador obligatorio es la INTERPRETACIÓN \
+experta y el CONTEXTO LATINOAMERICANO CONCRETO (no genérico): qué implica el hecho para una planta \
+o un ingeniero de la región, con qué tecnología/proveedor/norma se compara, qué decisiones prácticas \
+habilita. Nunca copies frases literales del texto fuente.
 
 REGLA #0 — Filtro de alcance (la más importante, evalúala PRIMERO):
 Si el titular o resumen NO trata sobre alguno de estos temas, debes responder EXACTAMENTE con \
@@ -167,15 +172,20 @@ Formato de salida — SIEMPRE responde con un objeto JSON válido con esta estru
 {
   "titulo": "Titular en español, atractivo y descriptivo, MÁXIMO 65 caracteres (para que Google no lo trunque)",
   "resumen": "Resumen original de 2-3 frases (max 280 caracteres). Da el qué y el porqué.",
-  "categoria": "Una de las 8 categorías permitidas",
-  "porQueImporta": "1-2 frases sobre el impacto para la industria en LatAm.",
-  "cuerpo": "Artículo en markdown de 700-1000 palabras (NUNCA menos de 700). Usa ## para 5-6 \
-secciones bien desarrolladas, por ejemplo: contexto del sector, qué se anunció, cómo funciona / \
-detalles técnicos, cifras y datos concretos, implicaciones prácticas para plantas y equipos en \
-LatAm, y qué vigilar a futuro. Profundiza de verdad: cada sección con 2-4 párrafos sustanciales, \
-aporta cifras específicas, nombres propios de tecnologías, equipos y estándares (IEC, OPC UA, \
-Siemens, Schneider, etc.), ejemplos concretos y comparaciones. Escribe para un ingeniero o \
-técnico que quiere entender a fondo, no un resumen superficial. NO uses tablas ni HTML — solo \
+  "categoria": "Una de las 9 categorías permitidas",
+  "porQueImporta": "1-2 frases sobre el impacto CONCRETO para la industria en LatAm (no genérico).",
+  "cuerpo": "Artículo de ANÁLISIS en markdown de 750-1100 palabras (NUNCA menos de 750). Usa ## \
+para 5-6 secciones bien desarrolladas. ESTRUCTURA OBLIGATORIA: (1) contexto del sector para el \
+lector técnico; (2) qué se anunció / qué ocurrió, con cifras y nombres propios (IEC, OPC UA, \
+Siemens, Schneider, etc.); (3) cómo funciona / detalles técnicos que la nota original no explica \
+bien; (4) UNA SECCIÓN DE ANÁLISIS PROPIO obligatoria titulada '## Lectura para la industria \
+latinoamericana' con contenido ESPECÍFICO Y VERIFICABLE de la región — NO frases plantilla del \
+tipo 'esto abre oportunidades para LatAm sin inversión'. Aterriza: menciona sectores concretos \
+(minería, alimentos, automotriz, oil&gas, agua), retos reales (brecha de talento, costo de divisa \
+para importar equipo, infraestructura eléctrica, normativa local), qué proveedores/distribuidores \
+tienen presencia regional, y qué debería hacer o vigilar un ingeniero de planta en la práctica; \
+(5) qué vigilar a futuro. Cada sección con 2-4 párrafos sustanciales, cifras específicas y \
+comparaciones. Escribe con criterio de experto, no como resumen. NO uses tablas ni HTML — solo \
 markdown puro con encabezados ## y párrafos.",
   "tags": ["3-5", "palabras", "clave", "lowercase", "sin-tildes"]
 }
@@ -749,7 +759,10 @@ def _validate_article(data: dict[str, Any]) -> RewrittenArticle | None:
     # noticia nace con < 450 palabras, el frontend la desindexaría de inmediato,
     # así que mejor no escribirla — gasta tokens y engorda el corpus thin que
     # activa el clasificador site-wide de contenido útil de Google.
-    MIN_PALABRAS_CUERPO = 450
+    # Piso duro alineado con el prompt (pide 750+). Un artículo por debajo de
+    # esto es una reescritura superficial de feed → "contenido de poco valor".
+    # Debe coincidir con PODA_MIN_PALABRAS de src/lib/indexable.ts.
+    MIN_PALABRAS_CUERPO = 700
     cuerpo = str(data["cuerpo"]).strip()
     palabras_cuerpo = len(re.findall(r"\S+", cuerpo))
     if palabras_cuerpo < MIN_PALABRAS_CUERPO:

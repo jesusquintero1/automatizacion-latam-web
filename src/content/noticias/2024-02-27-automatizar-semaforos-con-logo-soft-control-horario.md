@@ -10,6 +10,7 @@ fuente:
   nombre: "Tecnoplc"
   url: "https://www.tecnoplc.com/programar-semaforo-vehiculos-logo-soft-con-control-horario/"
 fecha: 2024-02-27T13:25:22Z
+evergreen: true
 tags:
   - "logo-soft"
   - "semaforos"

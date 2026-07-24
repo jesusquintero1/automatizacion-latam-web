@@ -154,8 +154,8 @@ fuentes:
 
 # Configuración global del agregador.
 config:
-  max_noticias_por_run: 5         # cap por run; con cron 12h = ~10/día (recorte costos API 2026-06-26)
-  max_por_fuente: 2               # Máx noticias tomadas de la misma fuente en un run
+  max_noticias_por_run: 2         # calidad > volumen: pocas piezas de análisis original (750+ pal) por run
+  max_por_fuente: 1               # Máx noticias tomadas de la misma fuente en un run (evita monotema)
   modelo: "claude-haiku-4-5"      # Haiku 4.5 para volumen alto y costo bajo
   # User-agent de navegador real — muchos sitios bloquean UAs "raros".
   user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"

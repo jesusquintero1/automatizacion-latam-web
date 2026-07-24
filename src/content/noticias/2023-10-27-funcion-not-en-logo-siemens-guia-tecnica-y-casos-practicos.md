@@ -10,6 +10,7 @@ fuente:
   nombre: "Tecnoplc"
   url: "https://www.tecnoplc.com/funcion-not-logo-siemens-como-funciona-y-ejemplos-paso-a-paso/"
 fecha: 2023-10-27T08:44:35Z
+evergreen: true
 tags:
   - "logo-siemens"
   - "funcion-not"

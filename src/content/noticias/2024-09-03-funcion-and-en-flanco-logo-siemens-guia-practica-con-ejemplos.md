@@ -10,6 +10,7 @@ fuente:
   nombre: "Tecnoplc"
   url: "https://www.tecnoplc.com/funcion-and-flanco-logo-siemens-como-se-usa-y-ejemplos-paso-a-paso/"
 fecha: 2024-09-03T08:44:33Z
+evergreen: true
 tags:
   - "logo-siemens"
   - "and-logico"

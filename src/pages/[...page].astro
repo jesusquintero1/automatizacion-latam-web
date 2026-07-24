@@ -57,7 +57,7 @@ const jsonLdItemList = isFirst ? {
 // destacada trae imagen.
 const lcpImage = isFirst && destacada?.data.imagen ? destacada.data.imagen : null;
 ---
-<Base title={titlePagina}>
+<Base title={titlePagina} noIndexFollow={!isFirst}>
   {lcpImage && <link rel="preload" as="image" href={lcpImage} fetchpriority="high" slot="head" />}
   {jsonLdItemList && <script type="application/ld+json" set:html={JSON.stringify(jsonLdItemList)} slot="head" />}
   {isFirst && (

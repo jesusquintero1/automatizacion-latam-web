@@ -10,6 +10,7 @@ fuente:
   nombre: "Tecnoplc"
   url: "https://www.tecnoplc.com/programar-ventana-invernadero-con-logo-soft-comfort/"
 fecha: 2024-04-11T13:11:40Z
+evergreen: true
 tags:
   - "logo-soft-comfort"
   - "invernadero"

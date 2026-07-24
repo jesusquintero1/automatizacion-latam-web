@@ -26,6 +26,10 @@ const noticias = defineCollection({
     imagen: z.string().optional(),
     imagen_atribucion: z.string().optional(),
     imagen_fuente: z.string().optional(),
+    // Contenido perenne curado a mano (tutoriales LOGO/ZelioSoft, etc.): se
+    // indexa siempre, exento de la caducidad de 90 días que aplica a las
+    // noticias reescritas de feeds. Ver src/lib/indexable.ts.
+    evergreen: z.boolean().optional().default(false),
   }),
 });
 

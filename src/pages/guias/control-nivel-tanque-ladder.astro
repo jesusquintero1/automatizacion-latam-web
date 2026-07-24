@@ -1,0 +1,139 @@
+---
+// Guía evergreen intención estudiante: "control de nivel de tanque con LADDER
+// paso a paso" (Zelio / LOGO!). Enseña el enclavamiento SET/RESET, patrón base
+// de casi todo automatismo. Contenido 100% original, ejercicio resuelto.
+import Base from '../../layouts/Base.astro';
+import AdSlot from '../../components/AdSlot.astro';
+
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://automatizacionslatam.com';
+const pageUrl = `${siteUrl}/guias/control-nivel-tanque-ladder/`;
+const title = 'Control de nivel de tanque con LADDER: ejercicio resuelto (SET/RESET)';
+const description = 'Cómo programar el llenado automático de un tanque en LADDER con dos sensores de nivel y una bomba, usando enclavamiento SET/RESET. Asignación de E/S, diagrama de escalera y protección contra marcha en seco, para Zelio y LOGO!.';
+
+const faq = [
+  { q: '¿Por qué usar SET/RESET y no un simple contacto con enclavamiento?', a: 'El enclavamiento SET/RESET separa claramente la condición que ARRANCA la bomba (nivel bajo) de la que la DETIENE (nivel alto), y es inmune al parpadeo de los sensores. Un enclavamiento por realimentación de contacto también funciona, pero SET/RESET se lee mejor y evita ambigüedad cuando ambas condiciones podrían darse casi a la vez.' },
+  { q: '¿Qué pasa si el sensor de nivel alto falla?', a: 'La bomba no recibiría el RESET y seguiría llenando: por eso en una planta real se añade un tercer sensor de rebose o un temporizador de seguridad que corta la bomba tras un tiempo máximo de llenado. Nunca dejes el paro dependiendo de un único sensor en una aplicación crítica.' },
+  { q: '¿Sensores normalmente abiertos o normalmente cerrados?', a: 'Por seguridad se prefieren sensores normalmente cerrados (NC): si se corta un cable, la entrada se va a 0 y el sistema falla del lado seguro (la bomba no arranca o se detiene). Si usas NC, recuerda invertir la lógica de los contactos en el programa.' },
+  { q: '¿Sirve el mismo programa en LOGO! Soft Comfort?', a: 'Sí. LOGO! ofrece el bloque "Relé de enclavamiento" (RS), que es exactamente un SET/RESET. La lógica de dos sensores y una bomba es idéntica; solo cambia el bloque gráfico. En TIA Portal usarías las bobinas S y R o un bloque SR.' },
+  { q: '¿Cómo evito que la bomba trabaje en seco?', a: 'Añade una condición de habilitación con el sensor de nivel bajo del depósito de aspiración (o un presostato): la bomba solo puede recibir el SET si hay agua disponible para bombear. Es una AND extra en la rama de arranque.' },
+];
+
+const jsonLdArticle = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: title,
+  description,
+  inLanguage: 'es',
+  mainEntityOfPage: pageUrl,
+  author: { '@type': 'Organization', name: 'Automatización LatAm' },
+  publisher: { '@type': 'Organization', name: 'Automatización LatAm', url: siteUrl },
+};
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+};
+const jsonLdBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Inicio', item: `${siteUrl}/` },
+    { '@type': 'ListItem', position: 2, name: 'Guías', item: `${siteUrl}/guias/` },
+    { '@type': 'ListItem', position: 3, name: 'Control de nivel de tanque', item: pageUrl },
+  ],
+};
+
+const ladderSet = `  I1 (NIVEL BAJO)   I3 (AGUA EN POZO)             M1 (BOMBA)
+ ----[ ]-------------[ ]--------------------------[ S ]----
+   Si el tanque llegó a nivel bajo Y hay agua para
+   bombear → SET de la marca de bomba.`;
+
+const ladderReset = `  I2 (NIVEL ALTO)                                M1 (BOMBA)
+ ----[ ]------------------------------------------[ R ]----
+   Al alcanzar nivel alto → RESET: la bomba se detiene.`;
+
+const ladderSalida = `  M1 (BOMBA)                                     Q1 (BOMBA)
+ ----[ ]------------------------------------------( )----
+   La salida física sigue el estado enclavado de M1.`;
+---
+<Base title={`${title} | Automatización LatAm`} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdArticle)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdBreadcrumb)} />
+
+  <article class="mx-auto max-w-3xl px-4 md:px-8 py-10 prose-article">
+    <nav aria-label="Breadcrumb" class="text-xs text-ink-500 mb-3 not-prose">
+      <a href="/" class="hover:text-brand-600">Inicio</a>
+      <span class="mx-1">›</span>
+      <a href="/guias/" class="hover:text-brand-600">Guías</a>
+      <span class="mx-1">›</span>
+      <span class="text-ink-700">Control de nivel de tanque</span>
+    </nav>
+    <p class="text-brand-600 font-semibold uppercase tracking-wider text-sm mb-2 not-prose">Ejercicio resuelto</p>
+    <h1 class="text-3xl md:text-5xl font-serif font-bold text-ink-900 mb-6">Control de nivel de un tanque con LADDER</h1>
+
+    <p class="text-xl text-ink-700 leading-relaxed border-l-4 border-brand-500 pl-4 mb-8 italic not-prose">
+      Llenar un tanque automáticamente entre dos niveles es el ejercicio que mejor enseña el <strong>enclavamiento SET/RESET</strong>: la bomba arranca al vaciarse, se detiene al llenarse y "recuerda" su estado entre medias. Aquí está resuelto en LADDER para Zelio y LOGO!, con protección contra marcha en seco.
+    </p>
+
+    <p>El control de nivel es uno de los automatismos más comunes en la industria latinoamericana —tanques de agua, depósitos de proceso, cisternas— y el pretexto perfecto para dominar la memoria <strong>SET/RESET</strong>. El problema: una bomba que llene un tanque debe arrancar cuando el agua baja de cierto punto y parar cuando llega arriba, sin quedarse "vibrando" cuando el nivel queda justo en un sensor.</p>
+
+    <h2>Paso 1 — Asignación de entradas y salidas</h2>
+    <div class="not-prose overflow-x-auto my-6">
+      <table class="w-full text-sm border-collapse">
+        <thead>
+          <tr class="border-b-2 border-ink-300">
+            <th class="text-left py-2 pr-4">Elemento</th>
+            <th class="text-left py-2 pr-4">Dirección</th>
+            <th class="text-left py-2">Función</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-b border-ink-300/30"><td class="py-2 pr-4 font-semibold">Sensor nivel bajo</td><td class="py-2 pr-4">I1</td><td class="py-2">Detecta que el tanque necesita llenarse</td></tr>
+          <tr class="border-b border-ink-300/30"><td class="py-2 pr-4 font-semibold">Sensor nivel alto</td><td class="py-2 pr-4">I2</td><td class="py-2">Detecta tanque lleno</td></tr>
+          <tr class="border-b border-ink-300/30"><td class="py-2 pr-4 font-semibold">Agua en pozo/aspiración</td><td class="py-2 pr-4">I3</td><td class="py-2">Habilita la bomba (anti marcha en seco)</td></tr>
+          <tr class="border-b border-ink-300/30"><td class="py-2 pr-4 font-semibold">Bomba (marca)</td><td class="py-2 pr-4">M1</td><td class="py-2">Estado enclavado de la bomba</td></tr>
+          <tr><td class="py-2 pr-4 font-semibold">Bomba (salida)</td><td class="py-2 pr-4">Q1</td><td class="py-2">Salida de relé al contactor de la bomba</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <AdSlot slot="7777777777" label="Publicidad" />
+
+    <h2>Paso 2 — El SET: arrancar la bomba</h2>
+    <p>La bomba arranca cuando el tanque llega a <strong>nivel bajo</strong> (I1) <em>y</em> hay agua disponible para bombear (I3, protección anti marcha en seco). Usamos una bobina <strong>SET (S)</strong> sobre la marca M1: una vez activada, se mantiene aunque la condición desaparezca.</p>
+    <pre class="not-prose bg-ink-900 text-ink-100 rounded-lg p-4 overflow-x-auto text-sm">{ladderSet}</pre>
+
+    <h2>Paso 3 — El RESET: detener la bomba</h2>
+    <p>Cuando el agua alcanza el <strong>nivel alto</strong> (I2), una bobina <strong>RESET (R)</strong> apaga la marca M1. Como el SET y el RESET son condiciones distintas y separadas, la bomba no "vibra" aunque el nivel oscile alrededor del sensor bajo: solo el sensor alto puede detenerla.</p>
+    <pre class="not-prose bg-ink-900 text-ink-100 rounded-lg p-4 overflow-x-auto text-sm">{ladderReset}</pre>
+    <p><strong>Regla de oro del SET/RESET:</strong> en la mayoría de los PLC, si SET y RESET se cumplen en el mismo scan, gana el que esté programado <em>después</em> (más abajo). Colocar el RESET después del SET da prioridad al paro, que es lo seguro.</p>
+
+    <h2>Paso 4 — La salida física</h2>
+    <p>Finalmente, la salida real Q1 (el contactor de la bomba) simplemente sigue el estado de la marca enclavada M1:</p>
+    <pre class="not-prose bg-ink-900 text-ink-100 rounded-lg p-4 overflow-x-auto text-sm">{ladderSalida}</pre>
+    <p>Separar la lógica (M1) de la salida física (Q1) es una buena práctica: mañana puedes añadir un modo manual, una alarma o un piloto sin tocar la lógica de enclavamiento.</p>
+
+    <h2>Paso 5 — Simular y validar</h2>
+    <p>En <strong>ZelioSoft 2</strong>, entra en modo <strong>Simulación (S)</strong> y prueba la secuencia: fuerza I3=1 (hay agua), luego I1=1 (nivel bajo) → la bomba (Q1) debe arrancar y <em>quedarse</em> aunque quites I1. Después fuerza I2=1 (nivel alto) → la bomba debe pararse. Comprueba el caso crítico: con I3=0 (pozo seco), la bomba <strong>no</strong> debe arrancar aunque I1 esté activo.</p>
+
+    <h2>De ejercicio a planta real</h2>
+    <p>En una instalación real conviene reforzar el diseño con: un <strong>temporizador de seguridad</strong> que corte la bomba si el llenado tarda más de lo normal (sensor de nivel alto averiado), <strong>sensores NC</strong> para fallar del lado seguro, y un <strong>piloto de marcha</strong> y otro de <strong>fallo</strong> en la HMI. Si el nivel se mide con un sensor analógico (4-20 mA) en lugar de dos boyas, sustituyes los sensores digitales por <a href="/guias/temporizador-ton-tof-ladder/" class="text-brand-600 hover:underline">comparadores</a> sobre la señal escalada.</p>
+
+    <p class="not-prose"><a href="/herramientas/escalado-analogico/" class="text-brand-600 hover:underline">Calculadora de escalado 4-20 mA</a> · <a href="/glosario/ladder/" class="text-brand-600 hover:underline">Qué es LADDER</a> · <a href="/guias/que-es-un-plc/" class="text-brand-600 hover:underline">Qué es un PLC</a></p>
+
+    <AdSlot slot="3333333333" label="Publicidad" />
+
+    <section class="not-prose mt-12 border-t border-ink-300/30 pt-8">
+      <h2 class="text-2xl font-serif font-bold text-ink-900 mb-6">Preguntas frecuentes</h2>
+      <div class="space-y-5">
+        {faq.map((f) => (
+          <div>
+            <h3 class="font-semibold text-ink-900 mb-1">{f.q}</h3>
+            <p class="text-ink-700">{f.a}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  </article>
+</Base>

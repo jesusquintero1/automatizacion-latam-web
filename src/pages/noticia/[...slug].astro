@@ -4,6 +4,7 @@ import Base from '../../layouts/Base.astro';
 import AdSlot from '../../components/AdSlot.astro';
 import ArticleCard from '../../components/ArticleCard.astro';
 import ProductosRecomendados from '../../components/ProductosRecomendados.astro';
+import { contarPalabras, noticiaIndexable } from '../../lib/indexable';
 
 export async function getStaticPaths() {
   const noticias = await getCollection('noticias');
@@ -42,21 +43,14 @@ const articleUrl = `${siteUrl}${Astro.url.pathname}`;
 // wordCount aproximado del cuerpo (para schema NewsArticle: ayuda a Google a
 // entender la profundidad del articulo).
 const rawBody = noticia.body || '';
-const wordCount = rawBody
-  .replace(/[#*_`>\[\]()-]/g, ' ')
-  .split(/\s+/)
-  .filter((w) => w.length > 1).length;
+const wordCount = contarPalabras(rawBody);
 // PODA DE CONTENIDO THIN (SEO): las noticias son reescrituras por IA de feeds
 // ajenos. Un exceso de paginas de bajo valor activa el clasificador site-wide de
 // "contenido util" de Google y ARRASTRA a las guias buenas (es lo que hundio a
-// PulsoSano en AdSense). Desindexamos (noindex,follow) las noticias flojas para
-// concentrar la autoridad en el contenido diferenciado, sin perder el rastreo de
-// sus enlaces internos hacia guias/pillars.
-const PODA_MIN_PALABRAS = 450;   // mediana del corpus ~432 → recorta la mitad floja
-const PODA_MAX_DIAS = 90;        // noticia sin traccion a los 90 dias = ruido permanente
-const ageDays = (Date.now() - new Date(fecha).valueOf()) / 86_400_000;
-const noIndexNoticia =
-  wordCount < PODA_MIN_PALABRAS || ageDays > PODA_MAX_DIAS || !porQueImporta;
+// PulsoSano en AdSense). La regla vive en src/lib/indexable.ts (misma fuente que
+// el sitemap) para que Google reciba una señal coherente. El contenido perenne
+// (evergreen: true) queda exento de la caducidad.
+const noIndexNoticia = !noticiaIndexable(noticia);
 
 // articleBody = texto plano del cuerpo, util para Google News.
 const articleBodyPlain = rawBody
