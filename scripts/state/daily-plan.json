@@ -1,16 +1,16 @@
 {
-  "generado": "2026-07-24T02:05:41.881317+00:00",
+  "generado": "2026-07-24T03:31:26.528092+00:00",
   "fuente_datos": "google",
   "distribucion_actual": {
     "PLC y Control": 53,
     "Robótica": 34,
     "Industria 4.0": 61,
-    "Inteligencia Artificial": 205,
+    "Inteligencia Artificial": 206,
     "Ciberseguridad OT": 75,
     "Energía y Sostenibilidad": 18,
     "Mercado y Negocios": 71,
     "Casos de Estudio": 5,
-    "General": 14
+    "General": 13
   },
   "max_por_categoria": {
     "PLC y Control": 99,
@@ -21,7 +21,7 @@
     "Energía y Sostenibilidad": 99,
     "Mercado y Negocios": 1,
     "Casos de Estudio": 99,
-    "General": 1
+    "General": 99
   },
   "keywords_prioritarias": [
     "plc",
@@ -72,5 +72,5 @@
     "real-world results",
     "rollout"
   ],
-  "razonamiento": "Topadas a 1/run por sobre-representación: Inteligencia Artificial (38%), Mercado y Negocios (13%), General (3%). Liberadas (hambrientas): PLC y Control, Robótica, Industria 4.0, Energía y Sostenibilidad, Casos de Estudio."
+  "razonamiento": "Topadas a 1/run por sobre-representación: Inteligencia Artificial (38%), Mercado y Negocios (13%). Liberadas (hambrientas): PLC y Control, Robótica, Industria 4.0, Energía y Sostenibilidad, Casos de Estudio."
 }
