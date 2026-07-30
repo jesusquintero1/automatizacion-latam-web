@@ -1,5 +1,5 @@
 {
-  "generado": "2026-07-30T01:12:51.945672+00:00",
+  "generado": "2026-07-30T10:08:49.034759+00:00",
   "fuente_datos": "google",
   "ventana_dias": 28,
   "search_console": {
@@ -12,18 +12,18 @@
         "posicion": 72.0
       },
       {
+        "query": "agencia de branding corporativo latam",
+        "impresiones": 2,
+        "clics": 0,
+        "ctr": 0.0,
+        "posicion": 85.0
+      },
+      {
         "query": "navegación de abb",
         "impresiones": 2,
         "clics": 0,
         "ctr": 0.0,
         "posicion": 51.5
-      },
-      {
-        "query": "agencia de branding corporativo latam",
-        "impresiones": 1,
-        "clics": 0,
-        "ctr": 0.0,
-        "posicion": 85.0
       },
       {
         "query": "empresa de branding corporativo latam",
