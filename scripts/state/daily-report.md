@@ -1,10 +1,10 @@
-_Generado: 2026-08-08T16:17:20.467741+00:00 · fuente datos: google_
+_Generado: 2026-08-08T19:49:17.881419+00:00 · fuente datos: google_
 
 ### Distribución actual del corpus
 
 | Categoría | Artículos | Share | Cuota hoy |
 |---|---:|---:|---:|
-| Inteligencia Artificial | 224 | 38% | 1 |
+| Inteligencia Artificial | 225 | 38% | 1 |
 | Ciberseguridad OT | 84 | 14% | — |
 | Mercado y Negocios | 74 | 13% | 1 |
 | Industria 4.0 | 71 | 12% | — |
@@ -31,3 +31,17 @@ Topadas a 1/run por sobre-representación: Inteligencia Artificial (38%), Mercad
 | navegación de abb | 2 | 0 | 0.0% | 51.5 |
 | empresa de branding corporativo latam | 1 | 0 | 0.0% | 81.0 |
 | temporizador ton | 1 | 0 | 0.0% | 60.0 |
+
+### SEO — auditoría del corpus
+
+**Salud SEO: 85/100** · 588 artículos
+
+| Chequeo | Resultado |
+|---|---:|
+| Contenido corto (< 350 palabras) | 44 |
+| Meta descripción muy corta | 0 |
+| Títulos > 70 caracteres | 283 |
+| Títulos duplicados | 0 |
+| Huérfanos (< 2 enlaces entrantes) | 166 |
+
+**Pillar pages sugeridas** (temas con masa crítica): PLC y Control, Robótica, Inteligencia Artificial, Mercado y Negocios, Industria 4.0, Ciberseguridad OT.
