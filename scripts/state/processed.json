@@ -2934,7 +2934,17 @@
       "url": "https://openai.com/index/responding-next-frontier-critical-cyber-capabilities",
       "fuente": "OpenAI Blog",
       "fecha_proceso": "2026-08-07T16:40:14.411487+00:00"
+    },
+    "253e1903e9b36f6f": {
+      "url": "http://www.ManufacturingTomorrow.com/news/2026/08/07/how-ai-powered-telemetry-is-transforming-predictive-maintenance-across-distributed-assets/28016",
+      "fuente": "Manufacturing Tomorrow",
+      "fecha_proceso": "2026-08-08T08:26:17.621892+00:00"
+    },
+    "624979042481ff50": {
+      "url": "https://huggingface.co/blog/allenai/tutormoments",
+      "fuente": "Hugging Face Blog",
+      "fecha_proceso": "2026-08-08T08:26:42.999618+00:00"
     }
   },
-  "ultima_corrida": "2026-08-08T00:42:35.940285+00:00"
+  "ultima_corrida": "2026-08-08T08:26:42.999680+00:00"
 }
