@@ -1,4 +1,4 @@
-_Generado: 2026-08-09T08:27:31.512209+00:00 · fuente datos: google_
+_Generado: 2026-08-10T09:04:21.306515+00:00 · fuente datos: google_
 
 ### Distribución actual del corpus
 
@@ -6,17 +6,17 @@ _Generado: 2026-08-09T08:27:31.512209+00:00 · fuente datos: google_
 |---|---:|---:|---:|
 | Inteligencia Artificial | 226 | 38% | 1 |
 | Ciberseguridad OT | 84 | 14% | — |
-| Mercado y Negocios | 74 | 13% | 1 |
+| Mercado y Negocios | 74 | 12% | 1 |
 | Industria 4.0 | 71 | 12% | — |
 | PLC y Control | 59 | 10% | — |
-| Robótica | 39 | 7% | — |
+| Robótica | 40 | 7% | — |
 | Energía y Sostenibilidad | 20 | 3% | — |
 | General | 13 | 2% | — |
 | Casos de Estudio | 5 | 1% | — |
 
 ### Razonamiento del plan
 
-Topadas a 1/run por sobre-representación: Inteligencia Artificial (38%), Mercado y Negocios (13%). Liberadas (hambrientas): PLC y Control, Robótica, Industria 4.0, Energía y Sostenibilidad, Casos de Estudio.
+Topadas a 1/run por sobre-representación: Inteligencia Artificial (38%), Mercado y Negocios (12%). Liberadas (hambrientas): PLC y Control, Robótica, Industria 4.0, Energía y Sostenibilidad, Casos de Estudio.
 
 ### Keywords prioritarias (re-rank del agregador)
 
