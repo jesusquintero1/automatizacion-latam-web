@@ -1,4 +1,4 @@
-_Generado: 2026-08-11T08:41:58.754143+00:00 · fuente datos: google_
+_Generado: 2026-08-12T00:52:52.108146+00:00 · fuente datos: google_
 
 ### Distribución actual del corpus
 
@@ -7,7 +7,7 @@ _Generado: 2026-08-11T08:41:58.754143+00:00 · fuente datos: google_
 | Inteligencia Artificial | 229 | 38% | 1 |
 | Ciberseguridad OT | 85 | 14% | — |
 | Mercado y Negocios | 74 | 12% | 1 |
-| Industria 4.0 | 72 | 12% | — |
+| Industria 4.0 | 73 | 12% | — |
 | PLC y Control | 59 | 10% | — |
 | Robótica | 40 | 7% | — |
 | Energía y Sostenibilidad | 20 | 3% | — |
@@ -27,7 +27,6 @@ Topadas a 1/run por sobre-representación: Inteligencia Artificial (38%), Mercad
 | Query | Impresiones | Clics | CTR | Pos |
 |---|---:|---:|---:|---:|
 | abreviatura de automatizacion | 3 | 0 | 0.0% | 72.0 |
-| agencia de branding corporativo latam | 2 | 0 | 0.0% | 85.0 |
 | navegación de abb | 2 | 0 | 0.0% | 51.5 |
-| empresa de branding corporativo latam | 1 | 0 | 0.0% | 81.0 |
+| agencia de branding corporativo latam | 1 | 0 | 0.0% | 85.0 |
 | temporizador ton | 1 | 0 | 0.0% | 60.0 |
