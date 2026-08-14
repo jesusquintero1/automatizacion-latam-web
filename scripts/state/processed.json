@@ -3039,7 +3039,12 @@
       "url": "http://www.ManufacturingTomorrow.com/news/2026/08/13/altech-expands-its-industrial-enclosure-range-to-nearly-1000-parts/28042",
       "fuente": "Manufacturing Tomorrow",
       "fecha_proceso": "2026-08-14T00:54:54.014970+00:00"
+    },
+    "353217afc4f706b5": {
+      "url": "https://huggingface.co/blog/amazon/strands-lerobot-streaming-data-loop",
+      "fuente": "Hugging Face Blog",
+      "fecha_proceso": "2026-08-14T08:55:59.974997+00:00"
     }
   },
-  "ultima_corrida": "2026-08-14T00:54:54.015021+00:00"
+  "ultima_corrida": "2026-08-14T08:56:29.972275+00:00"
 }
