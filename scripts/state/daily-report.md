@@ -1,4 +1,4 @@
-_Generado: 2026-08-17T16:12:38.255516+00:00 · fuente datos: google_
+_Generado: 2026-08-18T00:29:25.857712+00:00 · fuente datos: google_
 
 ### Distribución actual del corpus
 
@@ -6,17 +6,17 @@ _Generado: 2026-08-17T16:12:38.255516+00:00 · fuente datos: google_
 |---|---:|---:|---:|
 | Inteligencia Artificial | 234 | 38% | 1 |
 | Ciberseguridad OT | 85 | 14% | — |
+| Mercado y Negocios | 77 | 13% | 1 |
 | Industria 4.0 | 76 | 12% | — |
-| Mercado y Negocios | 76 | 12% | 1 |
 | PLC y Control | 62 | 10% | — |
-| Robótica | 42 | 7% | — |
+| Robótica | 43 | 7% | — |
 | Energía y Sostenibilidad | 20 | 3% | — |
 | General | 13 | 2% | — |
 | Casos de Estudio | 5 | 1% | — |
 
 ### Razonamiento del plan
 
-Topadas a 1/run por sobre-representación: Inteligencia Artificial (38%), Mercado y Negocios (12%). Liberadas (hambrientas): PLC y Control, Robótica, Industria 4.0, Energía y Sostenibilidad, Casos de Estudio.
+Topadas a 1/run por sobre-representación: Inteligencia Artificial (38%), Mercado y Negocios (13%). Liberadas (hambrientas): PLC y Control, Robótica, Industria 4.0, Energía y Sostenibilidad, Casos de Estudio.
 
 ### Keywords prioritarias (re-rank del agregador)
 
@@ -26,8 +26,7 @@ Topadas a 1/run por sobre-representación: Inteligencia Artificial (38%), Mercad
 
 | Query | Impresiones | Clics | CTR | Pos |
 |---|---:|---:|---:|---:|
-| abreviatura de automatizacion | 3 | 0 | 0.0% | 72.0 |
 | agencia de branding corporativo latam | 2 | 0 | 0.0% | 86.5 |
 | navegación de abb | 2 | 0 | 0.0% | 51.5 |
+| abreviatura de automatizacion | 1 | 0 | 0.0% | 97.0 |
 | automatización definida por software | 1 | 0 | 0.0% | 93.0 |
-| temporizador ton | 1 | 0 | 0.0% | 60.0 |
