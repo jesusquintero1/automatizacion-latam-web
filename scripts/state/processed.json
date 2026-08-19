@@ -3084,7 +3084,12 @@
       "url": "https://www.iiot-world.com/artificial-intelligence-ml/ai-agents-fail-when-predictions-are-wrong/",
       "fuente": "IIoT World",
       "fecha_proceso": "2026-08-18T16:18:20.211170+00:00"
+    },
+    "5ba78b757300e8cc": {
+      "url": "https://huggingface.co/blog/ibm-research/altk-evolve-hmm",
+      "fuente": "Hugging Face Blog",
+      "fecha_proceso": "2026-08-19T00:31:02.678689+00:00"
     }
   },
-  "ultima_corrida": "2026-08-18T16:21:53.792054+00:00"
+  "ultima_corrida": "2026-08-19T00:31:24.383095+00:00"
 }
