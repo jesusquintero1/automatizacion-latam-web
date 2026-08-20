@@ -1,4 +1,4 @@
-_Generado: 2026-08-19T08:21:01.434308+00:00 · fuente datos: google_
+_Generado: 2026-08-20T00:29:29.235822+00:00 · fuente datos: google_
 
 ### Distribución actual del corpus
 
@@ -9,8 +9,8 @@ _Generado: 2026-08-19T08:21:01.434308+00:00 · fuente datos: google_
 | Mercado y Negocios | 77 | 12% | 1 |
 | Industria 4.0 | 76 | 12% | — |
 | PLC y Control | 62 | 10% | — |
-| Robótica | 43 | 7% | — |
-| Energía y Sostenibilidad | 20 | 3% | — |
+| Robótica | 44 | 7% | — |
+| Energía y Sostenibilidad | 21 | 3% | — |
 | General | 13 | 2% | — |
 | Casos de Estudio | 5 | 1% | — |
 
@@ -27,6 +27,6 @@ Topadas a 1/run por sobre-representación: Inteligencia Artificial (38%), Mercad
 | Query | Impresiones | Clics | CTR | Pos |
 |---|---:|---:|---:|---:|
 | agencia de branding corporativo latam | 2 | 0 | 0.0% | 86.5 |
+| automatización definida por software | 2 | 0 | 0.0% | 89.0 |
 | navegación de abb | 2 | 0 | 0.0% | 51.5 |
 | abreviatura de automatizacion | 1 | 0 | 0.0% | 97.0 |
-| automatización definida por software | 1 | 0 | 0.0% | 93.0 |
