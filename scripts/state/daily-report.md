@@ -1,4 +1,4 @@
-_Generado: 2026-08-20T08:22:09.028606+00:00 · fuente datos: google_
+_Generado: 2026-08-21T00:32:24.045146+00:00 · fuente datos: google_
 
 ### Distribución actual del corpus
 
@@ -9,7 +9,7 @@ _Generado: 2026-08-20T08:22:09.028606+00:00 · fuente datos: google_
 | Mercado y Negocios | 78 | 13% | 1 |
 | Industria 4.0 | 76 | 12% | — |
 | PLC y Control | 62 | 10% | — |
-| Robótica | 44 | 7% | — |
+| Robótica | 45 | 7% | — |
 | Energía y Sostenibilidad | 21 | 3% | — |
 | General | 13 | 2% | — |
 | Casos de Estudio | 5 | 1% | — |
