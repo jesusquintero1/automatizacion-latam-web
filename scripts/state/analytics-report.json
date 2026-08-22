@@ -1,5 +1,5 @@
 {
-  "generado": "2026-08-21T16:17:43.404492+00:00",
+  "generado": "2026-08-22T00:29:29.467125+00:00",
   "fuente_datos": "google",
   "ventana_dias": 28,
   "search_console": {
@@ -17,20 +17,6 @@
         "clics": 0,
         "ctr": 0.0,
         "posicion": 89.0
-      },
-      {
-        "query": "navegación de abb",
-        "impresiones": 2,
-        "clics": 0,
-        "ctr": 0.0,
-        "posicion": 51.5
-      },
-      {
-        "query": "abreviatura de automatizacion",
-        "impresiones": 1,
-        "clics": 0,
-        "ctr": 0.0,
-        "posicion": 97.0
       }
     ],
     "huecos_contenido": []
