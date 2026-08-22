@@ -1,10 +1,10 @@
-_Generado: 2026-08-21T16:17:43.497218+00:00 · fuente datos: google_
+_Generado: 2026-08-22T08:14:41.606873+00:00 · fuente datos: google_
 
 ### Distribución actual del corpus
 
 | Categoría | Artículos | Share | Cuota hoy |
 |---|---:|---:|---:|
-| Inteligencia Artificial | 237 | 38% | 1 |
+| Inteligencia Artificial | 238 | 38% | 1 |
 | Ciberseguridad OT | 85 | 14% | — |
 | Mercado y Negocios | 78 | 13% | 1 |
 | Industria 4.0 | 76 | 12% | — |
@@ -28,5 +28,3 @@ Topadas a 1/run por sobre-representación: Inteligencia Artificial (38%), Mercad
 |---|---:|---:|---:|---:|
 | agencia de branding corporativo latam | 2 | 0 | 0.0% | 86.5 |
 | automatización definida por software | 2 | 0 | 0.0% | 89.0 |
-| navegación de abb | 2 | 0 | 0.0% | 51.5 |
-| abreviatura de automatizacion | 1 | 0 | 0.0% | 97.0 |
