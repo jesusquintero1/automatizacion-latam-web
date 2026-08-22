@@ -28,3 +28,17 @@ Topadas a 1/run por sobre-representación: Inteligencia Artificial (38%), Mercad
 |---|---:|---:|---:|---:|
 | agencia de branding corporativo latam | 2 | 0 | 0.0% | 86.5 |
 | automatización definida por software | 2 | 0 | 0.0% | 89.0 |
+
+### SEO — auditoría del corpus
+
+**Salud SEO: 85/100** · 622 artículos
+
+| Chequeo | Resultado |
+|---|---:|
+| Contenido corto (< 350 palabras) | 44 |
+| Meta descripción muy corta | 0 |
+| Títulos > 70 caracteres | 295 |
+| Títulos duplicados | 0 |
+| Huérfanos (< 2 enlaces entrantes) | 182 |
+
+**Pillar pages sugeridas** (temas con masa crítica): PLC y Control, Robótica, Inteligencia Artificial, Mercado y Negocios, Industria 4.0, Ciberseguridad OT.
