@@ -1,5 +1,5 @@
 {
-  "generado": "2026-08-24T08:33:41.284824+00:00",
+  "generado": "2026-08-25T00:30:56.997784+00:00",
   "fuente_datos": "google",
   "distribucion_actual": {
     "PLC y Control": 62,
@@ -9,7 +9,7 @@
     "Ciberseguridad OT": 85,
     "Energía y Sostenibilidad": 21,
     "Mercado y Negocios": 78,
-    "Casos de Estudio": 5,
+    "Casos de Estudio": 6,
     "General": 13
   },
   "max_por_categoria": {

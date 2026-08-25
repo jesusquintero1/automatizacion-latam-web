@@ -1,4 +1,4 @@
-_Generado: 2026-08-24T08:33:41.284824+00:00 · fuente datos: google_
+_Generado: 2026-08-25T00:30:56.997784+00:00 · fuente datos: google_
 
 ### Distribución actual del corpus
 
@@ -12,7 +12,7 @@ _Generado: 2026-08-24T08:33:41.284824+00:00 · fuente datos: google_
 | Robótica | 46 | 7% | — |
 | Energía y Sostenibilidad | 21 | 3% | — |
 | General | 13 | 2% | — |
-| Casos de Estudio | 5 | 1% | — |
+| Casos de Estudio | 6 | 1% | — |
 
 ### Razonamiento del plan
 
