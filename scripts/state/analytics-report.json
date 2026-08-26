@@ -1,22 +1,22 @@
 {
-  "generado": "2026-08-25T16:22:09.878475+00:00",
+  "generado": "2026-08-26T00:31:53.787100+00:00",
   "fuente_datos": "google",
   "ventana_dias": 28,
   "search_console": {
     "top_queries": [
-      {
-        "query": "agencia de branding corporativo latam",
-        "impresiones": 2,
-        "clics": 0,
-        "ctr": 0.0,
-        "posicion": 86.5
-      },
       {
         "query": "automatización definida por software",
         "impresiones": 2,
         "clics": 0,
         "ctr": 0.0,
         "posicion": 89.0
+      },
+      {
+        "query": "agencia de branding corporativo latam",
+        "impresiones": 1,
+        "clics": 0,
+        "ctr": 0.0,
+        "posicion": 88.0
       }
     ],
     "huecos_contenido": []

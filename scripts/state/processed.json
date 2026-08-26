@@ -3134,7 +3134,17 @@
       "url": "http://www.ManufacturingTomorrow.com/news/2026/08/24/idss-nion-3d-tof-camera-goes-into-series-production/28083",
       "fuente": "Manufacturing Tomorrow",
       "fecha_proceso": "2026-08-25T00:31:30.049550+00:00"
+    },
+    "619b7ff46eacf165": {
+      "url": "https://www.designworldonline.com/tech-toolbox-decentralizing-motion-control-with-edge-devices/",
+      "fuente": "Design World Online",
+      "fecha_proceso": "2026-08-26T00:32:30.147323+00:00"
+    },
+    "e702be06b8494848": {
+      "url": "https://www.marktechpost.com/2026/08/25/liquid-ai-open-sources-pipette-a-reproducible-benchmarking-suite-that-measures-on-device-models-quantization-runtime-and-hardware-together/",
+      "fuente": "MarkTechPost",
+      "fecha_proceso": "2026-08-26T00:33:49.445198+00:00"
     }
   },
-  "ultima_corrida": "2026-08-25T16:23:46.060997+00:00"
+  "ultima_corrida": "2026-08-26T00:33:49.445259+00:00"
 }
