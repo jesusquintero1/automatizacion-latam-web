@@ -1,0 +1,288 @@
+---
+// Herramienta gratuita: ahorro energético al instalar un variador de frecuencia
+// en una carga centrífuga (bomba o ventilador). Alta intención de búsqueda entre
+// responsables de mantenimiento y eficiencia energética, y casi sin competencia
+// en español con cálculo real detrás.
+//
+// Isla de JS 100% cliente, sin dependencias externas (respeta la CSP y el
+// output:static). Mismo patrón que escalado-analogico.astro, incluido el modo
+// ?embed=1 para que otros sitios la incrusten y generen backlinks.
+import Base from '../../layouts/Base.astro';
+import AdSlot from '../../components/AdSlot.astro';
+
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://automatizacionslatam.com';
+const pageUrl = `${siteUrl}/herramientas/ahorro-variador-frecuencia/`;
+const title = 'Calculadora de ahorro energético con variador de frecuencia (VFD)';
+const description = 'Calcula cuánta energía y dinero ahorra un variador de frecuencia en una bomba o ventilador, con la ley cúbica de las cargas centrífugas y el plazo de amortización. Gratis, sin registro.';
+
+const jsonLdApp = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'Calculadora de ahorro con variador de frecuencia',
+  applicationCategory: 'EngineeringApplication',
+  operatingSystem: 'Web',
+  description,
+  url: pageUrl,
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  publisher: { '@type': 'Organization', name: 'Automatización LatAm', url: siteUrl },
+};
+const jsonLdBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Inicio', item: `${siteUrl}/` },
+    { '@type': 'ListItem', position: 2, name: 'Herramientas', item: `${siteUrl}/herramientas/` },
+    { '@type': 'ListItem', position: 3, name: 'Ahorro con variador', item: pageUrl },
+  ],
+};
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: '¿Por qué un variador ahorra tanta energía en una bomba?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Porque en una carga centrífuga la potencia varía aproximadamente con el cubo de la velocidad. Reducir el caudal al 80 % baja la potencia a cerca del 51 %, así que el ahorro es mucho mayor que la reducción de caudal. Esta relación solo se cumple en bombas y ventiladores centrífugos, no en cargas de par constante.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: '¿El ahorro es igual en una cinta transportadora?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'No. Una cinta es una carga de par constante: la potencia varía de forma lineal con la velocidad, no cúbica. Reducir la velocidad al 80 % baja la potencia a alrededor del 80 %. El variador puede seguir justificándose por control de proceso o arranque suave, pero el ahorro energético es mucho menor.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: '¿Qué pasa si dejo la válvula estrangulando después de instalar el variador?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Se pierde buena parte del ahorro. La válvula sigue disipando energía en forma de pérdida de carga. El variador debe sustituir a la estrangulación: la válvula se abre por completo y el caudal se regula con la velocidad del motor.',
+      },
+    },
+  ],
+};
+const embedCode = `<iframe src="${pageUrl}?embed=1" width="100%" height="560" style="border:1px solid #ddd;border-radius:8px" title="Calculadora de ahorro con variador de frecuencia"></iframe>`;
+---
+<Base title={`${title} | Automatización LatAm`} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdBreadcrumb)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article class="mx-auto max-w-3xl px-4 md:px-8 py-10 prose-article">
+    <nav aria-label="Breadcrumb" class="text-xs text-ink-500 mb-3 not-prose" data-hide-embed>
+      <a href="/" class="hover:text-brand-600">Inicio</a>
+      <span class="mx-1">›</span>
+      <a href="/herramientas/" class="hover:text-brand-600">Herramientas</a>
+      <span class="mx-1">›</span>
+      <span class="text-ink-700">Ahorro con variador</span>
+    </nav>
+    <p class="text-brand-600 font-semibold uppercase tracking-wider text-sm mb-2 not-prose" data-hide-embed>Herramienta gratuita</p>
+    <h1 class="text-3xl md:text-5xl font-serif font-bold text-ink-900 mb-4" data-hide-embed>
+      Calculadora de ahorro con variador de frecuencia
+    </h1>
+
+    <!-- CALCULADORA (isla JS) -->
+    <div class="not-prose rounded-xl border border-ink-300/40 p-5 md:p-6 bg-white shadow-sm" id="vfd-tool">
+      <div class="mb-4">
+        <label class="block text-sm font-semibold text-ink-700 mb-1" for="tipoCarga">Tipo de carga</label>
+        <select id="tipoCarga" class="w-full px-3 py-2 rounded-md border border-ink-300/50 bg-white text-ink-900">
+          <option value="3">Centrífuga — bomba o ventilador (ley cúbica)</option>
+          <option value="1">Par constante — cinta, compresor de desplazamiento positivo</option>
+        </select>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4 mb-4">
+        <div>
+          <label class="block text-xs font-semibold text-ink-500 mb-1" for="potencia">Potencia del motor (kW)</label>
+          <input id="potencia" type="number" min="0" step="0.1" value="15" class="w-full px-3 py-2 rounded-md border border-ink-300/50" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-ink-500 mb-1" for="carga">Carga media actual (% de la nominal)</label>
+          <input id="carga" type="number" min="1" max="100" step="1" value="90" class="w-full px-3 py-2 rounded-md border border-ink-300/50" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-ink-500 mb-1" for="velocidad">Velocidad media con variador (%)</label>
+          <input id="velocidad" type="number" min="1" max="100" step="1" value="85" class="w-full px-3 py-2 rounded-md border border-ink-300/50" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-ink-500 mb-1" for="horas">Horas de operación al año</label>
+          <input id="horas" type="number" min="1" step="1" value="6000" class="w-full px-3 py-2 rounded-md border border-ink-300/50" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-ink-500 mb-1" for="tarifa">Tarifa eléctrica (por kWh)</label>
+          <input id="tarifa" type="number" min="0" step="0.001" value="0.12" class="w-full px-3 py-2 rounded-md border border-ink-300/50" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-ink-500 mb-1" for="inversion">Inversión: variador + instalación</label>
+          <input id="inversion" type="number" min="0" step="1" value="4000" class="w-full px-3 py-2 rounded-md border border-ink-300/50" />
+        </div>
+      </div>
+
+      <div class="rounded-lg bg-brand-50 border border-brand-200 p-4">
+        <div class="grid sm:grid-cols-3 gap-4 text-center">
+          <div>
+            <p class="text-xs uppercase tracking-wider text-ink-500 mb-1">Ahorro anual</p>
+            <p class="text-2xl font-bold text-brand-700" id="resKwh">—</p>
+            <p class="text-xs text-ink-500">kWh/año</p>
+          </div>
+          <div>
+            <p class="text-xs uppercase tracking-wider text-ink-500 mb-1">Ahorro económico</p>
+            <p class="text-2xl font-bold text-brand-700" id="resDinero">—</p>
+            <p class="text-xs text-ink-500">por año</p>
+          </div>
+          <div>
+            <p class="text-xs uppercase tracking-wider text-ink-500 mb-1">Amortización</p>
+            <p class="text-2xl font-bold text-brand-700" id="resPayback">—</p>
+            <p class="text-xs text-ink-500">años</p>
+          </div>
+        </div>
+        <p class="text-xs text-ink-500 mt-4 text-center" id="resDetalle">—</p>
+      </div>
+
+      <p class="text-[11px] text-ink-500 mt-3 leading-relaxed">
+        Estimación orientativa. No incluye el rendimiento del propio variador (típicamente 95-98 %),
+        las pérdidas del motor a carga parcial ni el efecto del factor de potencia. Para una decisión
+        de inversión conviene medir el perfil de carga real durante al menos una semana.
+      </p>
+    </div>
+
+    <AdSlot adSlot="9999999999" label="Publicidad" />
+
+    <h2>Cómo se calcula</h2>
+    <p>
+      En una <strong>carga centrífuga</strong> —una bomba o un ventilador— las leyes de afinidad
+      dicen que el caudal es proporcional a la velocidad, la presión al cuadrado de la velocidad y
+      la <strong>potencia al cubo</strong>. Esa tercera relación es la que hace interesante al
+      variador: bajar la velocidad al 80 % no reduce el consumo un 20 %, sino cerca de un 49 %,
+      porque 0,8³ ≈ 0,51.
+    </p>
+    <p>
+      La calculadora aplica esa relación sobre la potencia absorbida actual, estimada a partir de la
+      potencia nominal del motor y de su carga media. Para <strong>cargas de par constante</strong>
+      —una cinta transportadora, un compresor de desplazamiento positivo— el exponente es 1 y la
+      potencia baja de forma proporcional a la velocidad, así que el ahorro es mucho más modesto.
+      Elegir mal el tipo de carga es el error que más infla estas estimaciones.
+    </p>
+
+    <h2>Antes de fiarte del resultado</h2>
+    <p>
+      Un cálculo optimista sobre el papel se convierte en una decepción en planta por tres motivos
+      recurrentes. El primero es <strong>seguir estrangulando con la válvula</strong>: si la válvula
+      permanece parcialmente cerrada, la energía se sigue disipando ahí y el ahorro real es una
+      fracción del calculado. El variador sustituye a la estrangulación, no convive con ella.
+    </p>
+    <p>
+      El segundo es <strong>usar la velocidad mínima en lugar de la media</strong>. Casi ningún
+      proceso opera todo el año en su punto más bajo: lo correcto es estimar la velocidad media
+      ponderada por horas, o mejor aún, medir el perfil real durante una semana representativa.
+    </p>
+    <p>
+      El tercero es <strong>ignorar los límites térmicos del motor</strong>. Un motor autoventilado
+      refrigera con su propio ventilador: por debajo de aproximadamente el 30-40 % de la velocidad
+      nominal deja de refrigerar bien y se recalienta. Si el cálculo asume operación continua a muy
+      baja velocidad, hay que prever ventilación forzada o un motor apto para variador.
+    </p>
+
+    <h2>Preguntas frecuentes</h2>
+    <div class="not-prose space-y-3">
+      <details class="border border-ink-300/30 rounded-lg p-4">
+        <summary class="font-semibold text-ink-900 cursor-pointer">¿Por qué un variador ahorra tanto en una bomba?</summary>
+        <p class="text-ink-700 leading-relaxed mt-3 text-[15px]">
+          Porque en una carga centrífuga la potencia varía aproximadamente con el cubo de la
+          velocidad. Reducir el caudal al 80 % baja la potencia a cerca del 51 %. Esta relación solo
+          se cumple en bombas y ventiladores centrífugos, no en cargas de par constante.
+        </p>
+      </details>
+      <details class="border border-ink-300/30 rounded-lg p-4">
+        <summary class="font-semibold text-ink-900 cursor-pointer">¿El ahorro es igual en una cinta transportadora?</summary>
+        <p class="text-ink-700 leading-relaxed mt-3 text-[15px]">
+          No. Una cinta es carga de par constante: la potencia varía de forma lineal con la
+          velocidad. Reducirla al 80 % baja la potencia a alrededor del 80 %. El variador puede
+          justificarse por control o arranque suave, pero el ahorro energético es mucho menor.
+        </p>
+      </details>
+      <details class="border border-ink-300/30 rounded-lg p-4">
+        <summary class="font-semibold text-ink-900 cursor-pointer">¿Qué plazo de amortización es razonable?</summary>
+        <p class="text-ink-700 leading-relaxed mt-3 text-[15px]">
+          En bombas y ventiladores con muchas horas de operación y una reducción de velocidad
+          apreciable, lo habitual es situarse entre uno y tres años. Si el cálculo da menos de seis
+          meses, conviene revisar las hipótesis: casi siempre la velocidad media es optimista.
+        </p>
+      </details>
+    </div>
+
+    <h2 data-hide-embed>Incrusta esta calculadora en tu web</h2>
+    <p data-hide-embed>Copia este código; es gratuito y no requiere permiso:</p>
+    <pre data-hide-embed class="not-prose bg-ink-900 text-ink-100 rounded-lg p-4 overflow-x-auto text-xs"><code>{embedCode}</code></pre>
+
+    <p class="not-prose mt-8" data-hide-embed>
+      <a href="/glosario/vfd/" class="text-brand-600 font-semibold hover:underline">
+        ¿Qué es un variador de frecuencia? Ver la ficha del glosario →
+      </a>
+    </p>
+    <p class="not-prose mt-2" data-hide-embed>
+      <a href="/herramientas/" class="text-brand-600 font-semibold hover:underline">← Todas las herramientas</a>
+    </p>
+  </article>
+</Base>
+
+<script is:inline>
+  (function () {
+    var $ = function (id) { return document.getElementById(id); };
+    var campos = ['tipoCarga', 'potencia', 'carga', 'velocidad', 'horas', 'tarifa', 'inversion'];
+    if (!$('vfd-tool')) return;
+
+    // Modo incrustado: ?embed=1 oculta la parte editorial y deja solo la calculadora.
+    try {
+      if (new URLSearchParams(location.search).get('embed') === '1') {
+        document.querySelectorAll('[data-hide-embed]').forEach(function (el) { el.hidden = true; });
+      }
+    } catch (e) { /* sin URLSearchParams no pasa nada: se ve la página completa */ }
+
+    function num(id, def) {
+      var v = parseFloat($(id).value);
+      return isFinite(v) ? v : def;
+    }
+
+    function calcular() {
+      var exp = parseFloat($('tipoCarga').value) || 3;
+      var pNominal = num('potencia', 0);
+      var carga = Math.min(Math.max(num('carga', 100), 1), 100) / 100;
+      var vel = Math.min(Math.max(num('velocidad', 100), 1), 100) / 100;
+      var horas = num('horas', 0);
+      var tarifa = num('tarifa', 0);
+      var inversion = num('inversion', 0);
+
+      // Potencia absorbida hoy (sin variador) y con variador aplicando el exponente
+      // de la curva: 3 para carga centrífuga, 1 para par constante.
+      var pActual = pNominal * carga;
+      var pConVfd = pActual * Math.pow(vel, exp);
+      var ahorroKw = pActual - pConVfd;
+      var kwhAnio = ahorroKw * horas;
+      var dineroAnio = kwhAnio * tarifa;
+      var payback = dineroAnio > 0 ? inversion / dineroAnio : null;
+
+      var fmt = function (n, d) {
+        return n.toLocaleString('es', { minimumFractionDigits: d, maximumFractionDigits: d });
+      };
+      $('resKwh').textContent = kwhAnio > 0 ? fmt(kwhAnio, 0) : '—';
+      $('resDinero').textContent = dineroAnio > 0 ? fmt(dineroAnio, 0) : '—';
+      $('resPayback').textContent = payback && isFinite(payback) ? fmt(payback, 1) : '—';
+
+      var pct = pActual > 0 ? (ahorroKw / pActual) * 100 : 0;
+      $('resDetalle').textContent =
+        'Potencia absorbida: ' + fmt(pActual, 1) + ' kW ahora → ' + fmt(pConVfd, 1) +
+        ' kW con variador (' + fmt(pct, 0) + ' % menos).';
+    }
+
+    campos.forEach(function (id) {
+      var el = $(id);
+      if (el) { el.addEventListener('input', calcular); el.addEventListener('change', calcular); }
+    });
+    calcular();
+  })();
+</script>

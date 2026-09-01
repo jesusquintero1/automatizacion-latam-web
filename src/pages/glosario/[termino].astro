@@ -6,6 +6,7 @@
 import Base from '../../layouts/Base.astro';
 import AdSlot from '../../components/AdSlot.astro';
 import { GLOSARIO, GLOSARIO_POR_SLUG } from '../../data/glosario';
+import { DETALLE_GLOSARIO } from '../../data/glosario-detalle';
 
 export async function getStaticPaths() {
   return GLOSARIO.map((t) => ({
@@ -37,6 +38,10 @@ const relacionados = termino.relacionados
   .filter(Boolean);
 
 const parrafos = termino.definicion.split('\n\n');
+// Ampliación de la ficha (uso práctico, errores, FAQ). Opcional: las fichas
+// que aún no la tengan siguen renderizando igual que antes.
+const detalle = DETALLE_GLOSARIO[termino.slug];
+const parrafosPractica = detalle?.enLaPractica.split('\n\n') ?? [];
 const tituloCompleto = termino.siglas ? `${termino.termino} (${termino.siglas})` : termino.termino;
 const metaTitle = `¿Qué es ${termino.termino}? Definición | Glosario de automatización`;
 const metaDesc = termino.resumen;
@@ -74,11 +79,26 @@ const jsonLdBreadcrumb = {
     { '@type': 'ListItem', position: 3, name: termino.termino, item: pageUrl },
   ],
 };
+// FAQPage solo cuando hay preguntas de verdad. Google retiró el rich result de
+// FAQ para la mayoría de sitios, pero el marcado sigue ayudándole a entender la
+// página y alimenta las respuestas de los asistentes.
+const jsonLdFaq = detalle?.faq?.length
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: detalle.faq.map((f) => ({
+        '@type': 'Question',
+        name: f.q,
+        acceptedAnswer: { '@type': 'Answer', text: f.a },
+      })),
+    }
+  : null;
 ---
 <Base title={metaTitle} description={metaDesc}>
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdDefined)} />
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdArticle)} />
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdBreadcrumb)} />
+  {jsonLdFaq && <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />}
 
   <article class="mx-auto max-w-3xl px-4 md:px-8 py-10 prose-article">
     <nav aria-label="Breadcrumb" class="text-xs text-ink-500 mb-3 not-prose">
@@ -102,6 +122,41 @@ const jsonLdBreadcrumb = {
     {parrafos.map((p) => <p>{p}</p>)}
 
     <AdSlot adSlot="8888888888" label="Publicidad" />
+
+    {parrafosPractica.length > 0 && (
+      <>
+        <h2>{termino.termino} en la práctica</h2>
+        {parrafosPractica.map((p) => <p>{p}</p>)}
+      </>
+    )}
+
+    {detalle?.errores?.length && (
+      <section class="not-prose mt-10">
+        <h2 class="text-2xl font-serif font-bold text-ink-900 mb-5">Errores frecuentes</h2>
+        <ul class="space-y-4">
+          {detalle.errores.map((e) => (
+            <li class="border-l-4 border-amber-400 bg-amber-50/60 rounded-r-lg p-4">
+              <p class="font-semibold text-ink-900 mb-1">{e.titulo}</p>
+              <p class="text-ink-700 leading-relaxed text-[15px]">{e.detalle}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+
+    {detalle?.faq?.length && (
+      <section class="not-prose mt-10">
+        <h2 class="text-2xl font-serif font-bold text-ink-900 mb-5">Preguntas frecuentes</h2>
+        <div class="space-y-3">
+          {detalle.faq.map((f) => (
+            <details class="border border-ink-300/30 rounded-lg p-4 open:bg-ink-100/40">
+              <summary class="font-semibold text-ink-900 cursor-pointer">{f.q}</summary>
+              <p class="text-ink-700 leading-relaxed mt-3 text-[15px]">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+    )}
 
     <p class="not-prose mt-6">
       <a href={catUrl} class="text-brand-600 font-semibold hover:underline">Ver más sobre {termino.categoria} →</a>

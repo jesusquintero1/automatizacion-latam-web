@@ -14,6 +14,16 @@ const herramientas = [
     titulo: 'Calculadora de escalado analógico',
     desc: 'Convierte cuentas crudas (raw) de una entrada analógica de PLC a unidades de ingeniería y viceversa. Presets Siemens, 12/15/16 bits y 4-20 mA.',
   },
+  {
+    href: '/herramientas/ahorro-variador-frecuencia/',
+    titulo: 'Ahorro energético con variador (VFD)',
+    desc: 'Estima cuánta energía y dinero ahorra un variador en una bomba o ventilador aplicando la ley cúbica, y calcula el plazo de amortización de la inversión.',
+  },
+  {
+    href: '/herramientas/par-potencia-motor/',
+    titulo: 'Par, potencia y velocidad de motor',
+    desc: 'Relaciona par (N·m), potencia (kW y HP) y velocidad (rpm), con velocidad síncrona por número de polos y cálculo del deslizamiento.',
+  },
 ];
 
 const jsonLdList = {
@@ -63,5 +73,45 @@ const jsonLdBreadcrumb = {
         </li>
       ))}
     </ul>
+
+    <section class="mt-14 border-t border-ink-300/30 pt-10">
+      <h2 class="text-2xl font-serif font-bold text-ink-900 mb-4">Por qué publicamos estas calculadoras</h2>
+      <div class="text-ink-700 leading-relaxed space-y-4 max-w-2xl">
+        <p>
+          Buena parte del trabajo de un técnico de automatización se va en cálculos que se repiten
+          proyecto tras proyecto: escalar una señal de 4-20 mA a unidades de ingeniería, justificar
+          ante gerencia si un variador se paga solo, convertir el par de un motor entre unidades
+          porque el catálogo viene en un sistema y el plano en otro. Son operaciones sencillas, pero
+          hacerlas a mano en mitad de una puesta en marcha es donde se cuelan los errores.
+        </p>
+        <p>
+          Estas herramientas resuelven esos cálculos concretos, funcionan enteramente en tu navegador
+          —ningún dato viaja a un servidor— y no piden registro. Cada una explica además la fórmula
+          que aplica y los supuestos que asume, porque un número sin contexto es tan peligroso como
+          no tenerlo: una calculadora que te dice que el variador se amortiza en seis meses sin
+          advertirte de que la válvula sigue estrangulando no te está ayudando.
+        </p>
+        <p>
+          Todas se pueden incrustar en otra web con el código que aparece al final de cada página.
+          Si echas en falta alguna, o encuentras un error en un cálculo, escríbenos por la
+          <a href="/contacto/" class="text-brand-600 font-semibold hover:underline">página de contacto</a>:
+          las correcciones de quien trabaja en planta son las que más han mejorado estas páginas.
+        </p>
+      </div>
+    </section>
+
+    <section class="mt-12">
+      <h2 class="text-2xl font-serif font-bold text-ink-900 mb-4">Recursos relacionados</h2>
+      <div class="grid sm:grid-cols-2 gap-3">
+        <a href="/glosario/" class="block rounded-lg border border-ink-300/30 p-4 hover:border-brand-500 transition-colors">
+          <span class="font-semibold text-ink-900">Glosario técnico</span>
+          <span class="block text-sm text-ink-500 mt-1">Definiciones de PLC, SCADA, HMI, PID y otros 20 términos, con errores frecuentes.</span>
+        </a>
+        <a href="/guias/" class="block rounded-lg border border-ink-300/30 p-4 hover:border-brand-500 transition-colors">
+          <span class="font-semibold text-ink-900">Guías paso a paso</span>
+          <span class="block text-sm text-ink-500 mt-1">Tutoriales de LADDER, ZelioSoft y fundamentos de automatización industrial.</span>
+        </a>
+      </div>
+    </section>
   </section>
 </Base>

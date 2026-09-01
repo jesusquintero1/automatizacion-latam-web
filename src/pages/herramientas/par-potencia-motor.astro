@@ -1,0 +1,279 @@
+---
+// Herramienta gratuita: relación par–potencia–velocidad en motores eléctricos,
+// con conversión kW/HP y cálculo de deslizamiento. Consulta muy repetida entre
+// técnicos de mantenimiento e integradores, y sin buen recurso en español.
+//
+// Isla de JS 100% cliente, sin dependencias (respeta la CSP y output:static).
+import Base from '../../layouts/Base.astro';
+import AdSlot from '../../components/AdSlot.astro';
+
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://automatizacionslatam.com';
+const pageUrl = `${siteUrl}/herramientas/par-potencia-motor/`;
+const title = 'Calculadora de par, potencia y velocidad de un motor eléctrico';
+const description = 'Convierte entre par (N·m), potencia (kW y HP) y velocidad (rpm) de un motor eléctrico. Incluye velocidad síncrona por número de polos y cálculo de deslizamiento. Gratis, sin registro.';
+
+const jsonLdApp = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'Calculadora de par, potencia y velocidad de motor',
+  applicationCategory: 'EngineeringApplication',
+  operatingSystem: 'Web',
+  description,
+  url: pageUrl,
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  publisher: { '@type': 'Organization', name: 'Automatización LatAm', url: siteUrl },
+};
+const jsonLdBreadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Inicio', item: `${siteUrl}/` },
+    { '@type': 'ListItem', position: 2, name: 'Herramientas', item: `${siteUrl}/herramientas/` },
+    { '@type': 'ListItem', position: 3, name: 'Par y potencia de motor', item: pageUrl },
+  ],
+};
+const jsonLdFaq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: '¿Cuál es la fórmula que relaciona par, potencia y velocidad?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'La potencia mecánica es el par por la velocidad angular: P = T · ω, con la velocidad en radianes por segundo. En unidades prácticas, el par en N·m equivale a 9550 por la potencia en kW dividida entre la velocidad en rpm.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: '¿Por qué mi motor de 4 polos gira a 1750 rpm y no a 1800?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Por el deslizamiento. Un motor de inducción necesita que el rotor gire algo más lento que el campo magnético para producir par. La velocidad síncrona de un motor de 4 polos a 60 Hz es 1800 rpm; la de placa, alrededor de 1750, lo que supone un deslizamiento cercano al 3 %.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: '¿Cuánto es 1 HP en kW?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Un caballo de potencia mecánico equivale a 0,7457 kW. A la inversa, 1 kW son aproximadamente 1,341 HP. Conviene no confundirlo con el CV métrico, que equivale a 0,7355 kW.',
+      },
+    },
+  ],
+};
+const embedCode = `<iframe src="${pageUrl}?embed=1" width="100%" height="540" style="border:1px solid #ddd;border-radius:8px" title="Calculadora de par y potencia de motor"></iframe>`;
+---
+<Base title={`${title} | Automatización LatAm`} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdApp)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdBreadcrumb)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdFaq)} />
+
+  <article class="mx-auto max-w-3xl px-4 md:px-8 py-10 prose-article">
+    <nav aria-label="Breadcrumb" class="text-xs text-ink-500 mb-3 not-prose" data-hide-embed>
+      <a href="/" class="hover:text-brand-600">Inicio</a>
+      <span class="mx-1">›</span>
+      <a href="/herramientas/" class="hover:text-brand-600">Herramientas</a>
+      <span class="mx-1">›</span>
+      <span class="text-ink-700">Par y potencia</span>
+    </nav>
+    <p class="text-brand-600 font-semibold uppercase tracking-wider text-sm mb-2 not-prose" data-hide-embed>Herramienta gratuita</p>
+    <h1 class="text-3xl md:text-5xl font-serif font-bold text-ink-900 mb-4" data-hide-embed>
+      Par, potencia y velocidad de un motor
+    </h1>
+
+    <div class="not-prose rounded-xl border border-ink-300/40 p-5 md:p-6 bg-white shadow-sm" id="motor-tool">
+      <p class="text-sm text-ink-500 mb-4">
+        Escribe dos valores cualesquiera y se calcula el tercero. La conversión kW ↔ HP es automática.
+      </p>
+
+      <div class="grid sm:grid-cols-3 gap-4 mb-5">
+        <div>
+          <label class="block text-xs font-semibold text-ink-500 mb-1" for="pkw">Potencia (kW)</label>
+          <input id="pkw" type="number" min="0" step="0.01" value="7.5" class="w-full px-3 py-2 rounded-md border border-ink-300/50" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-ink-500 mb-1" for="php">Potencia (HP)</label>
+          <input id="php" type="number" min="0" step="0.01" class="w-full px-3 py-2 rounded-md border border-ink-300/50" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-ink-500 mb-1" for="rpm">Velocidad (rpm)</label>
+          <input id="rpm" type="number" min="0" step="1" value="1750" class="w-full px-3 py-2 rounded-md border border-ink-300/50" />
+        </div>
+      </div>
+
+      <div class="rounded-lg bg-brand-50 border border-brand-200 p-4 mb-5 text-center">
+        <p class="text-xs uppercase tracking-wider text-ink-500 mb-1">Par en el eje</p>
+        <p class="text-3xl font-bold text-brand-700" id="resPar">—</p>
+        <p class="text-xs text-ink-500">N·m &nbsp;·&nbsp; <span id="resParKgf">—</span> kgf·m &nbsp;·&nbsp; <span id="resParLb">—</span> lb·ft</p>
+      </div>
+
+      <p class="text-sm font-semibold text-ink-700 mb-2">Velocidad síncrona y deslizamiento</p>
+      <div class="grid sm:grid-cols-3 gap-4">
+        <div>
+          <label class="block text-xs font-semibold text-ink-500 mb-1" for="polos">Número de polos</label>
+          <select id="polos" class="w-full px-3 py-2 rounded-md border border-ink-300/50 bg-white">
+            <option value="2">2 polos</option>
+            <option value="4" selected>4 polos</option>
+            <option value="6">6 polos</option>
+            <option value="8">8 polos</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-ink-500 mb-1" for="frec">Frecuencia (Hz)</label>
+          <select id="frec" class="w-full px-3 py-2 rounded-md border border-ink-300/50 bg-white">
+            <option value="60" selected>60 Hz</option>
+            <option value="50">50 Hz</option>
+          </select>
+        </div>
+        <div class="flex flex-col justify-center rounded-md bg-ink-100/60 px-3 py-2">
+          <p class="text-xs text-ink-500">Síncrona: <span class="font-semibold text-ink-900" id="resSinc">—</span> rpm</p>
+          <p class="text-xs text-ink-500">Deslizamiento: <span class="font-semibold text-ink-900" id="resDesl">—</span></p>
+        </div>
+      </div>
+    </div>
+
+    <AdSlot adSlot="9999999999" label="Publicidad" />
+
+    <h2>Las fórmulas que usa</h2>
+    <p>
+      La potencia mecánica en el eje es el producto del par por la velocidad angular:
+      <strong>P = T · ω</strong>. Como en la práctica la velocidad se expresa en revoluciones por
+      minuto y la potencia en kilovatios, la relación cómoda es:
+    </p>
+    <p class="not-prose bg-ink-100/60 rounded-lg p-4 text-center font-mono text-ink-900">
+      T (N·m) = 9550 × P (kW) ÷ n (rpm)
+    </p>
+    <p>
+      Ese 9550 sale de convertir unidades: 60 segundos por minuto dividido entre 2π, multiplicado
+      por 1000 para pasar de kilovatios a vatios. Para la conversión de potencia, un caballo de
+      potencia mecánico equivale a <strong>0,7457 kW</strong>; conviene no confundirlo con el CV
+      métrico, que son 0,7355 kW y aparece con frecuencia en catálogos europeos antiguos.
+    </p>
+
+    <h2>Velocidad síncrona y deslizamiento</h2>
+    <p>
+      La velocidad del campo magnético en un motor de inducción depende solo de la frecuencia y del
+      número de polos: <strong>n = 120 · f ÷ p</strong>. A 60 Hz, un motor de 4 polos tiene una
+      velocidad síncrona de 1800 rpm. Sin embargo su placa dirá alrededor de 1750: esa diferencia
+      es el <strong>deslizamiento</strong>, y no es un defecto sino el principio de funcionamiento.
+      El rotor debe girar más despacio que el campo para que se induzca corriente y aparezca par.
+    </p>
+    <p>
+      El deslizamiento típico a plena carga ronda el 2-5 % en motores industriales estándar, y es
+      mayor en motores pequeños. Un dato práctico: si un motor gira notablemente más lento que su
+      velocidad de placa, está sobrecargado; el deslizamiento crece con el par demandado.
+    </p>
+
+    <h2>Un aviso sobre el dimensionamiento</h2>
+    <p>
+      El par que devuelve esta calculadora es el <strong>par nominal en régimen permanente</strong>.
+      No sirve para dimensionar un arranque: en el momento de acelerar una carga con inercia
+      elevada, el par necesario es bastante mayor y depende del tiempo de aceleración deseado y del
+      momento de inercia reflejado al eje. Para eso hay que hacer el cálculo dinámico completo,
+      considerando además la curva par-velocidad del motor y, si lo hay, la limitación de corriente
+      del variador.
+    </p>
+
+    <h2>Preguntas frecuentes</h2>
+    <div class="not-prose space-y-3">
+      <details class="border border-ink-300/30 rounded-lg p-4">
+        <summary class="font-semibold text-ink-900 cursor-pointer">¿Cuánto es 1 HP en kW?</summary>
+        <p class="text-ink-700 leading-relaxed mt-3 text-[15px]">
+          Un caballo de potencia mecánico son 0,7457 kW, y 1 kW equivale a unos 1,341 HP. El CV
+          métrico es ligeramente distinto: 0,7355 kW.
+        </p>
+      </details>
+      <details class="border border-ink-300/30 rounded-lg p-4">
+        <summary class="font-semibold text-ink-900 cursor-pointer">¿Por qué un motor de 4 polos gira a 1750 y no a 1800 rpm?</summary>
+        <p class="text-ink-700 leading-relaxed mt-3 text-[15px]">
+          Por el deslizamiento. El rotor debe girar algo más despacio que el campo magnético para
+          que se induzca corriente y se genere par. 1800 rpm es la velocidad síncrona a 60 Hz con
+          4 polos; 1750 es la velocidad real a plena carga, un deslizamiento de en torno al 3 %.
+        </p>
+      </details>
+      <details class="border border-ink-300/30 rounded-lg p-4">
+        <summary class="font-semibold text-ink-900 cursor-pointer">¿Sirve este par para dimensionar el arranque?</summary>
+        <p class="text-ink-700 leading-relaxed mt-3 text-[15px]">
+          No. Este es el par nominal en régimen permanente. Acelerar una carga con inercia exige un
+          par adicional que depende del momento de inercia y del tiempo de arranque deseado, y hay
+          que contrastarlo con la curva par-velocidad del motor.
+        </p>
+      </details>
+    </div>
+
+    <h2 data-hide-embed>Incrusta esta calculadora en tu web</h2>
+    <p data-hide-embed>Copia este código; es gratuito y no requiere permiso:</p>
+    <pre data-hide-embed class="not-prose bg-ink-900 text-ink-100 rounded-lg p-4 overflow-x-auto text-xs"><code>{embedCode}</code></pre>
+
+    <p class="not-prose mt-8" data-hide-embed>
+      <a href="/glosario/servo/" class="text-brand-600 font-semibold hover:underline">
+        Ver la ficha de servomotor en el glosario →
+      </a>
+    </p>
+    <p class="not-prose mt-2" data-hide-embed>
+      <a href="/herramientas/" class="text-brand-600 font-semibold hover:underline">← Todas las herramientas</a>
+    </p>
+  </article>
+</Base>
+
+<script is:inline>
+  (function () {
+    var $ = function (id) { return document.getElementById(id); };
+    if (!$('motor-tool')) return;
+    var HP_A_KW = 0.7457;
+
+    try {
+      if (new URLSearchParams(location.search).get('embed') === '1') {
+        document.querySelectorAll('[data-hide-embed]').forEach(function (el) { el.hidden = true; });
+      }
+    } catch (e) { /* sin URLSearchParams se muestra la página completa */ }
+
+    function num(id) {
+      var v = parseFloat($(id).value);
+      return isFinite(v) ? v : 0;
+    }
+    var fmt = function (n, d) {
+      return n.toLocaleString('es', { minimumFractionDigits: d, maximumFractionDigits: d });
+    };
+
+    // Recalcula par, síncrona y deslizamiento. `origen` evita que la sincronización
+    // kW <-> HP se pise a sí misma mientras el usuario escribe.
+    function recalcular(origen) {
+      if (origen === 'kw') $('php').value = (num('pkw') / HP_A_KW).toFixed(2);
+      if (origen === 'hp') $('pkw').value = (num('php') * HP_A_KW).toFixed(2);
+
+      var kw = num('pkw');
+      var rpm = num('rpm');
+      if (kw > 0 && rpm > 0) {
+        var par = (9550 * kw) / rpm;
+        $('resPar').textContent = fmt(par, 1);
+        $('resParKgf').textContent = fmt(par / 9.80665, 2);
+        $('resParLb').textContent = fmt(par / 1.355818, 1);
+      } else {
+        $('resPar').textContent = '—';
+        $('resParKgf').textContent = '—';
+        $('resParLb').textContent = '—';
+      }
+
+      var polos = parseFloat($('polos').value);
+      var frec = parseFloat($('frec').value);
+      var sinc = (120 * frec) / polos;
+      $('resSinc').textContent = fmt(sinc, 0);
+      if (rpm > 0 && sinc > 0) {
+        var desl = ((sinc - rpm) / sinc) * 100;
+        $('resDesl').textContent = fmt(desl, 1) + ' %';
+      } else {
+        $('resDesl').textContent = '—';
+      }
+    }
+
+    $('pkw').addEventListener('input', function () { recalcular('kw'); });
+    $('php').addEventListener('input', function () { recalcular('hp'); });
+    ['rpm', 'polos', 'frec'].forEach(function (id) {
+      $(id).addEventListener('input', function () { recalcular(); });
+      $(id).addEventListener('change', function () { recalcular(); });
+    });
+    recalcular('kw');
+  })();
+</script>

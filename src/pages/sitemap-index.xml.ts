@@ -46,7 +46,9 @@ const GUIAS = [
   'grafcet-ladder-set-reset/',
 ];
 
-const HERRAMIENTAS = ['', 'escalado-analogico/'];
+const HERRAMIENTAS = [
+  '', 'escalado-analogico/', 'ahorro-variador-frecuencia/', 'par-potencia-motor/',
+];
 const LEGALES = ['sobre/', 'contacto/', 'privacidad/', 'terminos/', 'afiliados/'];
 
 interface Entry { loc: string; changefreq: string; priority: number; lastmod?: string; }
