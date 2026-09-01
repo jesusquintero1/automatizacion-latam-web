@@ -140,30 +140,81 @@ jobs:
           # worker y falla con "Missing entry-point".
           wranglerVersion: "4"
 
-      # NOTA (2026-09-01): aqui vivian dos steps, "Capturar version ID del
-      # deploy del CI" y "Defensa anti deploy fantasma — rollback automatico",
-      # que vigilaban 5 minutos por si la integracion Git de Cloudflare pisaba
-      # el deploy del CI. Se eliminaron porque esa integracion NO EXISTE.
-      # Comprobado contra la API de Cloudflare:
-      #   - /accounts/<id>/pages/projects                        -> []
-      #   - /accounts/<id>/builds/workers/<name>/triggers         -> []
-      #   - las 8 ultimas versions y deployments del Worker son todas
-      #     `source: "wrangler"`, ninguna de origen Git.
-      #
-      # El guard era un falso positivo que se disparaba en cada run: hacia
-      # rollbacks reales e innecesarios (que a su vez crean versiones nuevas) y
-      # gastaba 5 minutos de CI. En el run 33511051372 dejo activa la version
-      # de las 13:04:56 en vez de la ultima del CI (13:05:24): el propio guard
-      # revertia el deploy legitimo.
-      #
-      # La defensa que si sirve es el healthcheck de abajo, que comprueba
-      # contra produccion que la version activa sirve AdSense y el canonical
-      # correcto. Si algun dia se conecta una integracion Git, lo detectara.
+      - name: Capturar version ID del deploy del CI
+        # El stdout de wrangler trae "Current Version ID: <uuid>" tras cada
+        # deploy correcto, y es la unica fuente fiable de que version acaba de
+        # publicar ESTE run.
+        #
+        # OJO con el fallback: la version anterior de este step, si el
+        # command-output venia vacio, adivinaba con `wrangler versions list |
+        # tail -1`. Ese orden no esta garantizado, y en el run 33511051372 eligio
+        # una version equivocada, de modo que el rollback de abajo revirtio el
+        # deploy legitimo a una version anterior. Preferimos fallar el run a
+        # vigilar contra una referencia incorrecta: un run rojo se ve; un
+        # rollback silencioso a la version equivocada, no.
+        id: ci_version
+        env:
+          CMD_OUTPUT: ${{ steps.cf_deploy.outputs.command-output }}
+        run: |
+          VERSION_ID=$(echo "$CMD_OUTPUT" | grep -oE 'Current Version ID: [a-f0-9-]{36}' | head -1 | awk '{print $4}')
+          if [ -z "$VERSION_ID" ]; then
+            echo "::error::No pude extraer 'Current Version ID' del output de wrangler."
+            echo "::error::Sin esa referencia no se puede vigilar el deploy: abortando en vez de adivinar."
+            exit 1
+          fi
+          echo "Version publicada por el CI: $VERSION_ID"
+          echo "version_id=$VERSION_ID" >> $GITHUB_OUTPUT
+
+      - name: Defensa anti deploy fantasma — rollback automatico
+        # HAY un proceso externo que despliega este Worker. Comprobado el
+        # 2026-09-01 en el run 33514849825: el CI publico la version 66cd744c a
+        # las 13:44:09 y a las 13:44:28 —19 segundos despues— aparecio la
+        # version 90186f2c, que quedo activa y sirve el sitio SIN ca-pub. Hubo
+        # otra a las 13:42:20, durante el build. Ninguna la creo este workflow.
+        #
+        # Aviso para quien investigue esto: la API de Cloudflare devuelve
+        # `pages/projects: []` y `builds/workers/<name>/triggers: []`, y todas
+        # las versions figuran como `source: "wrangler"`, asi que por ahi PARECE
+        # que no hay integracion Git. No te fies de esa lectura: la evidencia
+        # empirica son deploys que este workflow no hizo. Se quito este guard
+        # basandose en esos endpoints vacios y produccion se quedo sin AdSense.
+        #
+        # Mientras el owner no desconecte la integracion en el dashboard de
+        # Cloudflare, este step vigila 5 minutos y revierte a la version del CI.
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CI_VERSION: ${{ steps.ci_version.outputs.version_id }}
+        run: |
+          ROLLBACK_COUNT=0
+          for i in 1 2 3 4 5 6 7 8 9 10; do
+            sleep 30
+            DEPLOYMENTS=$(npx wrangler deployments list --name automatizacion-latam-web 2>&1)
+            ACTIVE=$(echo "$DEPLOYMENTS" | grep -oE '\(100%\) [a-f0-9-]{36}' | tail -1 | awk '{print $2}')
+            if [ -z "$ACTIVE" ]; then
+              echo "::warning::Iter $i — no pude parsear la version activa, salto."
+              continue
+            fi
+            echo "Iter $i — activa: ${ACTIVE:0:8}... (esperada del CI: ${CI_VERSION:0:8}...)"
+            if [ "$ACTIVE" != "$CI_VERSION" ]; then
+              echo "::warning::Deploy externo detectado. Revirtiendo a la version del CI."
+              npx wrangler rollback "$CI_VERSION" --name automatizacion-latam-web --message "auto-rollback: un proceso externo piso el deploy del CI" 2>&1 || true
+              ROLLBACK_COUNT=$((ROLLBACK_COUNT+1))
+              echo "::warning::Rollback #$ROLLBACK_COUNT ejecutado."
+            fi
+          done
+          if [ "$ROLLBACK_COUNT" -gt 0 ]; then
+            echo "::warning::Se ejecutaron $ROLLBACK_COUNT rollback(s) en este run."
+            echo "::warning::Causa raiz: DESCONECTA la integracion Git en el dashboard de Cloudflare:"
+            echo "::warning::  Workers & Pages > automatizacion-latam-web > Settings > Builds/Source > Disconnect."
+          else
+            echo "::notice::Sin rollbacks: ningun proceso externo piso el deploy en este run."
+          fi
 
       - name: Healthcheck post-deploy — verificar AdSense en produccion
         # Comprueba contra produccion que la version activa sirve AdSense y el
-        # canonical del dominio real. Es la unica defensa necesaria: valida el
-        # resultado observable en vez de vigilar quien hizo el deploy.
+        # canonical del dominio real. Complementa al guard de arriba: aquel
+        # vigila QUE version esta activa, este valida QUE sirve de verdad.
         run: |
           WORKER_URL="https://automatizacion-latam-web.jesusdavidquinterofontalvo.workers.dev"
           PUBLIC_URL="https://automatizacionslatam.com"

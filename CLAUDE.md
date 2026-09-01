@@ -45,6 +45,12 @@ On Windows the Microsoft Store hijacks `python`. **Use `py` instead** (the offic
 ### Static-only Workers deploy
 `wrangler.jsonc` defines `assets.directory: "./dist"` with no `main` worker entry-point. This is the "Workers Static Assets" mode — pure static hosting, no SSR. **Do not add `@astrojs/cloudflare` adapter or `output: 'server'`**: Astro is configured with `output: 'static'` on purpose, and adding the adapter requires SSR mode which then breaks the deploy because `dist/_worker.js` is never emitted.
 
+### A rogue process redeploys this Worker (the "deploy fantasma")
+
+Something outside this repo deploys `automatizacion-latam-web` seconds after CI does, and its build has no `PUBLIC_ADSENSE_CLIENT` — so the live site loses AdSense. Confirmed on 2026-09-01 (run 33514849825): CI published version `66cd744c` at 13:44:09, and `90186f2c` appeared at 13:44:28 and took over. `aggregate.yml` therefore watches for 5 minutes after deploying and rolls back to the CI version.
+
+**Do not remove that guard on the strength of the Cloudflare API.** Those endpoints look reassuring and are misleading: `/accounts/<id>/pages/projects` returns `[]`, `/accounts/<id>/builds/workers/<name>/triggers` returns `[]`, and every version reports `source: "wrangler"` — no Git origin anywhere. The guard was deleted on exactly that reasoning and production shipped without ads. The evidence that counts is empirical: versions this workflow did not create. Only the owner can remove the root cause, in the Cloudflare dashboard under Workers & Pages → automatizacion-latam-web → Settings → Builds/Source → Disconnect.
+
 ### Wrangler version pinning in CI
 `cloudflare/wrangler-action@v3` defaults to **wrangler 3**, which rejects the static-only config with `Missing entry-point`. The workflow forces `wranglerVersion: "4"`. Don't remove that flag.
 
