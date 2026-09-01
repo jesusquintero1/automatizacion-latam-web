@@ -8,7 +8,12 @@ interface Props {
 const { noticia, variant = 'default' } = Astro.props;
 const { titulo, resumen, categoria, fuente, fecha, imagen } = noticia.data;
 const href = `/noticia/${noticia.slug}/`;
-const fechaStr = new Date(fecha).toLocaleDateString('es', { day: 'numeric', month: 'short', year: 'numeric' });
+// timeZone UTC obligatorio: `fecha: 2026-05-17` en YAML se parsea como medianoche
+// UTC. Sin fijar la zona, un build hecho en LatAm (UTC-5) renderiza el DIA
+// ANTERIOR y contradice el datePublished del JSON-LD. En CI (UTC) no se nota.
+const fechaStr = new Date(fecha).toLocaleDateString('es', {
+  day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC',
+});
 ---
 {variant === 'featured' ? (
   <article class="md:col-span-2 group">

@@ -73,7 +73,17 @@ jobs:
             echo "Sin cambios — nada que commitear."
           else
             COUNT=$(git diff --staged --name-only -- 'src/content/noticias/*.md' | wc -l)
-            git commit -m "auto: publicar $COUNT noticia(s)"
+            # Cuando el agregador no encuentra nada publicable igual hay que
+            # commitear processed.json (si no, la proxima corrida reprocesa los
+            # mismos items y gasta tokens). Pero el mensaje debe decir la verdad:
+            # 42 de los ultimos 113 commits decian "publicar 0 noticia(s)", lo que
+            # hacia ilegible el historial.
+            if [ "$COUNT" -eq 0 ]; then
+              MSG="auto: estado del agregador (sin noticias nuevas)"
+            else
+              MSG="auto: publicar $COUNT noticia(s)"
+            fi
+            git commit -m "$MSG"
             git push
           fi
 
@@ -97,6 +107,26 @@ jobs:
             exit 1
           fi
           echo "::notice::AdSense (ca-pub-) confirmado en dist/index.html — listo para deploy."
+
+      - name: Validar que ninguna pagina noindex sirva anuncios
+        # La revision de AdSense evalua las paginas DONDE SE MUESTRAN ANUNCIOS,
+        # no el indice de Busqueda. Servir anuncios en paginas que el propio
+        # sitio marca noindex es la contradiccion que sostiene el veredicto de
+        # "contenido de poco valor": llegamos a tener 640 de 687 asi. La regla
+        # vive en src/components/AdSlot.astro (prop `indexable`); este guard
+        # impide reintroducirla por descuido.
+        run: |
+          grep -rl 'class="adsbygoogle' dist --include=index.html | sort > /tmp/con-ads.txt
+          grep -rl 'content="noindex' dist --include=index.html | sort > /tmp/noindex.txt
+          FUGAS=$(comm -12 /tmp/con-ads.txt /tmp/noindex.txt)
+          N=$(echo -n "$FUGAS" | grep -c . || true)
+          if [ "$N" -gt 0 ]; then
+            echo "::error::$N pagina(s) noindex sirven anuncios. Pasa indexable={false} al AdSlot correspondiente."
+            echo "$FUGAS" | head -20
+            exit 1
+          fi
+          TOTAL=$(grep -c . /tmp/con-ads.txt || true)
+          echo "::notice::Inventario publicitario limpio: $TOTAL pagina(s) con anuncios, todas indexables."
 
       - name: Deploy a Cloudflare Workers
         id: cf_deploy

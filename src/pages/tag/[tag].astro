@@ -104,7 +104,7 @@ const jsonLdCollection = {
 
     {ordenadas.length > 6 && (
       <>
-        <AdSlot slot="6666666666" label="Publicidad" />
+        <AdSlot adSlot="6666666666" label="Publicidad" indexable={false} />
         <div class="grid md:grid-cols-2 gap-8 mt-10">
           {ordenadas.slice(6).map((n) => <ArticleCard noticia={n} />)}
         </div>

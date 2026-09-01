@@ -169,9 +169,18 @@ const jsonLdWebsite = {
         <script is:inline>
           {`
             window.adsbygoogle = window.adsbygoogle || [];
-            if (!localStorage.getItem('cookie-consent')) {
+            // localStorage lanza SecurityError cuando el navegador bloquea el
+            // almacenamiento (Safari estricto, modo privado, iframes de terceros).
+            // Sin este try/catch el script moria aqui y los anuncios se servian
+            // PERSONALIZADOS sin haber pedido consentimiento — incumplimiento de
+            // GDPR y de la politica de consentimiento de AdSense. Ante la duda,
+            // el fallback seguro es pausar y no personalizar.
+            var consent = null;
+            try { consent = localStorage.getItem('cookie-consent'); }
+            catch (e) { consent = null; }
+            if (!consent) {
               window.adsbygoogle.pauseAdRequests = 1;
-            } else if (localStorage.getItem('cookie-consent') === 'rejected') {
+            } else if (consent === 'rejected') {
               window.adsbygoogle.requestNonPersonalizedAds = 1;
             }
           `}

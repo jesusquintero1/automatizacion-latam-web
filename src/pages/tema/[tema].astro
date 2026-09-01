@@ -222,7 +222,7 @@ const catSlug = tema; // los slugs de pillar coinciden con los de categoría
 
     <div set:html={pillar.intro} />
 
-    <AdSlot slot="7777777777" label="Publicidad" />
+    <AdSlot adSlot="7777777777" label="Publicidad" />
 
     {subtemasConNoticias.length > 0 && (
       <section class="not-prose mt-10">
@@ -249,7 +249,7 @@ const catSlug = tema; // los slugs de pillar coinciden con los de categoría
           {noticias.slice(0, 8).map((n) => <ArticleCard noticia={n} />)}
         </div>
         <p class="mt-6">
-          <a href={`/categoria/${catSlug}`} class="text-brand-600 font-semibold hover:underline">
+          <a href={`/categoria/${catSlug}/`} class="text-brand-600 font-semibold hover:underline">
             Ver todas las noticias de {pillar.categoria} →
           </a>
         </p>

@@ -18,8 +18,10 @@ interface Props { noticia: CollectionEntry<'noticias'>; }
 const { noticia } = Astro.props;
 const { Content } = await noticia.render();
 const { titulo, resumen, porQueImporta, categoria, fuente, fecha, tags, imagen, imagen_atribucion } = noticia.data;
+// timeZone UTC: ver nota en ArticleCard.astro. Sin esto, un build local en
+// LatAm muestra el dia anterior al de `fecha` y al de article:published_time.
 const fechaStr = new Date(fecha).toLocaleDateString('es', {
-  day: 'numeric', month: 'long', year: 'numeric',
+  day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC',
 });
 
 // Slugifier robusto: NFD + remueve combinantes (U+0300-U+036F) + normaliza.
@@ -190,7 +192,7 @@ const jsonLdBreadcrumb = {
     </h1>
 
     <p class="text-ink-500 text-sm mb-6">
-      Por <a href="/sobre" class="text-brand-600 hover:underline font-medium">Redacción Automatización LatAm</a>
+      Por <a href="/sobre/" class="text-brand-600 hover:underline font-medium">Redacción Automatización LatAm</a>
       · {fechaStr} · Fuente original: <a href={fuente.url} rel="nofollow noopener" target="_blank" class="text-brand-600 hover:underline">{fuente.nombre}</a>
     </p>
 
@@ -216,7 +218,7 @@ const jsonLdBreadcrumb = {
       {resumen}
     </p>
 
-    <AdSlot slot="2222222222" layout="in-article" label="Publicidad" />
+    <AdSlot adSlot="2222222222" layout="in-article" label="Publicidad" indexable={!noIndexNoticia} />
 
     <div class="prose-article">
       <Content />
@@ -301,7 +303,7 @@ const jsonLdBreadcrumb = {
       </div>
     </div>
 
-    <AdSlot slot="3333333333" label="Publicidad" />
+    <AdSlot adSlot="3333333333" label="Publicidad" indexable={!noIndexNoticia} />
 
     {relacionadas.length > 0 && (
       <section class="mt-12 border-t border-ink-300/30 pt-10">

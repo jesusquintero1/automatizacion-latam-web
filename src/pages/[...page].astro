@@ -136,7 +136,7 @@ const lcpImage = isFirst && destacada?.data.imagen ? destacada.data.imagen : nul
           </section>
         )}
 
-        {isFirst && <AdSlot slot="1111111111" layout="fluid" label="Publicidad" />}
+        {isFirst && <AdSlot adSlot="1111111111" layout="fluid" label="Publicidad" />}
 
         {restoListado.length > 0 && (
           <>
@@ -149,7 +149,7 @@ const lcpImage = isFirst && destacada?.data.imagen ? destacada.data.imagen : nul
           </>
         )}
 
-        <AdSlot slot="5555555555" label="Publicidad" />
+        <AdSlot adSlot="5555555555" label="Publicidad" indexable={isFirst} />
 
         <nav class="mt-12 flex items-center justify-between border-t border-ink-300/30 pt-6" aria-label="Paginación">
           <div>

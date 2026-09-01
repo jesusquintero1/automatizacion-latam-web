@@ -9,7 +9,7 @@
       Usamos cookies para mostrar anuncios relevantes (Google AdSense) y analizar tráfico.
       Puedes aceptarlas para una experiencia personalizada o rechazarlas y seguirás viendo
       anuncios pero sin perfilado. Lee nuestra
-      <a href="/privacidad" class="underline hover:text-brand-300">política de privacidad</a>.
+      <a href="/privacidad/" class="underline hover:text-brand-300">política de privacidad</a>.
     </p>
     <div class="flex gap-2 shrink-0">
       <button id="cookie-reject" type="button" class="px-4 py-2 rounded-md border border-white/30 text-sm hover:bg-white/10 transition">
@@ -24,13 +24,22 @@
 
 <script is:inline>
   (function () {
-    var consent = localStorage.getItem('cookie-consent');
+    // Si el navegador bloquea el almacenamiento, getItem lanza. Tratamos ese
+    // caso como "sin decision": mostramos el banner y dejamos los anuncios en
+    // pausa (ver el mismo try/catch en src/layouts/Base.astro). Antes la
+    // excepcion abortaba el script: el banner no se mostraba, los botones no
+    // quedaban enlazados y pauseAdRequests se quedaba en 1 para siempre.
+    var consent = null;
+    try { consent = localStorage.getItem('cookie-consent'); }
+    catch (e) { consent = null; }
     var banner = document.getElementById('cookie-banner');
     if (!consent && banner) {
       banner.classList.remove('hidden');
     }
     function applyConsent(value) {
-      localStorage.setItem('cookie-consent', value);
+      // Guardar tampoco debe romper el flujo: si falla, el consentimiento vale
+      // para esta sesion y el banner reaparecera en la siguiente visita.
+      try { localStorage.setItem('cookie-consent', value); } catch (e) {}
       if (value === 'rejected') {
         (window.adsbygoogle = window.adsbygoogle || []).push({ requestNonPersonalizedAds: 1 });
       }

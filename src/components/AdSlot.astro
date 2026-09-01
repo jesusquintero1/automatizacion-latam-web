@@ -1,21 +1,39 @@
 ---
+// REGLA: una pagina que no merece el indice tampoco merece anuncios.
+//
+// La revision de AdSense NO evalua el indice de Busqueda: evalua las paginas
+// donde se sirven anuncios. Cuando el sitio marcaba `noindex` las noticias pero
+// les seguia poniendo AdSlots, 640 de las 687 paginas con anuncios (93%) eran
+// paginas que el propio sitio declaraba indignas del indice — exactamente la
+// contradiccion que sostiene el veredicto de "contenido de poco valor".
+//
+// Pasa `indexable={false}` en cualquier pagina que emita noindex. La fuente de
+// verdad de que noticia es indexable es src/lib/indexable.ts.
+//
+// La prop se llama `adSlot`, NO `slot`. `slot` es una directiva reservada de
+// Astro (asigna el elemento a un slot nombrado del padre): al escribir
+// <AdSlot slot="5555555555" /> Astro entendia "manda este componente al slot
+// llamado 5555555555", no encontraba tal slot y DESCARTABA el componente
+// entero, sin error ni aviso. Asi es como la home, las 9 paginas de categoria
+// y las 1.563 de tag quedaron sin ningun anuncio renderizado. No renombrar.
 interface Props {
-  slot: string;
+  adSlot: string;
   format?: string;
   layout?: 'in-article' | 'auto' | 'fluid';
   label?: string;
+  indexable?: boolean;
 }
-const { slot, format = 'auto', layout = 'auto', label = 'Publicidad' } = Astro.props;
+const { adSlot, format = 'auto', layout = 'auto', label = 'Publicidad', indexable = true } = Astro.props;
 const client = import.meta.env.PUBLIC_ADSENSE_CLIENT;
 ---
-{client ? (
+{!indexable ? null : client ? (
   <aside class="my-8 text-center">
     <div class="text-[10px] uppercase tracking-wider text-ink-300 mb-1">{label}</div>
     <ins
       class="adsbygoogle block"
       style="display:block"
       data-ad-client={client}
-      data-ad-slot={slot}
+      data-ad-slot={adSlot}
       data-ad-format={format}
       data-ad-layout={layout === 'auto' ? undefined : layout}
       data-full-width-responsive="true"
@@ -26,6 +44,6 @@ const client = import.meta.env.PUBLIC_ADSENSE_CLIENT;
   </aside>
 ) : (
   <aside class="my-8 border-2 border-dashed border-ink-300/40 rounded-lg p-6 text-center text-sm text-ink-300">
-    Espacio AdSense ({slot}) — configura <code>PUBLIC_ADSENSE_CLIENT</code> en <code>.env</code>
+    Espacio AdSense ({adSlot}) — configura <code>PUBLIC_ADSENSE_CLIENT</code> en <code>.env</code>
   </aside>
 )}
