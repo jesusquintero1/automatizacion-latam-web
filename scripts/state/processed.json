@@ -3274,7 +3274,12 @@
       "url": "https://www.plantengineering.com/plants-without-a-succession-plan-are-vulnerable-to-disruption/",
       "fuente": "Plant Engineering",
       "fecha_proceso": "2026-09-02T01:40:20.269272+00:00"
+    },
+    "ad90e6779ea3045b": {
+      "url": "https://huggingface.co/blog/allenai/benchmirt",
+      "fuente": "Hugging Face Blog",
+      "fecha_proceso": "2026-09-02T12:22:40.319257+00:00"
     }
   },
-  "ultima_corrida": "2026-09-02T01:40:20.269341+00:00"
+  "ultima_corrida": "2026-09-02T12:25:01.452672+00:00"
 }
