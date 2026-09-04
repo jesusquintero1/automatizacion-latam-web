@@ -1,5 +1,5 @@
 {
-  "generado": "2026-09-04T01:38:35.078240+00:00",
+  "generado": "2026-09-04T12:18:23.907542+00:00",
   "fuente_datos": "google",
   "ventana_dias": 28,
   "search_console": {
@@ -17,6 +17,13 @@
         "clics": 0,
         "ctr": 0.0,
         "posicion": 88.0
+      },
+      {
+        "query": "temporizador ton",
+        "impresiones": 1,
+        "clics": 0,
+        "ctr": 0.0,
+        "posicion": 50.0
       }
     ],
     "huecos_contenido": []
