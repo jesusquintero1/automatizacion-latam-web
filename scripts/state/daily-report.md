@@ -1,11 +1,11 @@
-_Generado: 2026-09-05T17:45:34.739992+00:00 · fuente datos: google_
+_Generado: 2026-09-05T19:10:25.219280+00:00 · fuente datos: google_
 
 ### Distribución actual del corpus
 
 | Categoría | Artículos | Share | Cuota hoy |
 |---|---:|---:|---:|
 | Inteligencia Artificial | 251 | 38% | 1 |
-| Ciberseguridad OT | 91 | 14% | — |
+| Ciberseguridad OT | 92 | 14% | — |
 | Industria 4.0 | 81 | 12% | — |
 | Mercado y Negocios | 81 | 12% | 1 |
 | PLC y Control | 68 | 10% | — |
@@ -29,3 +29,17 @@ Topadas a 1/run por sobre-representación: Inteligencia Artificial (38%), Mercad
 | automatización definida por software | 4 | 0 | 0.0% | 87.0 |
 | agencia de branding corporativo latam | 1 | 0 | 0.0% | 88.0 |
 | temporizador ton | 1 | 0 | 0.0% | 50.0 |
+
+### SEO — auditoría del corpus
+
+**Salud SEO: 85/100** · 665 artículos
+
+| Chequeo | Resultado |
+|---|---:|
+| Contenido corto (< 350 palabras) | 44 |
+| Meta descripción muy corta | 0 |
+| Títulos > 70 caracteres | 309 |
+| Títulos duplicados | 0 |
+| Huérfanos (< 2 enlaces entrantes) | 193 |
+
+**Pillar pages sugeridas** (temas con masa crítica): PLC y Control, Robótica, Inteligencia Artificial, Mercado y Negocios, Industria 4.0, Ciberseguridad OT.
