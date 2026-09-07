@@ -1,5 +1,5 @@
 {
-  "generado": "2026-09-07T01:30:43.624113+00:00",
+  "generado": "2026-09-07T13:44:19.752758+00:00",
   "fuente_datos": "google",
   "ventana_dias": 28,
   "search_console": {
@@ -12,6 +12,13 @@
         "posicion": 87.0
       },
       {
+        "query": "temporizador ton",
+        "impresiones": 2,
+        "clics": 0,
+        "ctr": 0.0,
+        "posicion": 52.0
+      },
+      {
         "query": "agencia de branding corporativo latam",
         "impresiones": 1,
         "clics": 0,
@@ -19,11 +26,11 @@
         "posicion": 88.0
       },
       {
-        "query": "temporizador ton",
+        "query": "timer ton",
         "impresiones": 1,
         "clics": 0,
         "ctr": 0.0,
-        "posicion": 50.0
+        "posicion": 54.0
       }
     ],
     "huecos_contenido": []
