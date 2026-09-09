@@ -1,5 +1,5 @@
 {
-  "generado": "2026-09-08T19:03:05.876435+00:00",
+  "generado": "2026-09-09T01:48:05.717634+00:00",
   "fuente_datos": "google",
   "ventana_dias": 28,
   "search_console": {
@@ -17,13 +17,6 @@
         "clics": 0,
         "ctr": 0.0,
         "posicion": 53.0
-      },
-      {
-        "query": "agencia de branding corporativo latam",
-        "impresiones": 1,
-        "clics": 0,
-        "ctr": 0.0,
-        "posicion": 88.0
       },
       {
         "query": "temporizadores ton",
