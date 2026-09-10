@@ -1,15 +1,15 @@
 {
-  "generado": "2026-09-09T18:53:58.898509+00:00",
+  "generado": "2026-09-10T01:43:25.431169+00:00",
   "fuente_datos": "google",
   "ventana_dias": 28,
   "search_console": {
     "top_queries": [
       {
         "query": "automatización definida por software",
-        "impresiones": 4,
+        "impresiones": 5,
         "clics": 0,
         "ctr": 0.0,
-        "posicion": 87.0
+        "posicion": 86.2
       },
       {
         "query": "temporizador ton",
@@ -17,6 +17,13 @@
         "clics": 0,
         "ctr": 0.0,
         "posicion": 53.0
+      },
+      {
+        "query": "temporizador tp",
+        "impresiones": 1,
+        "clics": 0,
+        "ctr": 0.0,
+        "posicion": 58.0
       },
       {
         "query": "temporizadores ton",
@@ -31,6 +38,13 @@
         "clics": 0,
         "ctr": 0.0,
         "posicion": 54.0
+      },
+      {
+        "query": "ton temporizador",
+        "impresiones": 1,
+        "clics": 0,
+        "ctr": 0.0,
+        "posicion": 52.0
       },
       {
         "query": "ton timer",
