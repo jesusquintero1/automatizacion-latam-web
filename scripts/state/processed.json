@@ -3384,7 +3384,12 @@
       "url": "http://www.ManufacturingTomorrow.com/news/2026/09/09/onlogic-to-demonstrate-physical-ai-hardware-and-manufacturing-solutions-at-imts-2026/28158",
       "fuente": "Manufacturing Tomorrow",
       "fecha_proceso": "2026-09-10T01:45:04.983051+00:00"
+    },
+    "38ab7e9c634a8b9b": {
+      "url": "https://www.marktechpost.com/2026/09/10/meet-redis-langcache-a-managed-semantic-cache-that-cuts-llm-api-costs-by-up-to-90-and-returns-cache-hits-up-to-15x-faster/",
+      "fuente": "MarkTechPost",
+      "fecha_proceso": "2026-09-11T01:43:20.086944+00:00"
     }
   },
-  "ultima_corrida": "2026-09-10T18:47:05.446599+00:00"
+  "ultima_corrida": "2026-09-11T01:43:53.680763+00:00"
 }
