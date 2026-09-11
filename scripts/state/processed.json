@@ -3389,7 +3389,17 @@
       "url": "https://www.marktechpost.com/2026/09/10/meet-redis-langcache-a-managed-semantic-cache-that-cuts-llm-api-costs-by-up-to-90-and-returns-cache-hits-up-to-15x-faster/",
       "fuente": "MarkTechPost",
       "fecha_proceso": "2026-09-11T01:43:20.086944+00:00"
+    },
+    "71e60c76ded69e29": {
+      "url": "https://www.iiot-world.com/artificial-intelligence-ml/nvidia-jetson-thor-consumer-edge-ai/",
+      "fuente": "IIoT World",
+      "fecha_proceso": "2026-09-11T12:24:34.726100+00:00"
+    },
+    "d26125c0877d38f8": {
+      "url": "https://www.designworldonline.com/epc-introduces-field-programmable-36-mm-incremental-encoder/",
+      "fuente": "Design World Online",
+      "fecha_proceso": "2026-09-11T12:25:32.670037+00:00"
     }
   },
-  "ultima_corrida": "2026-09-11T01:43:53.680763+00:00"
+  "ultima_corrida": "2026-09-11T12:25:32.670121+00:00"
 }
