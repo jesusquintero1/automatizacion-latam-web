@@ -1,10 +1,10 @@
-_Generado: 2026-09-12T17:56:02.656911+00:00 · fuente datos: google_
+_Generado: 2026-09-12T19:29:16.239348+00:00 · fuente datos: google_
 
 ### Distribución actual del corpus
 
 | Categoría | Artículos | Share | Cuota hoy |
 |---|---:|---:|---:|
-| Inteligencia Artificial | 259 | 38% | 1 |
+| Inteligencia Artificial | 260 | 38% | 1 |
 | Ciberseguridad OT | 94 | 14% | — |
 | Industria 4.0 | 85 | 12% | — |
 | Mercado y Negocios | 81 | 12% | 1 |
@@ -33,3 +33,17 @@ Topadas a 1/run por sobre-representación: Inteligencia Artificial (38%), Mercad
 | timer ton | 1 | 0 | 0.0% | 54.0 |
 | ton temporizador | 1 | 0 | 0.0% | 52.0 |
 | ton timer | 1 | 0 | 0.0% | 54.0 |
+
+### SEO — auditoría del corpus
+
+**Salud SEO: 86/100** · 684 artículos
+
+| Chequeo | Resultado |
+|---|---:|
+| Contenido corto (< 350 palabras) | 44 |
+| Meta descripción muy corta | 0 |
+| Títulos > 70 caracteres | 313 |
+| Títulos duplicados | 0 |
+| Huérfanos (< 2 enlaces entrantes) | 200 |
+
+**Pillar pages sugeridas** (temas con masa crítica): PLC y Control, Robótica, Inteligencia Artificial, Mercado y Negocios, Industria 4.0, Energía y Sostenibilidad, Ciberseguridad OT.
