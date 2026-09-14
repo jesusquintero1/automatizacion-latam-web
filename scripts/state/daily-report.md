@@ -1,4 +1,4 @@
-_Generado: 2026-09-14T14:29:48.568112+00:00 · fuente datos: google_
+_Generado: 2026-09-14T19:58:45.168801+00:00 · fuente datos: google_
 
 ### Distribución actual del corpus
 
@@ -6,7 +6,7 @@ _Generado: 2026-09-14T14:29:48.568112+00:00 · fuente datos: google_
 |---|---:|---:|---:|
 | Inteligencia Artificial | 261 | 38% | 1 |
 | Ciberseguridad OT | 94 | 14% | — |
-| Industria 4.0 | 85 | 12% | — |
+| Industria 4.0 | 86 | 13% | — |
 | Mercado y Negocios | 81 | 12% | 1 |
 | PLC y Control | 69 | 10% | — |
 | Robótica | 51 | 7% | — |
