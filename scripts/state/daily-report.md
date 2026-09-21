@@ -1,13 +1,13 @@
-_Generado: 2026-09-19T01:53:27.046195+00:00 · fuente datos: google_
+_Generado: 2026-09-21T20:09:15.616920+00:00 · fuente datos: google_
 
 ### Distribución actual del corpus
 
 | Categoría | Artículos | Share | Cuota hoy |
 |---|---:|---:|---:|
-| Inteligencia Artificial | 266 | 38% | 1 |
-| Ciberseguridad OT | 95 | 14% | — |
+| Inteligencia Artificial | 267 | 38% | 1 |
+| Ciberseguridad OT | 95 | 13% | — |
 | Industria 4.0 | 91 | 13% | — |
-| Mercado y Negocios | 83 | 12% | 1 |
+| Mercado y Negocios | 84 | 12% | 1 |
 | PLC y Control | 71 | 10% | — |
 | Robótica | 51 | 7% | — |
 | Energía y Sostenibilidad | 25 | 4% | — |
@@ -28,6 +28,7 @@ Topadas a 1/run por sobre-representación: Inteligencia Artificial (38%), Mercad
 |---|---:|---:|---:|---:|
 | temporizador ton | 5 | 0 | 0.0% | 53.0 |
 | automatización definida por software | 4 | 0 | 0.0% | 85.2 |
+| robot de ensamblaje | 1 | 0 | 0.0% | 82.0 |
 | temporizador tp | 1 | 0 | 0.0% | 58.0 |
 | temporizadores ton | 1 | 0 | 0.0% | 48.0 |
 | timer ton | 1 | 0 | 0.0% | 54.0 |
