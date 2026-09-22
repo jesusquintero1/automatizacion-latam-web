@@ -1,5 +1,5 @@
 {
-  "generado": "2026-09-21T20:09:15.520503+00:00",
+  "generado": "2026-09-22T02:04:31.187035+00:00",
   "fuente_datos": "google",
   "ventana_dias": 28,
   "search_console": {
@@ -13,10 +13,10 @@
       },
       {
         "query": "automatización definida por software",
-        "impresiones": 4,
+        "impresiones": 3,
         "clics": 0,
         "ctr": 0.0,
-        "posicion": 85.2
+        "posicion": 85.7
       },
       {
         "query": "robot de ensamblaje",
