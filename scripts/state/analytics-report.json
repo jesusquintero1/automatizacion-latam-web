@@ -1,22 +1,22 @@
 {
-  "generado": "2026-09-23T13:04:44.001979+00:00",
+  "generado": "2026-09-23T19:16:30.354342+00:00",
   "fuente_datos": "google",
   "ventana_dias": 28,
   "search_console": {
     "top_queries": [
+      {
+        "query": "automatización definida por software",
+        "impresiones": 8,
+        "clics": 0,
+        "ctr": 0.0,
+        "posicion": 89.0
+      },
       {
         "query": "temporizador ton",
         "impresiones": 5,
         "clics": 0,
         "ctr": 0.0,
         "posicion": 53.0
-      },
-      {
-        "query": "automatización definida por software",
-        "impresiones": 4,
-        "clics": 0,
-        "ctr": 0.0,
-        "posicion": 87.5
       },
       {
         "query": "robot de ensamblaje",
