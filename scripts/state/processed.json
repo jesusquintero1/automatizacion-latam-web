@@ -3559,7 +3559,17 @@
       "url": "https://www.logicbus.com.mx/blog/por-que-elegir-las-computadoras-industriales-de-alto-rendimiento-y-ultra-resistentes-de-cincoze/",
       "fuente": "Logicbus",
       "fecha_proceso": "2026-09-23T19:18:25.912066+00:00"
+    },
+    "30aa7c0acfe7f380": {
+      "url": "https://huggingface.co/blog/nvidia/how-to-use-nvidia-warp-and-mjwarp",
+      "fuente": "Hugging Face Blog",
+      "fecha_proceso": "2026-09-24T01:52:15.797820+00:00"
+    },
+    "26514396102a1093": {
+      "url": "https://www.designworldonline.com/mobile-robotics-moves-to-the-textile-industry/",
+      "fuente": "Design World Online",
+      "fecha_proceso": "2026-09-24T01:52:37.845454+00:00"
     }
   },
-  "ultima_corrida": "2026-09-23T19:18:27.719542+00:00"
+  "ultima_corrida": "2026-09-24T01:52:37.845519+00:00"
 }
