@@ -3574,7 +3574,12 @@
       "url": "https://www.iiot-world.com/smart-manufacturing/industrial-data-maturity-model-manufacturing/",
       "fuente": "IIoT World",
       "fecha_proceso": "2026-09-24T12:57:53.828916+00:00"
+    },
+    "280bf64dcca75cee": {
+      "url": "https://huggingface.co/blog/LiquidAI/lfm2-5-vl-dspark",
+      "fuente": "Hugging Face Blog",
+      "fecha_proceso": "2026-09-24T19:36:37.228115+00:00"
     }
   },
-  "ultima_corrida": "2026-09-24T12:58:50.229491+00:00"
+  "ultima_corrida": "2026-09-24T19:36:38.688502+00:00"
 }
