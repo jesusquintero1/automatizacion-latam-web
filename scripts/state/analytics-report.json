@@ -1,15 +1,15 @@
 {
-  "generado": "2026-09-30T14:19:34.627723+00:00",
+  "generado": "2026-09-30T20:22:15.916850+00:00",
   "fuente_datos": "google",
   "ventana_dias": 28,
   "search_console": {
     "top_queries": [
       {
         "query": "automatización definida por software",
-        "impresiones": 10,
+        "impresiones": 11,
         "clics": 0,
         "ctr": 0.0,
-        "posicion": 88.6
+        "posicion": 88.2
       },
       {
         "query": "temporizador ton",
