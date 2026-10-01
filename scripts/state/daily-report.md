@@ -1,4 +1,4 @@
-_Generado: 2026-09-29T20:17:55.014662+00:00 · fuente datos: google_
+_Generado: 2026-10-01T02:43:07.921923+00:00 · fuente datos: google_
 
 ### Distribución actual del corpus
 
@@ -6,7 +6,7 @@ _Generado: 2026-09-29T20:17:55.014662+00:00 · fuente datos: google_
 |---|---:|---:|---:|
 | Inteligencia Artificial | 273 | 37% | 1 |
 | Industria 4.0 | 100 | 14% | — |
-| Ciberseguridad OT | 95 | 13% | — |
+| Ciberseguridad OT | 96 | 13% | — |
 | Mercado y Negocios | 86 | 12% | 1 |
 | PLC y Control | 74 | 10% | — |
 | Robótica | 55 | 8% | — |
@@ -26,8 +26,8 @@ Topadas a 1/run por sobre-representación: Inteligencia Artificial (37%), Mercad
 
 | Query | Impresiones | Clics | CTR | Pos |
 |---|---:|---:|---:|---:|
-| automatización definida por software | 10 | 0 | 0.0% | 88.6 |
-| temporizador ton | 5 | 0 | 0.0% | 53.0 |
+| automatización definida por software | 11 | 0 | 0.0% | 88.2 |
+| temporizador ton | 4 | 0 | 0.0% | 53.8 |
 | robot de ensamblaje | 1 | 0 | 0.0% | 82.0 |
 | temporizador tp | 1 | 0 | 0.0% | 58.0 |
 | temporizadores ton | 1 | 0 | 0.0% | 48.0 |
