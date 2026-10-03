@@ -1,10 +1,10 @@
-_Generado: 2026-10-02T20:12:43.897276+00:00 · fuente datos: google_
+_Generado: 2026-10-03T02:33:19.590835+00:00 · fuente datos: google_
 
 ### Distribución actual del corpus
 
 | Categoría | Artículos | Share | Cuota hoy |
 |---|---:|---:|---:|
-| Inteligencia Artificial | 274 | 37% | 1 |
+| Inteligencia Artificial | 275 | 37% | 1 |
 | Industria 4.0 | 102 | 14% | — |
 | Ciberseguridad OT | 98 | 13% | — |
 | Mercado y Negocios | 86 | 12% | 1 |
