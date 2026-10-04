@@ -1,16 +1,16 @@
-_Generado: 2026-10-03T18:51:52.372307+00:00 · fuente datos: google_
+_Generado: 2026-10-04T03:04:56.311017+00:00 · fuente datos: google_
 
 ### Distribución actual del corpus
 
 | Categoría | Artículos | Share | Cuota hoy |
 |---|---:|---:|---:|
-| Inteligencia Artificial | 275 | 37% | 1 |
+| Inteligencia Artificial | 276 | 37% | 1 |
 | Industria 4.0 | 102 | 14% | — |
 | Ciberseguridad OT | 99 | 13% | — |
 | Mercado y Negocios | 86 | 12% | 1 |
 | PLC y Control | 74 | 10% | — |
 | Robótica | 55 | 7% | — |
-| Energía y Sostenibilidad | 26 | 4% | — |
+| Energía y Sostenibilidad | 27 | 4% | — |
 | General | 15 | 2% | — |
 | Casos de Estudio | 6 | 1% | — |
 
@@ -27,10 +27,9 @@ Topadas a 1/run por sobre-representación: Inteligencia Artificial (37%), Mercad
 | Query | Impresiones | Clics | CTR | Pos |
 |---|---:|---:|---:|---:|
 | automatización definida por software | 11 | 0 | 0.0% | 88.2 |
-| temporizador ton | 4 | 0 | 0.0% | 53.8 |
+| temporizador ton | 3 | 0 | 0.0% | 53.7 |
 | robot de ensamblaje | 1 | 0 | 0.0% | 82.0 |
 | temporizador tp | 1 | 0 | 0.0% | 58.0 |
 | temporizadores ton | 1 | 0 | 0.0% | 48.0 |
-| timer ton | 1 | 0 | 0.0% | 54.0 |
 | ton temporizador | 1 | 0 | 0.0% | 52.0 |
 | ton timer | 1 | 0 | 0.0% | 54.0 |

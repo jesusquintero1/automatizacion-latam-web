@@ -3704,7 +3704,12 @@
       "url": "https://news.mit.edu/2026/computational-tools-for-societys-most-complex-challenges-cathy-wu-1002",
       "fuente": "MIT News — AI",
       "fecha_proceso": "2026-10-03T18:53:18.691755+00:00"
+    },
+    "bd1136d0fcfd6f13": {
+      "url": "https://huggingface.co/blog/microsoft/thinkingbox",
+      "fuente": "Hugging Face Blog",
+      "fecha_proceso": "2026-10-04T03:06:19.735652+00:00"
     }
   },
-  "ultima_corrida": "2026-10-03T18:53:18.691817+00:00"
+  "ultima_corrida": "2026-10-04T03:06:25.071768+00:00"
 }
