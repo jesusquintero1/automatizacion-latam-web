@@ -1,15 +1,15 @@
 {
-  "generado": "2026-10-05T16:30:06.725934+00:00",
+  "generado": "2026-10-06T03:31:09.541862+00:00",
   "fuente_datos": "google",
   "ventana_dias": 28,
   "search_console": {
     "top_queries": [
       {
         "query": "automatización definida por software",
-        "impresiones": 11,
+        "impresiones": 10,
         "clics": 0,
         "ctr": 0.0,
-        "posicion": 88.2
+        "posicion": 88.7
       },
       {
         "query": "robot de ensamblaje",
@@ -24,20 +24,6 @@
         "clics": 0,
         "ctr": 0.0,
         "posicion": 53.0
-      },
-      {
-        "query": "temporizador tp",
-        "impresiones": 1,
-        "clics": 0,
-        "ctr": 0.0,
-        "posicion": 58.0
-      },
-      {
-        "query": "ton temporizador",
-        "impresiones": 1,
-        "clics": 0,
-        "ctr": 0.0,
-        "posicion": 52.0
       }
     ],
     "huecos_contenido": []
