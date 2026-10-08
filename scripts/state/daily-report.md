@@ -1,11 +1,11 @@
-_Generado: 2026-10-08T15:00:13.106494+00:00 · fuente datos: google_
+_Generado: 2026-10-08T20:53:48.233123+00:00 · fuente datos: google_
 
 ### Distribución actual del corpus
 
 | Categoría | Artículos | Share | Cuota hoy |
 |---|---:|---:|---:|
-| Inteligencia Artificial | 281 | 38% | 1 |
-| Industria 4.0 | 104 | 14% | — |
+| Inteligencia Artificial | 281 | 37% | 1 |
+| Industria 4.0 | 105 | 14% | — |
 | Ciberseguridad OT | 99 | 13% | — |
 | Mercado y Negocios | 86 | 11% | 1 |
 | PLC y Control | 75 | 10% | — |
@@ -16,11 +16,11 @@ _Generado: 2026-10-08T15:00:13.106494+00:00 · fuente datos: google_
 
 ### Razonamiento del plan
 
-Topadas a 1/run por sobre-representación: Inteligencia Artificial (38%), Mercado y Negocios (11%). Liberadas (hambrientas): PLC y Control, Robótica, Industria 4.0, Energía y Sostenibilidad, Casos de Estudio.
+Topadas a 1/run por sobre-representación: Inteligencia Artificial (37%), Mercado y Negocios (11%). Liberadas (hambrientas): PLC y Control, Robótica, Energía y Sostenibilidad, Casos de Estudio.
 
 ### Keywords prioritarias (re-rank del agregador)
 
-`plc`, `scada`, `hmi`, `dcs`, `ladder`, `iec 61131`, `vfd`, `variable frequency drive`, `motion control`, `instrumentation`, `opc ua`, `field sensor`, `controller`, `automation controller`, `robot`, `cobot`, `collaborative robot`, `agv`, `amr`, `robotic arm`, `end effector`, `machine vision`, `robotics`, `pick and place`, `iiot`, `industrial iot`, `digital twin`, `mes`, `edge computing`, `smart factory` …
+`plc`, `scada`, `hmi`, `dcs`, `ladder`, `iec 61131`, `vfd`, `variable frequency drive`, `motion control`, `instrumentation`, `opc ua`, `field sensor`, `controller`, `automation controller`, `robot`, `cobot`, `collaborative robot`, `agv`, `amr`, `robotic arm`, `end effector`, `machine vision`, `robotics`, `pick and place`, `energy management`, `microgrid`, `renewable`, `decarbonization`, `energy efficiency`, `solar` …
 
 ### Top queries (Search Console, 28 días)
 
