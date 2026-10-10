@@ -1,10 +1,10 @@
-_Generado: 2026-10-10T14:01:41.142710+00:00 · fuente datos: google_
+_Generado: 2026-10-10T18:43:43.408261+00:00 · fuente datos: google_
 
 ### Distribución actual del corpus
 
 | Categoría | Artículos | Share | Cuota hoy |
 |---|---:|---:|---:|
-| Inteligencia Artificial | 283 | 37% | 1 |
+| Inteligencia Artificial | 284 | 38% | 1 |
 | Industria 4.0 | 105 | 14% | — |
 | Ciberseguridad OT | 100 | 13% | — |
 | Mercado y Negocios | 86 | 11% | 1 |
@@ -16,7 +16,7 @@ _Generado: 2026-10-10T14:01:41.142710+00:00 · fuente datos: google_
 
 ### Razonamiento del plan
 
-Topadas a 1/run por sobre-representación: Inteligencia Artificial (37%), Mercado y Negocios (11%). Liberadas (hambrientas): PLC y Control, Robótica, Industria 4.0, Energía y Sostenibilidad, Casos de Estudio, General.
+Topadas a 1/run por sobre-representación: Inteligencia Artificial (38%), Mercado y Negocios (11%). Liberadas (hambrientas): PLC y Control, Robótica, Industria 4.0, Energía y Sostenibilidad, Casos de Estudio, General.
 
 ### Keywords prioritarias (re-rank del agregador)
 
@@ -29,3 +29,17 @@ Topadas a 1/run por sobre-representación: Inteligencia Artificial (37%), Mercad
 | automatización definida por software | 10 | 0 | 0.0% | 88.7 |
 | robot de ensamblaje | 1 | 0 | 0.0% | 82.0 |
 | temporizador ton | 1 | 0 | 0.0% | 53.0 |
+
+### SEO — auditoría del corpus
+
+**Salud SEO: 85/100** · 755 artículos
+
+| Chequeo | Resultado |
+|---|---:|
+| Contenido corto (< 350 palabras) | 44 |
+| Meta descripción muy corta | 0 |
+| Títulos > 70 caracteres | 335 |
+| Títulos duplicados | 0 |
+| Huérfanos (< 2 enlaces entrantes) | 230 |
+
+**Pillar pages sugeridas** (temas con masa crítica): PLC y Control, Robótica, Inteligencia Artificial, Mercado y Negocios, Industria 4.0, Energía y Sostenibilidad, Ciberseguridad OT.
