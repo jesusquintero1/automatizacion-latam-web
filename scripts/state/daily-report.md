@@ -1,10 +1,10 @@
-_Generado: 2026-10-12T17:04:26.015938+00:00 · fuente datos: google_
+_Generado: 2026-10-13T04:08:53.374701+00:00 · fuente datos: google_
 
 ### Distribución actual del corpus
 
 | Categoría | Artículos | Share | Cuota hoy |
 |---|---:|---:|---:|
-| Inteligencia Artificial | 287 | 38% | 1 |
+| Inteligencia Artificial | 288 | 38% | 1 |
 | Industria 4.0 | 106 | 14% | — |
 | Ciberseguridad OT | 101 | 13% | — |
 | Mercado y Negocios | 86 | 11% | 1 |
@@ -26,6 +26,6 @@ Topadas a 1/run por sobre-representación: Inteligencia Artificial (38%), Mercad
 
 | Query | Impresiones | Clics | CTR | Pos |
 |---|---:|---:|---:|---:|
-| automatización definida por software | 10 | 0 | 0.0% | 88.7 |
+| automatización definida por software | 9 | 0 | 0.0% | 88.8 |
 | robot de ensamblaje | 1 | 0 | 0.0% | 82.0 |
 | temporizador ton | 1 | 0 | 0.0% | 53.0 |
