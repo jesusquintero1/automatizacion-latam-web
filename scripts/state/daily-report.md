@@ -1,4 +1,4 @@
-_Generado: 2026-10-17T11:48:09.270969+00:00 · fuente datos: google_
+_Generado: 2026-10-18T00:08:32.402614+00:00 · fuente datos: google_
 
 ### Distribución actual del corpus
 
@@ -9,7 +9,7 @@ _Generado: 2026-10-17T11:48:09.270969+00:00 · fuente datos: google_
 | Ciberseguridad OT | 101 | 13% | — |
 | Mercado y Negocios | 88 | 11% | 1 |
 | PLC y Control | 76 | 10% | — |
-| Robótica | 61 | 8% | — |
+| Robótica | 62 | 8% | — |
 | Energía y Sostenibilidad | 27 | 3% | — |
 | General | 15 | 2% | — |
 | Casos de Estudio | 6 | 1% | — |
@@ -27,3 +27,17 @@ Topadas a 1/run por sobre-representación: Inteligencia Artificial (38%), Mercad
 | Query | Impresiones | Clics | CTR | Pos |
 |---|---:|---:|---:|---:|
 | automatización definida por software | 9 | 0 | 0.0% | 88.8 |
+
+### SEO — auditoría del corpus
+
+**Salud SEO: 85/100** · 776 artículos
+
+| Chequeo | Resultado |
+|---|---:|
+| Contenido corto (< 350 palabras) | 44 |
+| Meta descripción muy corta | 0 |
+| Títulos > 70 caracteres | 340 |
+| Títulos duplicados | 0 |
+| Huérfanos (< 2 enlaces entrantes) | 239 |
+
+**Pillar pages sugeridas** (temas con masa crítica): PLC y Control, Robótica, Inteligencia Artificial, Mercado y Negocios, Industria 4.0, Energía y Sostenibilidad, Ciberseguridad OT.
