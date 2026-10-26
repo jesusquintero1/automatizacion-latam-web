@@ -1,15 +1,15 @@
 {
-  "generado": "2026-10-25T18:35:22.033600+00:00",
+  "generado": "2026-10-26T01:59:20.009656+00:00",
   "fuente_datos": "google",
   "ventana_dias": 28,
   "search_console": {
     "top_queries": [
       {
         "query": "automatización definida por software",
-        "impresiones": 4,
+        "impresiones": 1,
         "clics": 0,
         "ctr": 0.0,
-        "posicion": 86.0
+        "posicion": 84.0
       }
     ],
     "huecos_contenido": []
