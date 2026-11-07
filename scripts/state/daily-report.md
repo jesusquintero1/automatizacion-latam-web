@@ -1,4 +1,4 @@
-_Generado: 2026-10-18T18:19:20.274543+00:00 · fuente datos: google_
+_Generado: 2026-11-07T14:27:26.437186+00:00 · fuente datos: google_
 
 ### Distribución actual del corpus
 
@@ -9,7 +9,7 @@ _Generado: 2026-10-18T18:19:20.274543+00:00 · fuente datos: google_
 | Ciberseguridad OT | 101 | 13% | — |
 | Mercado y Negocios | 88 | 11% | 1 |
 | PLC y Control | 77 | 10% | — |
-| Robótica | 63 | 8% | — |
+| Robótica | 64 | 8% | — |
 | Energía y Sostenibilidad | 27 | 3% | — |
 | General | 15 | 2% | — |
 | Casos de Estudio | 6 | 1% | — |
@@ -26,4 +26,4 @@ Topadas a 1/run por sobre-representación: Inteligencia Artificial (38%), Mercad
 
 | Query | Impresiones | Clics | CTR | Pos |
 |---|---:|---:|---:|---:|
-| automatización definida por software | 9 | 0 | 0.0% | 88.8 |
+| temporizador ton | 1 | 0 | 0.0% | 58.0 |
