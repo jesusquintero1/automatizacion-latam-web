@@ -3934,7 +3934,17 @@
       "url": "https://huggingface.co/blog/allenai/toyblocks",
       "fuente": "Hugging Face Blog",
       "fecha_proceso": "2026-11-09T03:19:18.969752+00:00"
+    },
+    "980a846f8c1816ad": {
+      "url": "https://www.electronicsweekly.com/news/products/emech-enclosures/aratas-introduces-g6ta-series-of-reed-relays-for-safety-monitoring-2026-11/",
+      "fuente": "Electronics Weekly",
+      "fecha_proceso": "2026-11-09T17:59:11.419035+00:00"
+    },
+    "ac8f18750241a65f": {
+      "url": "https://huggingface.co/blog/nvidia/nemotron-personas-finance-japan",
+      "fuente": "Hugging Face Blog",
+      "fecha_proceso": "2026-11-09T17:59:59.743958+00:00"
     }
   },
-  "ultima_corrida": "2026-11-09T03:19:43.972295+00:00"
+  "ultima_corrida": "2026-11-09T17:59:59.743999+00:00"
 }
