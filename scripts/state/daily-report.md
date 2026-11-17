@@ -1,14 +1,14 @@
-_Generado: 2026-11-16T03:26:54.252506+00:00 · fuente datos: google_
+_Generado: 2026-11-17T05:26:33.025062+00:00 · fuente datos: google_
 
 ### Distribución actual del corpus
 
 | Categoría | Artículos | Share | Cuota hoy |
 |---|---:|---:|---:|
-| Inteligencia Artificial | 304 | 38% | 1 |
+| Inteligencia Artificial | 305 | 38% | 1 |
 | Industria 4.0 | 110 | 14% | — |
 | Ciberseguridad OT | 104 | 13% | — |
 | Mercado y Negocios | 89 | 11% | 1 |
-| PLC y Control | 84 | 10% | — |
+| PLC y Control | 85 | 11% | — |
 | Robótica | 66 | 8% | — |
 | Energía y Sostenibilidad | 28 | 3% | — |
 | General | 15 | 2% | — |
