@@ -1,10 +1,10 @@
-_Generado: 2026-11-21T21:15:30.251900+00:00 · fuente datos: google_
+_Generado: 2026-11-22T03:43:23.670393+00:00 · fuente datos: google_
 
 ### Distribución actual del corpus
 
 | Categoría | Artículos | Share | Cuota hoy |
 |---|---:|---:|---:|
-| Inteligencia Artificial | 311 | 38% | 1 |
+| Inteligencia Artificial | 312 | 38% | 1 |
 | Industria 4.0 | 110 | 13% | — |
 | Ciberseguridad OT | 104 | 13% | — |
 | Mercado y Negocios | 91 | 11% | 1 |
@@ -21,9 +21,3 @@ Topadas a 1/run por sobre-representación: Inteligencia Artificial (38%), Mercad
 ### Keywords prioritarias (re-rank del agregador)
 
 `plc`, `scada`, `hmi`, `dcs`, `ladder`, `iec 61131`, `vfd`, `variable frequency drive`, `motion control`, `instrumentation`, `opc ua`, `field sensor`, `controller`, `automation controller`, `robot`, `cobot`, `collaborative robot`, `agv`, `amr`, `robotic arm`, `end effector`, `machine vision`, `robotics`, `pick and place`, `iiot`, `industrial iot`, `digital twin`, `mes`, `edge computing`, `smart factory` …
-
-### Top queries (Search Console, 28 días)
-
-| Query | Impresiones | Clics | CTR | Pos |
-|---|---:|---:|---:|---:|
-| temporizador ton | 1 | 0 | 0.0% | 58.0 |
